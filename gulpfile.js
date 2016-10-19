@@ -119,7 +119,7 @@ gulp.task("styler", ["styles"], function () {
 });
 
 // Tache de démarrage du serveur
-gulp.task("start", ["fabrique", "styles"], function () {
+gulp.task("start", ["compression", "styles"], function () {
   console.log("Lancement du serveur");
   server.run(["serveur.js"]);
 });
