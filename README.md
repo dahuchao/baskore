@@ -23,9 +23,9 @@ ouvrir l'application à l'adresse http://localhost
 ## Architecture
 
 Cette application est un pretexte (POC) pour la mise en oeuvre des technologies suivantes : 
-* REACT
-* REDUX (FLUX)
-* Material-design (RWD)
-* Expressjs (API REST)
-* Socket.io (WebSocket)
-* Mongodb (NOSQL)
+* REACT : https://facebook.github.io/react/
+* REDUX (FLUX) : http://redux.js.org
+* Material-design (RWD) : http://www.material-ui.com
+* Expressjs (API REST) : http://expressjs.com
+* Socket.io (WebSocket) : http://socket.io/
+* Mongodb (NOSQL) : https://mongodb.github.io/node-mongodb-native/
