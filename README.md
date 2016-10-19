@@ -1,4 +1,4 @@
-# backscore
+# baskore
 Publication des tableaux de marque de rencontres de basket.
 
 Les utilisateurs spectateurs d'une rencontre, peuvent noter l'évolution du résultat sur cette table de marque
