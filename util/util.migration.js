@@ -2,7 +2,7 @@ var MongoClient = require('mongodb').MongoClient;
 console.log("Lancement de l'utilitaire de migration.")
 var urlHeroku = "mongodb://organisateur:orga123@ds055905.mongolab.com:55905/heroku_5cn196b4"
 console.log("url de la base de donnée source: " + urlHeroku)
-var urlLocale = "mongodb://@localhost:27017/baskoredb"
+var urlLocale = "mongodb://heroku_cmw92kb6:dml6l3kr3nhf9m25vg22mitp68@ds015774.mlab.com:15774/heroku_cmw92kb6"
 console.log("url de la base de donnée locale: " + urlLocale)
 
 MongoClient.connect(urlHeroku, function (err, dbH) {

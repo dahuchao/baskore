@@ -15,6 +15,7 @@
     "gulp-express": "^0.3.5",
     "gulp-jasmine": "^2.2.1",
     "gulp-sass": "^2.2.0",
+    "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
     "http-proxy-middleware": "^0.17.1",
     "immutable": "^3.8.1",
@@ -37,6 +38,7 @@
     "socket.io": "^1.4.5",
     "socket.io-client": "^1.4.5",
     "uglify-js": "^2.4.24",
+    "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.2.3"
   },

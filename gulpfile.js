@@ -3,7 +3,9 @@ var exec = require("gulp-exec");
 var sass = require("gulp-sass");
 var browserify = require("browserify");
 var babelify = require("babelify");
+var uglify = require('gulp-uglify');
 var source = require("vinyl-source-stream");
+var buffer = require('vinyl-buffer');
 var gutil = require("gulp-util");
 var browserSync = require("browser-sync").create();
 var reload = browserSync.reload;
@@ -43,6 +45,17 @@ gulp.task("fabrique", function () {
     .pipe(reload({
       stream: true
     }));
+});
+
+// Convertit es6 en es5 et assemble les morceaux
+gulp.task("compression", function () {
+  browserify("src/app.js")
+    .transform(babelify)
+    .bundle()
+    .pipe(source("app.js"))
+    .pipe(buffer())
+    .pipe(uglify())
+    .pipe(gulp.dest("public"))
 });
 
 // Convertit es6 en es5 et assemble les morceaux
