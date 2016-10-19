@@ -5,9 +5,7 @@ Les utilisateurs spectateurs d'une rencontre, peuvent noter l'évolution du rés
 électronique. Ainsi, les utilisateurs distants qui n'ont pas pu se déplacer, voient depuis leur canapé, l'évolution
 du résultat en temps réel (sans avoir à raffraichir le tableau).
 
-Mode SASS : https://backscore.herokuapp.com
-
-Sinon, voici comment installer et démarrer l'application :
+Voici comment installer et démarrer l'application :
 
 ## Installation
 
