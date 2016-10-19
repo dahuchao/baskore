@@ -6,26 +6,36 @@ import {
   List,
   ListItem,
   IconBsutton,
+  FlatButton,
   TimePicker,
   DatePicker
 } from "material-ui"
-import NavigationArrowBack from "material-ui/svg-icons/navigation/arrow-back"
+import Done from "material-ui/svg-icons/action/done"
 
 export default React.createClass({
   nouveauC(e) {
-    console.debug("Commentaire: " + e.target.value)
+    // console.debug("Commentaire: " + e.target.value)
+    this.setState({ commentaire: e.target.value })
+  },
+  surNouveauCommentaire() {
+    // console.debug("Commentaire: " + this.state.commentaire)
+    this.props.surNouveauCommentaire(this.state.commentaire)
   },
   render() {
+    const styleFlex = { display: "flex" }
     return (
       <Card>
-        <TextField
-          hintText="Ajouter un commentaire"
-          multiLine={true}
-          rowsMax={2}
-          fullWidth={true}
-          maxLength="140"
-          onChange={this.nouveauC}
-          />
+        <div style={styleFlex} >
+          <TextField
+            hintText="Ajouter un commentaire"
+            multiLine={true}
+            rowsMax={2}
+            fullWidth={true}
+            maxLength="140"
+            onChange={this.nouveauC}
+            />
+          <FlatButton onClick={this.surNouveauCommentaire} icon={<Done />} />
+        </div>
         <List id="commentaires" >
           <ListItem
             primaryText="Morgane entre sur le terrain à la place de Jacqueline" />

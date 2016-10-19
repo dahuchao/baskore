@@ -1,13 +1,11 @@
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
-console.log("Lancement de l'utilitaire: ")
-//var urlParDefaut = "mongodb://admin:pass@localhost:27017/test"
-// var urlParDefaut = "mongodb://@localhost:27017/baskoredb"
-// var urlParDefaut = "mongodb://organisateur:orga123@ds055905.mongolab.com:55905/heroku_5cn196b4"
-var urlParDefaut = "mongodb://baskore:baskore123@ds015774.mlab.com:15774/heroku_cmw92kb6"
-//PROD_MONGODB=mongodb://dbuser:dbpass@host1:port1/dbname
-const url = (process.env.MONGOLAB_URI || urlParDefaut)
+console.log("Lancement de l'utilitaire de lecture.")
+// const url = "mongodb://admin:pass@localhost:27017/test"
+// const url = "mongodb://@localhost:27017/baskoredb"
+// const url = "mongodb://organisateur:orga123@ds055905.mongolab.com:55905/heroku_5cn196b4"
+const url = "mongodb://baskore:baskore123@ds015774.mlab.com:15774/heroku_cmw92kb6"
 console.log("url de la base de donnée: " + url)
 
 MongoClient.connect(url, function (err, db) {

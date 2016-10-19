@@ -50,8 +50,8 @@ let RencontreConteneur = React.createClass({
   surNouvelleMarque: function (rencontre) {
     this.socket.emit('panierMarque', this.props.rencontre)
   },
-  surNouveauCommentaire: function (e) {
-    console.debug("Commentaire: " + e.target.value)
+  surNouveauCommentaire(commentaire) {
+    console.debug(`Commentaire: ${commentaire}`)
     // this.socket.emit('nouveauCommentaire', e.value)
   },
   surPeriode(periode) {
@@ -99,6 +99,7 @@ let RencontreConteneur = React.createClass({
           surPeriode={this.surPeriode}
           editer={this.editer}
           sauver={this.sauver}
+          surNouveauCommentaire={this.surNouveauCommentaire}
           modeEdition={this.props.modeEdition} />
     )
   }

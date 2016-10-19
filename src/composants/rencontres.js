@@ -3,7 +3,6 @@ import { Link } from "react-router"
 import {
   AppBar,
   Card,
-  CardText,
   IconButton,
   List,
   ListItem,
@@ -41,8 +40,8 @@ const Rencontres = React.createClass({
         width: 72,
         height: 72,
         padding: 20,
-        top:0,
-        right:0
+        top: 0,
+        right: 0
       },
       icon: {
         width: 36,
@@ -69,30 +68,28 @@ const Rencontres = React.createClass({
           </div>
         </AppBar>
         <Card>
-          <CardText>
-            <List id="rencontres" >
-              {this.props.rencontres.map(rencontre => {
-                let strdate = this.preparationDate(rencontre.date)
-                return (
-                  <ListItem
-                    key={rencontre.id}
-                    primaryText={rencontre.hote.nom + '-' + rencontre.visiteur.nom}
-                    secondaryText={strdate}
-                    onTouchTap={this.zoom.bind(this, rencontre.id)}
-                    rightIconButton={
-                      <IconButton
-                        style={poubelle.style}
-                        iconStyle={poubelle.icon}
-                        onClick={this.props.supprimeRencontre.bind(null, rencontre.id)}>
-                        <ActionDelete />
-                      </IconButton>}
-                    >
-                    <Link to={"/rencontres/" + rencontre.id} />
-                  </ListItem>
-                )
-              })}
-            </List>
-          </CardText>
+          <List id="rencontres" >
+            {this.props.rencontres.map(rencontre => {
+              let strdate = this.preparationDate(rencontre.date)
+              return (
+                <ListItem
+                  key={rencontre.id}
+                  primaryText={rencontre.hote.nom + '-' + rencontre.visiteur.nom}
+                  secondaryText={strdate}
+                  onTouchTap={this.zoom.bind(this, rencontre.id)}
+                  rightIconButton={
+                    <IconButton
+                      style={poubelle.style}
+                      iconStyle={poubelle.icon}
+                      onClick={this.props.supprimeRencontre.bind(null, rencontre.id)}>
+                      <ActionDelete />
+                    </IconButton>}
+                  >
+                  <Link to={"/rencontres/" + rencontre.id} />
+                </ListItem>
+              )
+            })}
+          </List>
         </Card>
       </div>
     )
