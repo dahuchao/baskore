@@ -58,7 +58,7 @@ const Rencontres = React.createClass({
     }
     return (
       <div>
-        <AppBar title="BACKSCORE"
+        <AppBar title="BASKORE"
           onClick={this.props.listerRencontres}
           iconClassNameRight="muidocs-icon-navigation-expand-more">
           <div className="flottant">
