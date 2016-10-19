@@ -53,7 +53,7 @@ function rencontreReducer(state = initState, action) {
             let rencontres = state.rencontres.filter(rencontre => rencontre.id != action.idRencontre)
             nouveauState = Object.assign({}, state, { rencontres: rencontres })
             break;
-        case types.NOUVELLE_MARQUE:
+        case types.NOUVELLE_INFO:
             console.log("| rencontre: " + JSON.stringify(action.rencontre))
             nouveauState = Object.assign({}, state, { rencontre: action.rencontre })
             break;

@@ -38,17 +38,21 @@ let RencontreConteneur = React.createClass({
     const idRencontre = this.props.params.idRencontre
     // console.info("Identifiant rencontre: " + idRencontre)
     this.socket.emit("ouvrirRencontre", idRencontre)
-    this.socket.on("nouvelleMarque", this.surReceptionNouvelleMarque)
+    this.socket.on("nouvelleInfo", this.surReceptionNouvelleInfo)
   },
-  surReceptionNouvelleMarque: function (rencontre) {
-    // console.debug("Reception d'une nouvelle marque: " + JSON.stringify(rencontre))
+  surReceptionNouvelleInfo: function (rencontre) {
+    // console.debug("Reception d'une nouvelle info provenant du serveur: " + JSON.stringify(rencontre))
     store.dispatch({
-      type: types.NOUVELLE_MARQUE,
+      type: types.NOUVELLE_INFO,
       rencontre: rencontre
     })
   },
   surNouvelleMarque: function (rencontre) {
     this.socket.emit('panierMarque', this.props.rencontre)
+  },
+  surNouveauCommentaire: function (e) {
+    console.debug("Commentaire: " + e.target.value)
+    // this.socket.emit('nouveauCommentaire', e.value)
   },
   surPeriode(periode) {
     // let rencontre = this.props.rencontre

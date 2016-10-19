@@ -12,6 +12,7 @@ import {
 import NavigationArrowBack from "material-ui/svg-icons/navigation/arrow-back"
 import ModeEdit from "material-ui/svg-icons/editor/mode-edit"
 import Tableau from "./tableau"
+import Commentaires from "./commentaires"
 
 const Rencontre = React.createClass({
   getInitialState() {
@@ -102,6 +103,9 @@ const Rencontre = React.createClass({
             rencontre={this.props.rencontre}
             surNouvelleMarque={this.props.surNouvelleMarque}
             surPeriode={this.props.surPeriode} />
+          <Commentaires
+            rencontre={this.props.rencontre}
+            surNouveauCommentaire={this.props.surNouveauCommentaire} />
         </div>
       )
   }

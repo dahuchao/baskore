@@ -355,8 +355,8 @@ io.sockets.on('connect', function (socket) {
       return idRencontre == rencontre.id
     }).forEach(function (idRencontre, soc) {
       console.log("id: " + JSON.stringify(idRencontre));
-      soc.emit("nouvelleMarque", rencontre);
-      console.log("Envoie de la nouvelle marque ! " + JSON.stringify(rencontre));
+      soc.emit("nouvelleInfo", rencontre);
+      console.log("Envoie d'une nouvelle info sur la rencontre ! " + JSON.stringify(rencontre));
     })
     MongoClient.connect(url, function (err, db) {
       if (err) {
@@ -371,6 +371,35 @@ io.sockets.on('connect', function (socket) {
               "visiteur.marque": rencontre.visiteur.marque
             }
           })
+      }
+    })
+  })
+  // Un commentaire est posté
+  socket.on('nouveauCommentaire', function (rencontre) {
+    console.log("Nouveau commentaire !");
+    console.log("Commentaire:" + JSON.stringify(rencontre));
+    console.log("Nb abonnés:" + socketAbonnes.count());
+    // Recherche des abonnés à la rencontre
+    socketAbonnes.filter(function (idRencontre) {
+      return idRencontre == rencontre.id
+    }).forEach(function (idRencontre, soc) {
+      console.log("id: " + JSON.stringify(idRencontre));
+      soc.emit("nouvelleInfo", rencontre);
+      console.log("Envoie d'une nouvelle info sur la rencontre ! " + JSON.stringify(rencontre));
+    })
+    // Modification de la base de données
+    MongoClient.connect(url, function (err, db) {
+      if (err) {
+        console.log("Base de données indisponible.")
+      } else {
+        console.log("Enregistrement de la rencontre.")
+        // db.collection("rencontres").update({
+        //   id: rencontre.id
+        // }, {
+        //     $set: {
+        //       "commentaires": rencontre.commentaires,
+        //     }
+        //   })
       }
     })
   })
