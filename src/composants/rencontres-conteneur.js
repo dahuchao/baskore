@@ -7,7 +7,7 @@ import Rencontres from "./rencontres"
 import RencontreAjout from "./rencontres-ajout"
 
 const RencontresConteneur = React.createClass({
-  componentDidMount: function () {
+  componentDidMount() {
     var adresse = location.protocol + "//" + location.host + "/api/rencontres"
     console.info("Requete de l'API web: " + adresse)
     request(adresse, function (error, response, rencontres) {
@@ -20,13 +20,13 @@ const RencontresConteneur = React.createClass({
       }
     })
   },
-  ajouterRencontre: function () {
+  ajouterRencontre() {
     console.log("Ajouter rencontre.")
     store.dispatch({
       type: types.AJOUTER_RENCONTRE
     })
   },
-  supprimeRencontre: function (idRencontre) {
+  supprimeRencontre(idRencontre) {
     console.info("Suppression: " + idRencontre)
     var adresse = location.protocol + "//" + location.host + "/api/rencontres/" + idRencontre
     console.info("Requete de l'API web: " + adresse)
@@ -39,7 +39,14 @@ const RencontresConteneur = React.createClass({
       }
     })
   },
-  ajoutRencontre: function (infos) {
+  ajoutRencontre(infos) {
+    if (infos == null) {
+      store.dispatch({
+        type: types.ANNULER_RENCONTRE,
+        rencontre: rencontre
+      })
+      return
+    }
     let rencontre = this.props.rencontre
     console.info("Info: " + JSON.stringify(infos))
     rencontre.date = infos.date
@@ -64,16 +71,16 @@ const RencontresConteneur = React.createClass({
       }
     })
   },
-  render: function () {
+  render() {
     return (
       this.props.modeAjout ?
         <RencontreAjout
           rencontre={this.props.rencontre}
-          ajoutRencontre={this.ajoutRencontre}/>
+          ajoutRencontre={this.ajoutRencontre} />
         :
         <Rencontres rencontres={this.props.rencontres}
           supprimeRencontre={this.supprimeRencontre}
-          ajouterRencontre={this.ajouterRencontre}/>
+          ajouterRencontre={this.ajouterRencontre} />
     )
   }
 })

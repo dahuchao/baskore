@@ -3,22 +3,20 @@ import {
   AppBar,
   Card,
   IconButton,
-  FlatButton,
-  RaisedButton,
-  ContentAdd,
   CardText,
   TimePicker,
   TextField,
   DatePicker
 } from "material-ui"
 import NavigationArrowBack from "material-ui/svg-icons/navigation/arrow-back"
+import Close from "material-ui/svg-icons/navigation/close"
 
 const RencontreAjout = React.createClass({
-  getInitialState: function () {
+  getInitialState() {
     let rencontre = this.props.rencontre
     return { date: new Date(), periode: 1, hote: rencontre.hote.nom, visiteur: rencontre.visiteur.nom }
   },
-  majDate: function (x, date) {
+  majDate(x, date) {
     let dateState = this.state.date
     dateState.setDate(date.getDate())
     dateState.setMonth(date.getMonth())
@@ -26,45 +24,50 @@ const RencontreAjout = React.createClass({
     this.setState({ date: dateState })
     console.debug("Ajout date: " + JSON.stringify(this.state))
   },
-  majHeure: function (x, heure) {
+  majHeure(x, heure) {
     let dateState = this.state.date
     dateState.setHours(heure.getHours())
     dateState.setMinutes(heure.getMinutes())
     this.setState({ date: dateState })
     console.debug("Ajout heure: " + JSON.stringify(this.state))
   },
-  majHote: function (e) {
+  majHote(e) {
     this.setState({ hote: e.target.value })
     console.debug("Ajout hote: " + JSON.stringify(this.state))
   },
-  majVisiteur: function (e) {
+  majVisiteur(e) {
     this.setState({ visiteur: e.target.value })
     console.debug("Ajout visiteur: " + JSON.stringify(this.state))
   },
-  sauver: function () {
+  sauver() {
     // let date = this.state.date
     // let strdate = date.getDate() + "-" + date.getMonth() + "-" + date.getFullYear()
     // this.state.date = strdate
     this.props.ajoutRencontre(this.state)
   },
-  render: function () {
+  annuler() {
+    this.props.ajoutRencontre(null)
+  },
+  render() {
     return (
       <div>
         <AppBar title="Ajouter rencontre"
-          iconElementLeft={<IconButton onClick={this.sauver}><NavigationArrowBack /></IconButton>} />
+          iconElementLeft={<IconButton onClick={this.sauver}><NavigationArrowBack /></IconButton>}
+          iconElementRight={<IconButton onClick={this.annuler}><Close /></IconButton>}
+          />
         <Card>
           <CardText>
-            <DatePicker hintText="Date de la rencontre"
+            <DatePicker floatingLabelText="Date de la rencontre"
               onChange={this.majDate} />
-            <TimePicker hintText="Heure de la rencontre"
+            <TimePicker floatingLabelText="Heure de la rencontre"
               format="24hr"
               onChange={this.majHeure} />
-            <TextField hintText="Club Hote"
+            <TextField floatingLabelText="Club hote"
               defaultValue={this.props.rencontre.hote.nom}
-              onChange={this.majHote} /><br />
-            <TextField hintText="Club Visiteur"
+              onChange={this.majHote} />
+            <TextField floatingLabelText="Club visiteur"
               defaultValue={this.props.rencontre.visiteur.nom}
-              onChange={this.majVisiteur} /><br />
+              onChange={this.majVisiteur} />
           </CardText>
         </Card>
       </div>
