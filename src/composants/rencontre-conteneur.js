@@ -7,18 +7,18 @@ import io from "socket.io-client"
 import Rencontre from "./rencontre"
 
 let RencontreConteneur = React.createClass({
-  componentWillMount: function () {
+  componentWillMount() {
     var adresse = location.href
     console.info("Adresse web socket: " + adresse)
     this.socket = io(adresse)
     this.socket.on("connect", this.connexionTableMarque)
   },
-  componentWillUnmount: function () {
+  componentWillUnmount() {
     const idRencontre = this.props.rencontre.id
     console.info("Fermeture tableau rencontre " + idRencontre)
     this.socket.emit("fermerRencontre", idRencontre)
   },
-  componentDidMount: function () {
+  componentDidMount() {
     const idRencontre = this.props.params.idRencontre
     this.socket.emit("ouvrirRencontre", idRencontre)
     let adresse = location.protocol + "//" + location.host + "/api/rencontres/" + idRencontre
@@ -33,21 +33,21 @@ let RencontreConteneur = React.createClass({
       }
     })
   },
-  connexionTableMarque: function () {
+  connexionTableMarque() {
     console.info("Connecté avec la table de marque")
     const idRencontre = this.props.params.idRencontre
     // console.info("Identifiant rencontre: " + idRencontre)
     this.socket.emit("ouvrirRencontre", idRencontre)
     this.socket.on("nouvelleInfo", this.surReceptionNouvelleInfo)
   },
-  surReceptionNouvelleInfo: function (rencontre) {
+  surReceptionNouvelleInfo(rencontre) {
     // console.debug("Reception d'une nouvelle info provenant du serveur: " + JSON.stringify(rencontre))
     store.dispatch({
       type: types.NOUVELLE_INFO,
       rencontre: rencontre
     })
   },
-  surNouvelleMarque: function (rencontre) {
+  surNouvelleMarque(rencontre) {
     this.socket.emit('panierMarque', this.props.rencontre)
   },
   surNouveauCommentaire(commentaire) {
@@ -63,7 +63,7 @@ let RencontreConteneur = React.createClass({
       periode: periode
     })
   },
-  sauver: function (infos) {
+  sauver(infos) {
     let strInfo = JSON.stringify(infos)
     console.debug(`Rencontre cont(sauver): ${strInfo}`)
     let rencontre = this.props.rencontre
@@ -84,12 +84,12 @@ let RencontreConteneur = React.createClass({
       }
     })
   },
-  editer: function () {
+  editer() {
     store.dispatch({
       type: types.EDITER_RENCONTRE
     })
   },
-  render: function () {
+  render() {
     // console.debug("Raffraichissement.")
     return (
       !this.props.rencontre ? null :

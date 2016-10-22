@@ -3,35 +3,35 @@ import Marque from "./tableau-marque.js"
 import Equipe from "./tableau-equipe.js"
 
 export default React.createClass({
-  surPanierHote: function () {
+  surPanierHote() {
     // console.info("Panier marque: " + JSON.stringify(this.props.rencontre.hote.marque))
     let marque = this.props.rencontre.hote.marque
     this.props.rencontre.hote.marque = marque + 1
     // this.socket.emit('panierMarque', this.props.rencontre)
     this.props.surNouvelleMarque()
   },
-  surPanierVisiteur: function () {
+  surPanierVisiteur() {
     // console.info("Panier marque: " + JSON.stringify(this.props.rencontre.visiteur.marque))
     let marque = this.props.rencontre.visiteur.marque
     this.props.rencontre.visiteur.marque = marque + 1
     // this.socket.emit('panierMarque', this.props.rencontre)
     this.props.surNouvelleMarque()
   },
-  surCorrectionHote: function () {
+  surCorrectionHote() {
     // console.info("Correction de la marque");
     let marque = this.props.rencontre.hote.marque
     this.props.rencontre.hote.marque = marque - 1
     // this.socket.emit('panierMarque', this.props.rencontre)
     this.props.surNouvelleMarque()
   },
-  surCorrectionVisiteur: function () {
+  surCorrectionVisiteur() {
     // console.info("Correction de la marque")
     let marque = this.props.rencontre.visiteur.marque
     this.props.rencontre.visiteur.marque = marque - 1
     // this.socket.emit('panierMarque', this.props.rencontre)
     this.props.surNouvelleMarque()
   },
-  render: function () {
+  render() {
     // console.debug("Conteneur3.")
     // this.ouvertureRencontre(this.props.rencontre.id)
     return (
