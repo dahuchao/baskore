@@ -1,14 +1,12 @@
 import React from "react"
-import store from "../store"
-import * as types from "../actions/actions-types"
 import {
   FlatButton,
 } from "material-ui"
 
-export default React.createClass({
+export default class Marque extends React.Component {
   surPeriode(periode) {
     this.props.surPeriode(periode)
-  },
+  }
   render() {
     const style = {
       minWidth: "2em",
@@ -25,25 +23,25 @@ export default React.createClass({
       <div id="marque">
         <div id="periodes">{
           [1, 2, 3, 4].map(periode => {
-            let style = {
+            let stylePeriode = {
               minWidth: "0",
               lineHeight: "1.3em",
               height: "1.3em"
             }
-            let labelStyle = {
+            let styleLabelPeriode = {
               fontSize: "1em",
               paddingLeft: "0.5em",
               paddingRight: "0.5em"
             }
             periode == this.props.rencontre.periode ?
-              labelStyle.color = "red" :
-              labelStyle.color = "white"
+              styleLabelPeriode.color = "red" :
+              styleLabelPeriode.color = "white"
             console.log("Couleur: " + JSON.stringify(style))
             return (
               <FlatButton
                 className="periode"
-                style={style}
-                labelStyle={labelStyle}
+                style={stylePeriode}
+                labelStyle={styleLabelPeriode}
                 key={periode}
                 onClick={this.surPeriode.bind(this, periode)}
                 label={"P" + periode}
@@ -71,5 +69,5 @@ export default React.createClass({
       </div>
     )
   }
-})
+}
 
