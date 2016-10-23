@@ -62,6 +62,15 @@ header {
     @media #{$mobile} {
        font-size: 1em;
     }
+    .joueuse{
+      font-size: 0.7em;
+      text-align: center;
+      width:1.5em;
+      margin: 0.2em;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      //appearance: none;
+    }
     font-size: 3em;
     color: white;
     flex: 2;

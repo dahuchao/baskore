@@ -1,6 +1,6 @@
 import React from "react"
 import {
-  FlatButton,
+  FlatButton
 } from "material-ui"
 
 export default class Marque extends React.Component {
