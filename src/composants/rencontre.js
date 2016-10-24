@@ -103,9 +103,6 @@ const Rencontre = React.createClass({
             rencontre={this.props.rencontre}
             surNouvelleMarque={this.props.surNouvelleMarque}
             surPeriode={this.props.surPeriode} />
-          <Commentaires
-            rencontre={this.props.rencontre}
-            surNouveauCommentaire={this.props.surNouveauCommentaire} />
         </div>
       )
   }
