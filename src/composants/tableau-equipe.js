@@ -9,6 +9,7 @@ export default class Equipe extends React.Component {
     const styleJoueuses = {
       display: "flex",
       flexDirection: "row",
+      flexWrap: "wrap",
       borderColor: "red"
     }
     console.debug("Equipe largeur: " + this.props.width)
@@ -17,10 +18,15 @@ export default class Equipe extends React.Component {
         <div className="nom">{this.props.nom}</div>
         <img className="blason" src="img/ballon6.png"></img>
         <div style={styleJoueuses}>
-          <Joueurr></Joueurr>
-          <Joueurr></Joueurr>
-          <Joueurr></Joueurr>
-          <Joueurr></Joueurr>
+          <Joueuse />
+          <Joueuse />
+        </div>
+        <div style={styleJoueuses}>
+          <Joueuse />
+          <Joueuse />
+        </div>
+        <div style={styleJoueuses}>
+          <Joueuse />
         </div>
       </div >
     )
@@ -57,7 +63,7 @@ class Joueur extends React.Component {
 }
 
 
-class Joueurr extends React.Component {
+class Joueuse extends React.Component {
   render() {
     const styleJoueuse = {
       width: "2em",
