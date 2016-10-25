@@ -32,7 +32,6 @@ export default React.createClass({
     this.props.surNouvelleMarque()
   },
   render() {
-    // console.debug("Conteneur3.")
     // this.ouvertureRencontre(this.props.rencontre.id)
     return (
       <div id="tableau">

@@ -1,4 +1,5 @@
 import React from "react"
+import Immutable from "immutable"
 import { Link } from 'react-router'
 import {
   AppBar,
@@ -48,6 +49,7 @@ const Rencontre = React.createClass({
     this.props.sauver(this.state)
   },
   render() {
+    // console.debug(`Nouvelle rencontre` + Immutable.fromJS(this.props.rencontre))
     const style = {
       color: "white"
     }

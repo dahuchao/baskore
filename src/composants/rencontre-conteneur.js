@@ -1,4 +1,5 @@
 import React from "react"
+import Immutable from "immutable"
 import { connect } from "react-redux"
 import store from "../store"
 import * as types from "../actions/actions-types"
@@ -52,6 +53,10 @@ let RencontreConteneur = React.createClass({
   },
   surNouveauCommentaire(commentaire) {
     console.debug(`Commentaire: ${commentaire}`)
+    store.dispatch({
+      type: types.NOUVEAU_COMMENTAIRE,
+      commentaire: commentaire
+    })
     // this.socket.emit('nouveauCommentaire', e.value)
   },
   surPeriode(periode) {
@@ -90,7 +95,7 @@ let RencontreConteneur = React.createClass({
     })
   },
   render() {
-    // console.debug("Raffraichissement.")
+    // console.debug(`Nouvelle rencontre` + Immutable.fromJS(this.props.rencontre))
     return (
       !this.props.rencontre ? null :
         <Rencontre
@@ -105,7 +110,7 @@ let RencontreConteneur = React.createClass({
   }
 })
 const mapStateToProps = function (store) {
-  // console.debug("Modification des proprités.")
+  console.debug("Modification des propriétés.")
   return {
     rencontre: store.rencontreState.rencontre,
     modeEdition: store.rencontreState.modeEdition

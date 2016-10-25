@@ -1,4 +1,5 @@
 import React from "react"
+import Immutable from "immutable"
 import {
   Card,
   CardText,
@@ -22,6 +23,8 @@ export default React.createClass({
     this.props.surNouveauCommentaire(this.state.commentaire)
   },
   render() {
+    console.debug(`Nouvelle rencontre` + Immutable.List(this.props.rencontre.commentaires).toJS())
+    let id = 0
     const styleFlex = { display: "flex" }
     return (
       <Card>
@@ -37,16 +40,17 @@ export default React.createClass({
           <FlatButton onClick={this.surNouveauCommentaire} icon={<Done />} />
         </div>
         <List id="commentaires" >
-          <ListItem
-            primaryText="Morgane entre sur le terrain à la place de Jacqueline" />
-          <ListItem
-            primaryText="Panier magnifique de Tifanie" />
-          <ListItem
-            primaryText="Les visiteurs dominent la partie" />
-          <ListItem
-            primaryText="Dans la raquette les interieurs dominent sans partage" />
-          <ListItem
-            primaryText="Superbe action des Nantaises qui malheureusement ne donnera rien" />
+          {
+            Immutable.List(this.props.rencontre.commentaires).reverse().map(commentaire => {
+              console.debug(`Commentaire: ${commentaire}`)
+              return (
+                <ListItem
+                  key={id++}
+                  primaryText={commentaire}
+                  />
+              )
+            })
+          }
         </List>
       </Card>
     )
