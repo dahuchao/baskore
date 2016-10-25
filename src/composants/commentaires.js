@@ -23,7 +23,7 @@ export default React.createClass({
     this.props.surNouveauCommentaire(this.state.commentaire)
   },
   render() {
-    console.debug(`Nouvelle rencontre` + Immutable.List(this.props.rencontre.commentaires).toJS())
+    console.debug(`Commentaires: ` + Immutable.List(this.props.rencontre.commentaires).toJS())
     let id = 0
     const styleFlex = { display: "flex" }
     return (
@@ -42,7 +42,6 @@ export default React.createClass({
         <List id="commentaires" >
           {
             Immutable.List(this.props.rencontre.commentaires).reverse().map(commentaire => {
-              console.debug(`Commentaire: ${commentaire}`)
               return (
                 <ListItem
                   key={id++}
