@@ -66,7 +66,7 @@ const Rencontre = React.createClass({
             </IconButton>
           }
           />
-        <Card >
+        <Card>
           <CardText>
             <DatePicker floatingLabelText="Date de la rencontre"
               defaultDate={date}
@@ -82,7 +82,7 @@ const Rencontre = React.createClass({
               defaultValue={this.props.rencontre.visiteur.nom}
               onChange={this.majVisiteur} />
           </CardText>
-        </Card >
+        </Card>
       </div>
     ) : (
         <div>
