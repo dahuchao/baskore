@@ -39,7 +39,8 @@ MongoClient.connect(url, function (err, db) {
 })
 
 function ajouterDate(rencontre) {
-  let rencontreDatee = Immutable.Map(rencontre)
-  rencontreDatee.date = new Date()
-  return rencontreDatee
+  let rencontreDatee = Immutable
+    .fromJS(rencontre)
+    .set("date", new Date())
+  return rencontreDatee.toObject()
 }

@@ -17,7 +17,7 @@ var jasmine = require("gulp-jasmine");
 var proxyMiddleware = require("http-proxy-middleware");
 
 gulp.task("test", function () {
-  return gulp.src("test/tableau-test.js")
+  return gulp.src("test/immutable.test.js")
     // gulp-jasmine works on filepaths so you can't have any plugins before it
     .pipe(jasmine());
 });
