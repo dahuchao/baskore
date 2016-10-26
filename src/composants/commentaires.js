@@ -16,40 +16,46 @@ import Done from "material-ui/svg-icons/action/done"
 export default React.createClass({
   nouveauC(e) {
     // console.debug("Commentaire: " + e.target.value)
-    this.setState({ commentaire: e.target.value })
+    this.setState({commentaire: e.target.value})
   },
   surNouveauCommentaire() {
     // console.debug("Commentaire: " + this.state.commentaire)
-    this.props.surNouveauCommentaire(this.state.commentaire)
+    this
+      .props
+      .surNouveauCommentaire(this.state.commentaire)
   },
   render() {
-    console.debug(`Commentaires: ` + Immutable.List(this.props.rencontre.commentaires).toJS())
+    console.debug(`Commentaires: ` + Immutable.List(this.props.rencontre.commentaires).toJSON())
     let id = 0
-    const styleFlex = { display: "flex" }
+    const styleFlex = {
+      display: "flex"
+    }
     return (
       <Card>
-        <div style={styleFlex} >
+        <div style={styleFlex}>
           <TextField
             hintText="Ajouter un commentaire"
             multiLine={true}
             rowsMax={2}
             fullWidth={true}
             maxLength="140"
-            onChange={this.nouveauC}
-            />
-          <FlatButton onClick={this.surNouveauCommentaire} icon={<Done />} />
+            onChange={this.nouveauC}/>
+          <FlatButton onClick={this.surNouveauCommentaire} icon={< Done />}/>
         </div>
-        <List id="commentaires" >
-          {
-            Immutable.List(this.props.rencontre.commentaires).reverse().map(commentaire => {
-              return (
-                <ListItem
+        <List id="commentaires">
+          {Immutable
+            .List(this.props.rencontre.commentaires)
+            .reverse()
+            .map(commentaire => {
+              const element = commentaire.valide
+                ? (<ListItem key={id++} primaryText={commentaire.commentaire}/>)
+                : (<ListItem
                   key={id++}
-                  primaryText={commentaire}
-                  />
-              )
+                  primaryText={commentaire.commentaire}
+                  secondaryText="Enregistrement en cours"/>)
+              return element
             })
-          }
+}
         </List>
       </Card>
     )

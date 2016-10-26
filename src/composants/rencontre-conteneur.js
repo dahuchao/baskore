@@ -53,11 +53,19 @@ let RencontreConteneur = React.createClass({
   },
   surNouveauCommentaire(commentaire) {
     console.debug(`Commentaire: ${commentaire}`)
+    this.socket.emit("nouveauCommentaire", {
+      "idRencontre": this.props.params.idRencontre,
+      "commentaire": commentaire
+    })
     store.dispatch({
-      type: types.NOUVEAU_COMMENTAIRE,
+      type: types.COMMENTAIRE_POST,
       commentaire: commentaire
     })
-    // this.socket.emit('nouveauCommentaire', e.value)
+    this.socket.on("nouveauCommentaire", ()=>
+    store.dispatch({
+      type: types.COMMENTAIRE_NOUVEAU,
+      commentaire: commentaire
+    }))
   },
   surPeriode(periode) {
     // let rencontre = this.props.rencontre

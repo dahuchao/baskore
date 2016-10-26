@@ -11,16 +11,16 @@ export default class Equipe extends React.Component {
       justifyContent: "center",
       borderColor: "red"
     }
+    let id=1
     const joueuses = Immutable
       .List
-      .of(4, 10, 14, 6, 10)
-    console.debug("Equipe largeur: " + this.props.width)
+      .of(4, 10, 14, 6, 11)
     return (
       <div className="equipe">
         <div className="nom">{this.props.nom}</div>
         <img onClick={this.props.surPanier} className="blason" src="img/ballon6.png"></img>
         <div style={styleJoueuses}>{joueuses.map(joueuse => {
-            return (<Joueuse numero={joueuse}/>)
+            return (<Joueuse key={id++} numero={joueuse}/>)
           })}
         </div>
       </div >
@@ -37,26 +37,31 @@ class Joueuse extends React.Component {
     const etoile = `/joueuses/joueuse-${num}.png`
     const style = {
       width: "2em",
-      height: "2em"
+      height: "2em",
+      maxWidth: "40px",
+      maxHeigth: "40px"
     }
+    let id=1
     return (
       <IconMenu
-        iconButtonElement={< img style = {
-        style
-      }
-      src = {
-        etoile
-      } />}>{Immutable
-          .List
-          .of(4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)
-          .map(entrant => {
-            return <MenuItem
-              onClick={this
-              .surChangement
-              .bind(this, num, entrant)}
-              value={entrant}
-              primaryText={entrant}/>
-          })}
+        listStyle={{backgroundColor:"bleu"}}
+        style={{backgroundColor:"bleu"}}
+        iconButtonElement={<img style={style} src={etoile} />} >
+          {Immutable
+            .List
+            .of(4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)
+            .map(entrant => {
+              return (<MenuItem
+                onClick={this
+                  .surChangement
+                  .bind(this, num, entrant)}
+                key={id++}
+                innerDivStyle={{color:"red",backgroundColor:"bleu", width:"2em"}}
+                nestedListStyle={{backgroundColor:"bleu", width:"2em"}}
+                style={{backgroundColor:"bleu"}}
+                value={entrant}
+                primaryText={entrant}/>)
+            })}
       </IconMenu>
     )
   }

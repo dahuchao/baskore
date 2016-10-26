@@ -376,17 +376,17 @@ io.sockets.on('connect', function (socket) {
     })
   })
   // Un commentaire est posté
-  socket.on('nouveauCommentaire', function (rencontre) {
+  socket.on("nouveauCommentaire", function (commentaire) {
     console.log("Nouveau commentaire !");
-    console.log("Commentaire:" + JSON.stringify(rencontre));
-    console.log("Nb abonnés:" + socketAbonnes.count());
+    console.log("Commentaire:" + JSON.stringify(commentaire));
+    console.log("Id rencontre:" + commentaire.idRencontre);
     // Recherche des abonnés à la rencontre
     socketAbonnes.filter(function (idRencontre) {
-      return idRencontre == rencontre.id
+      return idRencontre == commentaire.idRencontre
     }).forEach(function (idRencontre, soc) {
       console.log("id: " + JSON.stringify(idRencontre));
-      soc.emit("nouvelleInfo", rencontre);
-      console.log("Envoie d'une nouvelle info sur la rencontre ! " + JSON.stringify(rencontre));
+      soc.emit("nouveauCommentaire", commentaire.commentaire);
+      console.log(`Envoie du commentaire: ${commentaire.commentaire}`);
     })
     // Modification de la base de données
     MongoClient.connect(url, function (err, db) {

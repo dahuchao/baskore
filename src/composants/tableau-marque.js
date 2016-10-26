@@ -18,7 +18,7 @@ export default class Marque extends React.Component {
       paddingRight: "0"
     }
     // console.debug("Conteneur4.")
-    console.debug("Rencontre: " + JSON.stringify(this.props.rencontre))
+    // console.debug("Rencontre: " + JSON.stringify(this.props.rencontre))
     return (
       <div id="marque">
         <div id="periodes">{
