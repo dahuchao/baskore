@@ -6,32 +6,32 @@ console.log("Lancement de l'utilitaire de lecture.")
 const url = "mongodb://@localhost:27017/baskoredb"
 console.log("url de la base de donnée: " + url)
 
-MongoClient.connect(url, function (err, db) {
+MongoClient.connect(url, (err, db) => {
   if (err) {
     console.log("Base de données indisponible: " + err)
-  } else {
-    db.collection("rencontres")
-      .find({
-        // id: 2
-      })
-      .each((err, rencontre) => {
-        if (err) {
-          console.log("Erreur: " + err)
-        }
+    return
+  }
+  db
+    .collection("rencontres")
+    .find({
+      // id: 4
+    })
+    .each((err, rencontre) => {
+      if (err) {
+        console.log("Erreur: " + err)
+        return
+      }
+      if (rencontre) 
         console.log("rencontre: " + JSON.stringify(rencontre))
-      })
-    db.collection("rencontres").count((err, nb) => {
+    })
+  db
+    .collection("rencontres")
+    .count((err, nb) => {
       console.log("Taille de la base de donnée: " + nb)
     })
-    db.close()
+  db.close()
 
-    // db.collection("rencontres")
-    //   .find()
-    //   .toArray(function (err, rencontres) {
-    //     rencontres.forEach(rencontre =>
-    //       console.log("Nouvel r: " + JSON.stringify(rencontre))
-    //     )
-    //     db.close()
-    //   })
-  }
+  // db.collection("rencontres")   .find()   .toArray(function (err, rencontres) {
+  //     rencontres.forEach(rencontre =>       console.log("Nouvel r: " +
+  // JSON.stringify(rencontre))     )     db.close()   })
 })

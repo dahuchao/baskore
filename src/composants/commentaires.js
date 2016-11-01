@@ -30,8 +30,17 @@ export default React.createClass({
     const styleFlex = {
       display: "flex"
     }
+    const styleElement = {
+      fontSize:"0.8em",
+      paddingLeft:"0.8em",
+      paddingRight:"0.8em",
+      paddingTop:"0.3em",
+      paddingBottom:"0.3em"
+    }
     return (
       <Card>
+      {
+        this.props.modeVerrouille?null:
         <div style={styleFlex}>
           <TextField
             hintText="Ajouter un commentaire"
@@ -42,17 +51,24 @@ export default React.createClass({
             onChange={this.nouveauC}/>
           <FlatButton onClick={this.surNouveauCommentaire} icon={< Done />}/>
         </div>
-        <List id="commentaires">
+      }
+        <List style={{padding:"0px"}} >
           {Immutable
             .List(this.props.rencontre.commentaires)
             .reverse()
             .map(commentaire => {
               const element = commentaire.valide
-                ? (<ListItem key={id++} primaryText={commentaire.commentaire}/>)
+                ? (<ListItem 
+                      key={id++} 
+                      primaryText={commentaire.commentaire}
+                      innerDivStyle={styleElement}
+                    />)
                 : (<ListItem
-                  key={id++}
-                  primaryText={commentaire.commentaire}
-                  secondaryText="Enregistrement en cours"/>)
+                      key={id++}
+                      primaryText={commentaire.commentaire}
+                      secondaryText="Enregistrement en cours"
+                      innerDivStyle={styleElement}
+                    />)
               return element
             })
 }

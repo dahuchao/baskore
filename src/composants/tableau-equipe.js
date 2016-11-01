@@ -18,7 +18,11 @@ export default class Equipe extends React.Component {
     return (
       <div className="equipe">
         <div className="nom">{this.props.nom}</div>
-        <img onClick={this.props.surPanier} className="blason" src="img/ballon6.png"></img>
+        {
+          this.props.modeVerrouille
+          ? <img className="blason" src="img/ballon6.png"></img>
+          : <img onClick={this.props.surPanier} className="blason" src="img/ballon6.png"></img>
+        }
         <div style={styleJoueuses}>{joueuses.map(joueuse => {
             return (<Joueuse key={id++} numero={joueuse}/>)
           })}

@@ -1,33 +1,33 @@
 // Chargement du module expressjs
-var express = require('express')
-var cors = require('express-cors')
-var Immutable = require('immutable')
-var MongoClient = require('mongodb').MongoClient;
-var bodyParser = require('body-parser');
-var multer = require('multer'); // v1.0.5
-var upload = multer(); // for parsing multipart/form-data
-var ObjectId = require('mongodb').ObjectID;
+var express = require("express")
+var cors = require("express-cors")
+var Immutable = require("immutable")
+var MongoClient = require("mongodb").MongoClient
+var bodyParser = require("body-parser")
+var multer = require("multer")
+var upload = multer()
+var ObjectId = require("mongodb").ObjectID
 
 // Codec base 64
 //var base64 = require('base-64')
 // Création de l'application express
-var app = express();
+var app = express()
 app.use(cors({
   allowedOrigins: [
     'localhost:3000'
   ]
 }))
-app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({
   extended: true
-})); // for parsing application/x-www-form-urlencoded
+})) // for parsing application/x-www-form-urlencoded
 // Définition du port d'écoute
-app.set('port', (process.env.PORT || 80));
+app.set('port', (process.env.PORT || 80))
 // Répertoire des pages du site web
-var repertoireSite = "./public";
-console.log('Ouverture du répertoire des pages du site web : %s', repertoireSite);
+var repertoireSite = "./public"
+console.log('Ouverture du répertoire des pages du site web : %s', repertoireSite)
 // Répertoire racine
-app.use('/', express.static(repertoireSite));
+app.use('/', express.static(repertoireSite))
 
 //**********************************************
 // Connection à la base de données
@@ -78,8 +78,8 @@ app.get("/api/rencontres/:id", function (req, res) {
         return rencontre.id == idRencontre
       }).forEach(function (rencontre) {
         // Lecture de la rencontre
-        res.jsonp(rencontre);
-        console.log('Envoie de la rencontre ! ' + JSON.stringify(rencontre));
+        res.jsonp(rencontre)
+        console.log('Envoie de la rencontre ! ' + JSON.stringify(rencontre))
       })
     } else {
       db.collection("rencontres").find({
@@ -90,8 +90,8 @@ app.get("/api/rencontres/:id", function (req, res) {
         }
         if (rencontre != null) {
           // Lecture de la rencontre
-          console.log("Envoie de la rencontre: " + JSON.stringify(rencontre));
-          res.jsonp(rencontre);
+          console.log("Envoie de la rencontre: " + JSON.stringify(rencontre))
+          res.jsonp(rencontre)
         }
       })
       // Fermeture de la base de données
@@ -119,7 +119,7 @@ app.put("/api/rencontres/:id", upload.array(), function (req, res) {
       })
       // Lecture de la rencontre
       res.jsonp(rencontreMAJ)
-      console.log('Envoie de la rencontre ! ' + JSON.stringify(rencontreMAJ));
+      console.log('Envoie de la rencontre ! ' + JSON.stringify(rencontreMAJ))
     } else {
       db.collection("rencontres").find({
         id: idRencontre
@@ -135,10 +135,10 @@ app.put("/api/rencontres/:id", upload.array(), function (req, res) {
             _id: rencontre._id
           }, rencontre)
           // Fermeture de la base de données
-          db.close();
+          db.close()
           // Retour de la ressource
           res.jsonp(rencontre);
-          console.log('Envoie de la rencontre ! ' + JSON.stringify(rencontre));
+          console.log('Envoie de la rencontre ! ' + JSON.stringify(rencontre))
         }
       })
     }
@@ -171,7 +171,7 @@ app.post("/api/rencontres", upload.array(), function (req, res) {
         .map(rencontre => rencontre.id)
         .toArray(function (err, ids) {
           let idCalcule = ids.reduce((max, id) => {
-            console.log("rencontre id/max: " + id + "/" + max);
+            console.log("rencontre id/max: " + id + "/" + max)
             return id > max ? id : max
           }, 0)
           // Calcul de l'identifiant de la nouvelle rencontre
@@ -182,15 +182,15 @@ app.post("/api/rencontres", upload.array(), function (req, res) {
           db.collection("rencontres")
             .insert(rencontre, function (err, result) {
               if (err) {
-                console.log("Chargement rencontres en erreur.");
-                res.sendStatus(500);
+                console.log("Chargement rencontres en erreur.")
+                res.sendStatus(500)
               } else {
                 const localisation = "/api/rencontres/" + rencontre.id
-                console.log("Rencontres chargées: " + localisation);
+                console.log("Rencontres chargées: " + localisation)
                 // Fermeture de la base de données
-                db.close();
+                db.close()
                 res.location(localisation)
-                  .sendStatus(201);
+                  .sendStatus(201)
               }
             })
         })
@@ -219,9 +219,9 @@ app.delete("/api/rencontres/:id", upload.array(), function (req, res) {
         id: idRencontre
       }, function (err, result) {
         if (err) {
-          console.log("Erreur: " + err);
+          console.log("Erreur: " + err)
         }
-        console.log("Résultat: " + result);
+        console.log("Résultat: " + result)
         // Calcul de la nouvelle liste
         db.collection("rencontres")
           .find()
@@ -229,7 +229,7 @@ app.delete("/api/rencontres/:id", upload.array(), function (req, res) {
             console.log("Nb rencontre dans la liste: " + rencontres.length)
           })
         // Fermeture de la base de données
-        db.close();
+        db.close()
         // Retour de la nouvelle liste de rencontres
         res.sendStatus(204)
       })
@@ -278,15 +278,15 @@ var rencontres = [{
 //**********************************************
 // Démarrage du serveur
 var serveur = app.listen(app.get('port'), function () {
-  console.log("Ecoute sur le port %d, à l'adresse http://localhost:80", serveur.address().port);
+  console.log("Ecoute sur le port %d, à l'adresse http://localhost:80", serveur.address().port)
 })
 // Chargement de socket.io
 var io = require('socket.io').listen(serveur);
 // Socket des abonnés au flux de publication des mesures de la sonde de température
-var socketAbonnes = Immutable.Map();
+var socketAbonnes = Immutable.Map()
 // Quand on client se connecte, on le note dans la console
 io.sockets.on('connect', function (socket) {
-  socket.emit('message', 'Vous êtes bien connecté au comité !');
+  socket.emit('message', 'Vous êtes bien connecté au comité !')
   // Quand la table de marque recoit une demande d'abonnement à un tableau de marque
   socket.on('ouvrirRencontre', function (idRencontre) {
     console.log('Abonnement à la recontre:' + idRencontre)
@@ -296,9 +296,9 @@ io.sockets.on('connect', function (socket) {
         rencontres.filter(function (rencontre) {
           return rencontre.id == idRencontre
         }).forEach(function (rencontre) {
-          socketAbonnes = socketAbonnes.set(socket, idRencontre);
-          console.log("Nouvel abonnement rencontre: " + rencontre.id);
-          console.log("Nombres abonnés: " + socketAbonnes.count());
+          socketAbonnes = socketAbonnes.set(socket, idRencontre)
+          console.log("Nouvel abonnement rencontre: " + rencontre.id)
+          console.log("Nombres abonnés: " + socketAbonnes.count())
         })
       } else {
         db.collection("rencontres").find().toArray(function (err, rencontres) {
@@ -308,9 +308,9 @@ io.sockets.on('connect', function (socket) {
             rencontres.filter(function (rencontre) {
               return rencontre.id == idRencontre
             }).forEach(function (rencontre) {
-              socketAbonnes = socketAbonnes.set(socket, idRencontre);
-              console.log("Nouvel abonnement rencontre: " + rencontre.id);
-              console.log("Nombres abonnés: " + socketAbonnes.count());
+              socketAbonnes = socketAbonnes.set(socket, idRencontre)
+              console.log("Nouvel abonnement rencontre: " + rencontre.id)
+              console.log("Nombres abonnés: " + socketAbonnes.count())
             })
           }
         })
@@ -327,8 +327,8 @@ io.sockets.on('connect', function (socket) {
           return rencontre.id == idRencontre
         }).forEach(function (rencontre) {
           socketAbonnes = socketAbonnes.delete(socket);
-          console.log("Fermeture abonnement rencontre: " + rencontre.id);
-          console.log("Nombres abonnés: " + socketAbonnes.count());
+          console.log("Fermeture abonnement rencontre: " + rencontre.id)
+          console.log("Nombres abonnés: " + socketAbonnes.count())
         })
       } else {
         db.collection("rencontres").find().toArray(function (err, rencontres) {
@@ -338,9 +338,9 @@ io.sockets.on('connect', function (socket) {
             rencontres.filter(function (rencontre) {
               return rencontre.id == idRencontre
             }).forEach(function (rencontre) {
-              socketAbonnes = socketAbonnes.delete(socket);
-              console.log("Fermeture abonnement rencontre: " + rencontre.id);
-              console.log("Nombres abonnés: " + socketAbonnes.count());
+              socketAbonnes = socketAbonnes.delete(socket)
+              console.log("Fermeture abonnement rencontre: " + rencontre.id)
+              console.log("Nombres abonnés: " + socketAbonnes.count())
             })
           }
         })
@@ -349,15 +349,15 @@ io.sockets.on('connect', function (socket) {
   });
   // Un panier est marqué
   socket.on('panierMarque', function (rencontre) {
-    console.log("Panier marqué !");
-    console.log("Nouvelle marque:" + JSON.stringify(rencontre));
-    console.log("Nb abonnés:" + socketAbonnes.count());
+    console.log("Panier marqué !")
+    console.log("Nouvelle marque:" + JSON.stringify(rencontre))
+    console.log("Nb abonnés:" + socketAbonnes.count())
     socketAbonnes.filter(function (idRencontre) {
       return idRencontre == rencontre.id
     }).forEach(function (idRencontre, soc) {
-      console.log("id: " + JSON.stringify(idRencontre));
-      soc.emit("nouvelleInfo", rencontre);
-      console.log("Envoie d'une nouvelle info sur la rencontre ! " + JSON.stringify(rencontre));
+      console.log("id: " + JSON.stringify(idRencontre))
+      soc.emit("nouvelleInfo", rencontre)
+      console.log("Envoie d'une nouvelle info sur la rencontre ! " + JSON.stringify(rencontre))
     })
     MongoClient.connect(url, function (err, db) {
       if (err) {
@@ -377,31 +377,47 @@ io.sockets.on('connect', function (socket) {
   })
   // Un commentaire est posté
   socket.on("nouveauCommentaire", function (commentaire) {
-    console.log("Nouveau commentaire !");
-    console.log("Commentaire:" + JSON.stringify(commentaire));
-    console.log("Id rencontre:" + commentaire.idRencontre);
+    console.log("Réception nouveau commentaire !")
+    console.log("Commentaire:" + JSON.stringify(commentaire))
+    console.log("Id rencontre:" + commentaire.idRencontre)
     // Recherche des abonnés à la rencontre
-    socketAbonnes.filter(function (idRencontre) {
-      return idRencontre == commentaire.idRencontre
-    }).forEach(function (idRencontre, soc) {
-      console.log("id: " + JSON.stringify(idRencontre));
-      soc.emit("nouveauCommentaire", commentaire.commentaire);
-      console.log(`Envoie du commentaire: ${commentaire.commentaire}`);
-    })
+    socketAbonnes.filter(idRencontre => {return idRencontre == commentaire.idRencontre})
+      .forEach((idRencontre, soc)=> {
+        // console.log("id: " + JSON.stringify(idRencontre))
+        soc.emit("nouveauCommentaire", commentaire.commentaire)
+        // console.log(`Envoie du commentaire: ${commentaire.commentaire}`)
+      })
     // Modification de la base de données
-    MongoClient.connect(url, function (err, db) {
+    MongoClient.connect(url, (err, db) => {
       if (err) {
         console.log("Base de données indisponible.")
-      } else {
-        console.log("Enregistrement de la rencontre.")
-        // db.collection("rencontres").update({
-        //   id: rencontre.id
-        // }, {
-        //     $set: {
-        //       "commentaires": rencontre.commentaires,
-        //     }
-        //   })
+        return
       }
-    })
+      db
+        .collection("rencontres")
+        .find({
+          id: commentaire.idRencontre
+        })
+        .each((err, rencontre) => {
+          if (err) return
+          if (!rencontre) return
+          console.log("Rencontre: " + JSON.stringify(rencontre))
+          let commentaires = Immutable
+            .fromJS(rencontre)
+            .update("commentaires", Immutable.List(), (commentaires) => {
+              return commentaires.push(commentaire.commentaire)
+            })
+          console.log(`Enregistrement du commentaire en base: ${commentaires}`)
+          db
+            .collection("rencontres")
+            .update({
+              id: 4
+            }, {
+              $set: {
+                "commentaires": commentaires.toArray()
+              }
+            })
+        })
+      })
   })
 })

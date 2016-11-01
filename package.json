@@ -17,6 +17,7 @@
     "gulp-sass": "^2.2.0",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
+    "gulp-watch": "^4.3.10",
     "http-proxy-middleware": "^0.17.1",
     "immutable": "^3.8.1",
     "install": "^0.4.4",

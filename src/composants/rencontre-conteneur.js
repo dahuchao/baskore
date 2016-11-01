@@ -79,13 +79,14 @@ let RencontreConteneur = React.createClass({
   sauver(infos) {
     let strInfo = JSON.stringify(infos)
     console.debug(`Rencontre cont(sauver): ${strInfo}`)
-    let rencontre = this.props.rencontre
-    rencontre.date = infos.date
-    console.debug(`rencontre.date: ${rencontre.date}`)
-    rencontre.periode = infos.periode
-    rencontre.hote.nom = infos.hote
-    rencontre.visiteur.nom = infos.visiteur
+    let rencontre = Immutable.fromJS(this.props.rencontre)
+      .set("date",infos.date)
+      .set("periode",infos.periode)
+      .set("hote.nom",infos.hote)
+      .set("visiteur.nom",infos.visiteur)
+    // rencontre.hote.nom = infos.hote
     var adresse = location.protocol + "//" + location.host + "/api/rencontres/" + this.props.rencontre.id
+    console.debug(`rencontre.date: ${rencontre.date}`)
     console.info("Requete de l'API web: " + adresse)
     request({ url: adresse, method: "PUT", json: rencontre }, function (error, response, rencontre) {
       if (!error && response.statusCode == 200) {
@@ -102,6 +103,11 @@ let RencontreConteneur = React.createClass({
       type: types.EDITER_RENCONTRE
     })
   },
+  surVerrouillage() {
+    store.dispatch({
+      type: types.VERROUILLAGE
+    })
+  },
   render() {
     // console.debug(`Nouvelle rencontre` + Immutable.fromJS(this.props.rencontre))
     return (
@@ -113,7 +119,9 @@ let RencontreConteneur = React.createClass({
           editer={this.editer}
           sauver={this.sauver}
           surNouveauCommentaire={this.surNouveauCommentaire}
-          modeEdition={this.props.modeEdition} />
+          modeEdition={this.props.modeEdition}
+          modeVerrouille={this.props.modeVerrouille}
+          surVerrouillage={this.surVerrouillage} />
     )
   }
 })
@@ -121,7 +129,8 @@ const mapStateToProps = function (store) {
   console.debug("Modification des propriétés.")
   return {
     rencontre: store.rencontreState.rencontre,
-    modeEdition: store.rencontreState.modeEdition
+    modeEdition: store.rencontreState.modeEdition,
+    modeVerrouille: store.rencontreState.modeVerrouille
   }
 }
 

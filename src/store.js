@@ -5,7 +5,8 @@ import Immutable from "immutable"
 const initState = {
     rencontres: [],
     modeEdition: false,
-    modeAjout: false
+    modeAjout: false,
+    modeVerrouille: true
 }
 
 function rencontreReducer(state = initState, action) {
@@ -15,6 +16,12 @@ function rencontreReducer(state = initState, action) {
         "DEFAUT": function () {
             return Immutable.fromJS(state)
         }
+    }
+    actions[types.VERROUILLAGE] = function () {
+        console.log("| verrouillage.")
+        return Immutable
+            .fromJS(state)
+            .set("modeVerrouille", !state.modeVerrouille)
     }
     actions[types.GET_RENCONTRES_SUCCESS] = function () {
         console.log("| rencontres: " + JSON.stringify(action.rencontres))
@@ -66,9 +73,16 @@ function rencontreReducer(state = initState, action) {
     }
     actions[types.PUT_RENCONTRE_SUCCESS] = function () {
         console.log("| rencontre: " + JSON.stringify(action.rencontre))
+        let rencontre = Immutable
+            .fromJS(state)
+            .get("rencontre")
+            .set("date",action.rencontre.date)
+            .set("periode",action.rencontre.periode)
+            .set("hote.nom",action.rencontre.hote.nom)
+            .set("visiteur.nom",action.rencontre.visiteur.nom)
         return Immutable
             .fromJS(state)
-            .set("rencontre", action.rencontre)
+            .set("rencontre", rencontre)
             .set("modeEdition", false)
     }
     actions[types.NOUVELLE_INFO] = function () {

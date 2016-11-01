@@ -37,15 +37,18 @@ export default React.createClass({
       <div id="tableau">
         <Equipe
           nom={this.props.rencontre.hote.nom}
-          surPanier={this.surPanierHote} />
+          surPanier={this.surPanierHote}
+          modeVerrouille={this.props.modeVerrouille} />
         <Marque
           rencontre={this.props.rencontre}
           surPeriode={this.props.surPeriode}
           surCorrectionHote={this.surCorrectionHote}
-          surCorrectionVisiteur={this.surCorrectionVisiteur} />
+          surCorrectionVisiteur={this.surCorrectionVisiteur}
+          modeVerrouille={this.props.modeVerrouille} />
         <Equipe
           nom={this.props.rencontre.visiteur.nom}
-          surPanier={this.surPanierVisiteur} />
+          surPanier={this.surPanierVisiteur}
+          modeVerrouille={this.props.modeVerrouille} />
       </div>
     )
   }

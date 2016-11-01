@@ -5,6 +5,7 @@ import {
   AppBar,
   Card,
   IconButton,
+  Toggle,
   CardText,
   TimePicker,
   TextField,
@@ -81,6 +82,10 @@ const Rencontre = React.createClass({
             <TextField floatingLabelText="Club Visiteur"
               defaultValue={this.props.rencontre.visiteur.nom}
               onChange={this.majVisiteur} />
+            <Toggle
+              defaultToggled={this.props.modeVerrouille} 
+              onToggle={this.props.surVerrouillage}
+              label="Verrouillé" />
           </CardText>
         </Card>
       </div>
@@ -104,10 +109,12 @@ const Rencontre = React.createClass({
           <Tableau
             rencontre={this.props.rencontre}
             surNouvelleMarque={this.props.surNouvelleMarque}
-            surPeriode={this.props.surPeriode} />
+            surPeriode={this.props.surPeriode}
+            modeVerrouille={this.props.modeVerrouille} />
           <Commentaires
             rencontre={this.props.rencontre}
-            surNouveauCommentaire={this.props.surNouveauCommentaire} />
+            surNouveauCommentaire={this.props.surNouveauCommentaire}
+            modeVerrouille={this.props.modeVerrouille} />
         </div>
       )
   }
