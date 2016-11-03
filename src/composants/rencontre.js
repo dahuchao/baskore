@@ -14,7 +14,7 @@ import {
 import NavigationArrowBack from "material-ui/svg-icons/navigation/arrow-back"
 import ModeEdit from "material-ui/svg-icons/editor/mode-edit"
 import Tableau from "./tableau"
-import Commentaires from "./commentaires.jsx"
+import Commentaires from "./commentaires"
 
 const Rencontre = React.createClass({
   getInitialState() {
