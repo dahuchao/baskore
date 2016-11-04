@@ -67,7 +67,7 @@ export default React.createClass({
                 : (<ListItem
                   key={id++}
                   primaryText={commentaire.commentaire}
-                  secondaryText="Enregistrement en cours"
+                  secondaryText="Enregistrement en cours..."
                   innerDivStyle={styleElement}/>)
               return element
             })

@@ -3,6 +3,7 @@ var exec = require("gulp-exec");
 var sass = require("gulp-sass");
 var browserify = require("browserify");
 var babelify = require("babelify");
+const babel = require('gulp-babel');
 var uglify = require('gulp-uglify');
 var source = require("vinyl-source-stream");
 var buffer = require('vinyl-buffer');
@@ -20,8 +21,11 @@ const watch = require('gulp-watch')
 gulp.task("test", function () {
   // watch(["test/**/*.js", "src/**/*.js"])
   // .pipe(gulp.src("test/Rencontres-spec.js"))   .pipe(jasmine())
-  watch(["Rencontres-spec.js"])
-    .pipe(gulp.src("test/Rencontres-spec.js"))
+  // watch(["immutable.test.1.js"])
+  gulp.src("test/immutable.test.1.js")
+    .pipe(babel({
+      presets: ['es2015']
+    }))
     .pipe(jasmine())
 })
 
@@ -30,19 +34,19 @@ gulp.task("styles", function () {
     .src("sass/**/*.scss")
     .pipe(sass().on("error", sass.logError))
     .pipe(gulp.dest("public/"))
-    .pipe(reload({stream: true}));
+    .pipe(reload({ stream: true }));
 });
 
 // Convertit es6 en es5 et assemble les morceaux
 gulp.task("fabrique", function () {
-  browserify({entries: "src/app.js", debug: true})
+  browserify({ entries: "src/app.js", debug: true })
     .transform(babelify)
     .on("error", gutil.log)
     .bundle()
     .on("error", gutil.log)
     .pipe(source("app.js"))
     .pipe(gulp.dest("public"))
-    .pipe(reload({stream: true}));
+    .pipe(reload({ stream: true }));
 });
 
 // Convertit es6 en es5 et assemble les morceaux
@@ -74,7 +78,7 @@ gulp.task("dev", [
   // configure proxy middleware context: "/" will proxy all requests     use:
   // "/api" to proxy request when path starts with "/api"
   var proxies = [];
-  proxies.push(proxyMiddleware(["/api/**"], {target: "http://localhost"}));
+  proxies.push(proxyMiddleware(["/api/**"], { target: "http://localhost" }));
   proxies.push(proxyMiddleware("/socket.io/**", {
     target: "http://localhost",
     ws: true
@@ -98,7 +102,7 @@ gulp.task("styler", ["styles"], function () {
   // configure proxy middleware context: "/" will proxy all requests     use:
   // "/api" to proxy request when path starts with "/api"
   var proxies = [];
-  proxies.push(proxyMiddleware(["/api/**"], {target: "http://localhost"}));
+  proxies.push(proxyMiddleware(["/api/**"], { target: "http://localhost" }));
   proxies.push(proxyMiddleware("/socket.io/**", {
     target: "http://localhost",
     ws: true
@@ -115,9 +119,7 @@ gulp.task("styler", ["styles"], function () {
 });
 
 // Tache de démarrage du serveur
-gulp.task("start", [
-  "compression", "styles"
-], function () {
+gulp.task("start", function () {
   console.log("Lancement du serveur");
   server.run(["serveur.js"]);
 });
