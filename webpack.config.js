@@ -1,4 +1,5 @@
 var path = require('path');
+var nodeExternals = require('webpack-node-externals');
 
 module.exports = {
   entry: './src/app.js',
@@ -7,6 +8,8 @@ module.exports = {
     filename: 'app.js'
   },
   devtool: 'inline-source-map',
+  target: 'node', // in order to ignore built-in modules like path, fs, etc. 
+  externals: [nodeExternals()], 
   module: {
     loaders: [
       {
