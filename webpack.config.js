@@ -1,6 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
-var loaders = require('./webpack.loaders');
+var loaders = require('./conf/webpack.loaders');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 // global css
