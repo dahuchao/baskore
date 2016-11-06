@@ -1,15 +1,10 @@
 var gulp = require("gulp");
 var exec = require("gulp-exec");
 var sass = require("gulp-sass");
-var browserify = require("browserify");
-var babelify = require("babelify");
-const babel = require('gulp-babel');
 var uglify = require('gulp-uglify');
 var source = require("vinyl-source-stream");
 var buffer = require('vinyl-buffer');
 var gutil = require("gulp-util");
-var browserSync = require("browser-sync").create();
-var reload = browserSync.reload;
 var server = require("gulp-express");
 var MongoClient = require("mongodb").MongoClient;
 var assert = require("assert");
@@ -18,46 +13,12 @@ var jasmine = require("gulp-jasmine");
 var proxyMiddleware = require("http-proxy-middleware");
 const watch = require('gulp-watch')
 
-gulp.task("test", function () {
-  // watch(["test/**/*.js", "src/**/*.js"])
-  // .pipe(gulp.src("test/Rencontres-spec.js"))   .pipe(jasmine())
-  // watch(["immutable.test.1.js"])
-  gulp.src("test/immutable.test.1.js")
-    .pipe(babel({
-      presets: ['es2015']
-    }))
-    .pipe(jasmine())
-})
-
 gulp.task("styles", function () {
   gulp
     .src("sass/**/*.scss")
     .pipe(sass().on("error", sass.logError))
     .pipe(gulp.dest("public/"))
     .pipe(reload({ stream: true }));
-});
-
-// Convertit es6 en es5 et assemble les morceaux
-gulp.task("fabrique", function () {
-  browserify({ entries: "src/app.js", debug: true })
-    .transform(babelify)
-    .on("error", gutil.log)
-    .bundle()
-    .on("error", gutil.log)
-    .pipe(source("app.js"))
-    .pipe(gulp.dest("public"))
-    .pipe(reload({ stream: true }));
-});
-
-// Convertit es6 en es5 et assemble les morceaux
-gulp.task("compression", function () {
-  browserify("src/app.js")
-    .transform(babelify)
-    .bundle()
-    .pipe(source("app.js"))
-    .pipe(buffer())
-    .pipe(uglify())
-    .pipe(gulp.dest("public"))
 });
 
 // Convertit es6 en es5 et assemble les morceaux
@@ -69,32 +30,6 @@ gulp.task("charger", function () {
     console.log(stderr);
     cb(err);
   });
-});
-
-// Refabrique automatiquement sur tout Chargement des sources
-gulp.task("dev", [
-  "fabrique", "styles"
-], function () {
-  // configure proxy middleware context: "/" will proxy all requests     use:
-  // "/api" to proxy request when path starts with "/api"
-  var proxies = [];
-  proxies.push(proxyMiddleware(["/api/**"], { target: "http://localhost" }));
-  proxies.push(proxyMiddleware("/socket.io/**", {
-    target: "http://localhost",
-    ws: true
-  }));
-  browserSync.init({
-    server: {
-      baseDir: "public/",
-      middleware: proxies
-    }
-  });
-  gulp.watch([
-    "*.html", "src/**/*.js"
-  ], ["fabrique"])
-  gulp.watch("sass/**/*.scss", ["styles"])
-  // gulp.watch("public/**/*").on("change", browserSync.reload);
-  server.run(["serveur.js"]);
 });
 
 // Refabrique automatiquement sur tout Chargement des sources
@@ -124,12 +59,6 @@ gulp.task("start", function () {
   server.run(["serveur.js"]);
 });
 
-// Tache pour controler l'execution de gulp dans Atom
-gulp.task("stop", function () {
-  //server.stop()
-  browserSync.exit();
-});
-
 // Tache pour tester la bonne connexion à la base de données
 gulp.task("essai", function () {
   console.log("Lancement de l'utilitaire: ")
@@ -145,4 +74,4 @@ gulp.task("essai", function () {
   })
 });
 
-gulp.task("default", ["dev"]);
+gulp.task("default");

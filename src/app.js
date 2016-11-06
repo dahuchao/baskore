@@ -1,12 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
-import store from './store'
-import Routeur from './router'
-import injectTapEventPlugin from 'react-tap-event-plugin'
-injectTapEventPlugin();
+// import "../sass/theme.scss"
+
+class App extends React.Component {
+  render() {
+    return (
+      <div>
+        <h1>Ca marche!</h1>
+        <p>test.</p>
+      </div>
+    )
+  }
+}
 
 ReactDOM.render(
-  <Provider store={store}>{Routeur}</Provider>,
-  document.getElementById("content")
-)
+  <App/>, document.getElementById("content"))
