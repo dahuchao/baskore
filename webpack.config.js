@@ -5,33 +5,30 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 // global css
 loaders.push({
-	test: /\.css$/,
-	exclude: /[\/\\]src[\/\\]/,
-	loaders: [
-		'style?sourceMap',
-		'css'
-	]
+  test: /\.css$/,
+  exclude: /[\/\\]src[\/\\]/,
+  loaders: ['style?sourceMap', 'css']
 });
 // local scss modules
 loaders.push({
-	test: /\.scss$/,
-	exclude: /[\/\\](node_modules|public)[\/\\]/,
-	loaders: [
-		'style?sourceMap',
-		'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
-		'postcss',
-		'sass'
-	]
+  test: /\.scss$/,
+  exclude: /[\/\\](node_modules|public)[\/\\]/,
+  loaders: [
+    'style?sourceMap', 'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base' +
+        '64:5]',
+    'postcss',
+    'sass'
+  ]
 });
 
 // local css modules
 loaders.push({
-	test: /\.css$/,
-	exclude: /[\/\\](node_modules|bower_components|public)[\/\\]/,
-	loaders: [
-		'style?sourceMap',
-		'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]'
-	]
+  test: /\.css$/,
+  exclude: /[\/\\](node_modules|bower_components|public)[\/\\]/,
+  loaders: [
+    'style?sourceMap', 'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base' +
+        '64:5]'
+  ]
 });
 
 module.exports = {
@@ -40,13 +37,20 @@ module.exports = {
     path: path.join(__dirname, 'public'),
     filename: "app.js"
   },
-	resolve: {
-		extensions: ['', '.js', '.jsx']
-	},
+  resolve: {
+    extensions: ['', '.js', '.jsx']
+  },
   devtool: "inline-source-map",
   module: {
     loaders
   },
+  // externals: [{
+  //   // don't bundle the 'react' npm package with our bundle.js but get it from a
+  //   // global 'React' variable
+  //   'react': 'React'
+  // },{
+  //   'Immutable': 'Immutable'
+  // }],
   devServer: {
     contentBase: "./public",
     // do not print bundle build stats
@@ -60,9 +64,9 @@ module.exports = {
     port: "8888",
     host: "127.0.0.1"
   },
-	plugins: [
-		new webpack.NoErrorsPlugin(),
-		new webpack.HotModuleReplacementPlugin(),
-		// new HtmlWebpackPlugin(),
-	]
+  plugins: [
+    new webpack.NoErrorsPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    // new HtmlWebpackPlugin(),
+  ]
 }

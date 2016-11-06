@@ -1,0 +1,4 @@
+--colors
+--watch
+--webpack-config conf/webpack.config-test.js
+test/**/*.spec.js

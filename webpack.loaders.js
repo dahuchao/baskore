@@ -2,6 +2,13 @@ var path = require('path');
 
 module.exports = [
 	{
+		test: /\.js?$/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015']
+        }
+	},
+	{
 		test: /\.jsx?$/,
 		exclude: /(node_modules|bower_components|public)/,
         loader: 'babel-loader',
@@ -16,6 +23,11 @@ module.exports = [
         query: {
           presets: ['es2015', 'react']
         }
+	},
+	{
+		test: /\.json?$/,
+		// exclude: /(node_modules)/,
+        loader: 'json',
 	},
 	{
 		test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,

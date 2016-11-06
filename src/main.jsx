@@ -1,7 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Accueil from "./composants/accueil-conteneur"
 // import "../sass/theme.scss"
+
+// import { Provider } from 'react-redux'
+// import store from './store'
+// import Routeur from './router'
+// import injectTapEventPlugin from 'react-tap-event-plugin'
+// injectTapEventPlugin();
 
 class App extends React.Component {
     render() {
@@ -15,4 +20,4 @@ class App extends React.Component {
 }
 
 ReactDOM.render(
-    <Accueil/>, document.getElementById("content"))
+    <App/>, document.getElementById("content"))
