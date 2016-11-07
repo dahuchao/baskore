@@ -4,11 +4,11 @@ let assert = chai.assert
 let expect = chai.expect
 chai.should()
 
-describe("Vrai2", function () {
-    it("doit etre vrai", function () {
+describe("Tests avec mocha-chai", function () {
+    it("La vérité véritable", function () {
         assert.equal(true, true)
     })
-    it("doit etre une chaine", function () {
+    it("Test d'une chaine de caractère", function () {
         let vrai = "vraie"
         vrai
             .should

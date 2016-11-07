@@ -3,46 +3,52 @@ var path = require('path');
 var loaders = require('./conf/webpack.loaders');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
-// global css
-loaders.push({
-  test: /\.css$/,
-  exclude: /[\/\\]src[\/\\]/,
-  loaders: ['style?sourceMap', 'css']
-});
-// local scss modules
-loaders.push({
-  test: /\.scss$/,
-  exclude: /[\/\\](node_modules|public)[\/\\]/,
-  loaders: [
-    'style?sourceMap', 'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base' +
-        '64:5]',
-    'postcss',
-    'sass'
-  ]
-});
+// // global css
+// loaders.push({
+//   test: /\.css$/,
+//   exclude: /[\/\\]src[\/\\]/,
+//   loaders: ['style?sourceMap', 'css']
+// });
+// // local scss modules
+// loaders.push({
+//   test: /\.scss$/,
+//   exclude: /[\/\\](node_modules|public)[\/\\]/,
+//   loaders: [
+//     'style?sourceMap', 'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base' +
+//     '64:5]',
+//     'postcss',
+//     'sass'
+//   ]
+// });
 
-// local css modules
-loaders.push({
-  test: /\.css$/,
-  exclude: /[\/\\](node_modules|bower_components|public)[\/\\]/,
-  loaders: [
-    'style?sourceMap', 'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base' +
-        '64:5]'
-  ]
-});
+// // local css modules
+// loaders.push({
+//   test: /\.css$/,
+//   exclude: /[\/\\](node_modules|bower_components|public)[\/\\]/,
+//   loaders: [
+//     'style?sourceMap', 'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base' +
+//     '64:5]'
+//   ]
+// });
 
 module.exports = {
-  entry: './src/main.jsx',
+  entry: './src/main.js',
   output: {
     path: path.join(__dirname, 'public'),
     filename: "app.js"
   },
-  resolve: {
-    extensions: ['', '.js', '.jsx']
-  },
-  devtool: "inline-source-map",
+  // resolve: {
+  //   extensions: ['', '.js', '.jsx']
+  // },
+  devtool: "cheap-module-eval-source-map",
   module: {
-    loaders
+    loaders: [
+      {
+        test: /\.js$/,
+        loaders: ['babel'],
+        exclude: /node_modules/
+      }
+    ]
   },
   // externals: [{
   //   // don't bundle the 'react' npm package with our bundle.js but get it from a

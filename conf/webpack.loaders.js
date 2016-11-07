@@ -3,31 +3,32 @@ var path = require('path');
 module.exports = [
 	{
 		test: /\.js?$/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015']
-        }
+		loader: 'babel-loader',
+		exclude: /(node_modules|bower_components|public)/,
+		query: {
+			presets: ['react', 'es2015']
+		}
 	},
 	{
 		test: /\.jsx?$/,
 		exclude: /(node_modules|bower_components|public)/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015', 'react']
-        }
+		loader: 'babel-loader',
+		query: {
+			presets: ['react', 'es2015']
+		}
 	},
 	{
-        test: path.join(__dirname, 'src'),
+		test: path.join(__dirname, 'src'),
 		exclude: /(node_modules|bower_components|public)/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015', 'react']
-        }
+		loader: 'babel-loader',
+		query: {
+			presets: ['react', 'es2015']
+		}
 	},
 	{
 		test: /\.json?$/,
 		// exclude: /(node_modules)/,
-        loader: 'json',
+		loader: 'json',
 	},
 	{
 		test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,

@@ -7,7 +7,7 @@ let expect = chai.expect
 let should = chai.should()
 
 describe("Etant donné que le Store est créé", () => {
-    it("alors l'état doit être initialise", () => {
+    it("Alors l'état doit être initialisé", () => {
         let etat = store
             .getState()
             .rencontreState
