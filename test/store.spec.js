@@ -6,14 +6,14 @@ let assert = chai.assert
 let expect = chai.expect
 let should = chai.should()
 
-describe("Etant donné que le Store créé", () => {
+describe("Etant donné que le Store est créé", () => {
     it("alors l'état doit être initialise", () => {
         let etat = store
             .getState()
             .rencontreState
         assert.isNotNull(etat, "L'état n'est pas bien initialisé")
     })
-    it("alors la liste des rencontres est vide", () => {
+    it("Alors la liste des rencontres est vide", () => {
         let rencontres = store
             .getState()
             .rencontreState
@@ -29,7 +29,7 @@ describe("Etant donné que le Store créé", () => {
         before(() => {
             store.dispatch({type: types.AJOUTER_RENCONTRE})
         })
-        it("alors le mode ajout doit être actif", () => {
+        it("Alors le mode ajout doit être actif", () => {
             let etat = store
                 .getState()
                 .rencontreState
@@ -54,7 +54,7 @@ describe("Etant donné que le Store créé", () => {
                     }
                 })
             })
-            it("alors le nombre de rencontre est de 1", () => {
+            it("Alors le nombre de rencontre est de 1", () => {
                 let etat = store
                     .getState()
                     .rencontreState
@@ -64,7 +64,7 @@ describe("Etant donné que le Store créé", () => {
                     .have
                     .lengthOf(1)
             })
-            it("alors le mode ajout est désactivé", () => {
+            it("Alors le mode ajout est désactivé", () => {
                 let etat = store
                     .getState()
                     .rencontreState

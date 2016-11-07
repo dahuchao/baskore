@@ -52,7 +52,7 @@
 	var testsContext = __webpack_require__(1);
 
 	function inManifest(path) {
-	  return __webpackManifest__.indexOf(path) >= 0;
+	    return __webpackManifest__.indexOf(path) >= 0;
 	}
 
 	var runnable = testsContext.keys().filter(inManifest);
@@ -166,12 +166,12 @@
 	var expect = _chai2.default.expect;
 	var should = _chai2.default.should();
 
-	describe("Etant donné que le Store créé", function () {
+	describe("Etant donné que le Store est créé", function () {
 	    it("alors l'état doit être initialise", function () {
 	        var etat = _store2.default.getState().rencontreState;
 	        assert.isNotNull(etat, "L'état n'est pas bien initialisé");
 	    });
-	    it("alors la liste des rencontres est vide", function () {
+	    it("Alors la liste des rencontres est vide", function () {
 	        var rencontres = _store2.default.getState().rencontreState.rencontres;
 	        assert.isNotNull(rencontres, "L'état n'est pas bien initialisé");
 	        expect(rencontres).to.be.empty;
@@ -181,7 +181,7 @@
 	        before(function () {
 	            _store2.default.dispatch({ type: types.AJOUTER_RENCONTRE });
 	        });
-	        it("alors le mode ajout doit être actif", function () {
+	        it("Alors le mode ajout doit être actif", function () {
 	            var etat = _store2.default.getState().rencontreState;
 	            console.log("*****" + etat);
 	            should.exist(etat.modeAjout);
@@ -204,11 +204,11 @@
 	                    }
 	                });
 	            });
-	            it("alors le nombre de rencontre est de 1", function () {
+	            it("Alors le nombre de rencontre est de 1", function () {
 	                var etat = _store2.default.getState().rencontreState;
 	                etat.rencontres.should.have.lengthOf(1);
 	            });
-	            it("alors le mode ajout est désactivé", function () {
+	            it("Alors le mode ajout est désactivé", function () {
 	                var etat = _store2.default.getState().rencontreState;
 	                etat.modeAjout.should.to.be.false;
 	            });

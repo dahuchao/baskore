@@ -29,3 +29,5 @@ Cette application est un pretexte (POC) pour la mise en oeuvre des technologies 
 * Expressjs (API REST) : http://expressjs.com
 * Socket.io (WebSocket) : http://socket.io
 * Mongodb (NOSQL) : https://mongodb.github.io/node-mongodb-native
+* Webpack (compilation, minification) : https://webpack.github.io/docs/
+* Karma-Mocha-Chai (BDD)
