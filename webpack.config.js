@@ -32,7 +32,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 // });
 
 module.exports = {
-  entry: './src/main.js',
+  entry: './src/app.js',
   output: {
     path: path.join(__dirname, 'public'),
     filename: "app.js"
@@ -42,21 +42,15 @@ module.exports = {
   // },
   devtool: "cheap-module-eval-source-map",
   module: {
-    loaders: [
-      {
-        test: /\.js$/,
-        loaders: ['babel'],
-        exclude: /node_modules/
-      }
-    ]
+    loaders
+    // loaders: [
+    //   {
+    //     test: /\.js$/,
+    //     loaders: ['babel'],
+    //     exclude: /node_modules/
+    //   }
+    // ]
   },
-  // externals: [{
-  //   // don't bundle the 'react' npm package with our bundle.js but get it from a
-  //   // global 'React' variable
-  //   'react': 'React'
-  // },{
-  //   'Immutable': 'Immutable'
-  // }],
   devServer: {
     contentBase: "./public",
     // do not print bundle build stats
@@ -74,5 +68,11 @@ module.exports = {
     new webpack.NoErrorsPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     // new HtmlWebpackPlugin(),
-  ]
+  ],
+  node: {
+    // console: 'empty',
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty'
+  }
 }
