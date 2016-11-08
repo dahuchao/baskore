@@ -8,19 +8,54 @@ var multer = require("multer")
 var upload = multer()
 var ObjectId = require("mongodb").ObjectID
 
+const path = require('path')
+const webpack = require('webpack')
+const webpackMiddleware = require('webpack-dev-middleware')
+const webpackHotMiddleware = require('webpack-hot-middleware')
+const config = require('./webpack.config.js')
+
+
 // Codec base 64 var base64 = require('base-64') Création de l'application
 // express
 var app = express()
-app.use(cors({allowedOrigins: ['localhost:3000']}))
+app.use(cors({ allowedOrigins: ['localhost:3000'] }))
 app.use(bodyParser.json()) // for parsing application/json
-app.use(bodyParser.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 // Définition du port d'écoute
 app.set('port', (process.env.PORT || 80))
-// Répertoire des pages du site web
-var repertoireSite = "./public"
-console.log('Ouverture du répertoire des pages du site web : %s', repertoireSite)
-// Répertoire racine
-app.use('/', express.static(repertoireSite))
+
+
+let isDeveloping = process.env.NODE_ENV !== 'production'
+isDeveloping = true
+if (isDeveloping) {
+  const compiler = webpack(config)
+  const middleware = webpackMiddleware(compiler, {
+    publicPath: config.output.publicPath,
+    contentBase: 'src',
+    stats: {
+      colors: true,
+      hash: false,
+      timings: true,
+      chunks: false,
+      chunkModules: false,
+      modules: false
+    }
+  })
+  app.use(middleware);
+  app.use(webpackHotMiddleware(compiler))
+  app.get('*', function response(req, res) {
+    res.write(middleware.fileSystem.readFileSync(path.join(".", '/public/index.html')));
+    res.end()
+  })
+} else {
+  // Répertoire des pages du site web
+  var repertoireSite = "./public"
+  console.log('Ouverture du répertoire des pages du site web : %s', repertoireSite)
+  // Répertoire racine
+  app.use('/', express.static(repertoireSite))
+}
+
+
 
 // ********************************************** Connection à la base de
 // données vars urlParDefaut = "mongodb://dahu:azerty@localhost:27017/baskoredb"
@@ -81,7 +116,7 @@ app.get("/api/rencontres/:id", function (req, res) {
     } else {
       db
         .collection("rencontres")
-        .find({id: idRencontre})
+        .find({ id: idRencontre })
         .each(function (err, rencontre) {
           if (err) {
             console.log("Erreur: " + err)
@@ -122,7 +157,7 @@ app.put("/api/rencontres/:id", upload.array(), function (req, res) {
     } else {
       db
         .collection("rencontres")
-        .find({id: idRencontre})
+        .find({ id: idRencontre })
         .each(function (err, rencontre) {
           if (err) {
             console.log("Erreur: " + err)
@@ -420,8 +455,8 @@ io
       // Recherche des abonnés à la rencontre
       socketAbonnes
         .filter(idRencontre => {
-        return idRencontre == commentaire.idRencontre
-      })
+          return idRencontre == commentaire.idRencontre
+        })
         .forEach((idRencontre, soc) => {
           // console.log("id: " + JSON.stringify(idRencontre))
           soc.emit("nouveauCommentaire", commentaire.commentaire)
@@ -435,11 +470,11 @@ io
         }
         db
           .collection("rencontres")
-          .find({id: idRencontre})
+          .find({ id: idRencontre })
           .each((err, rencontre) => {
-            if (err) 
+            if (err)
               return
-            if (!rencontre) 
+            if (!rencontre)
               return
             console.log("Rencontre: " + JSON.stringify(rencontre))
             let commentaires = Immutable
