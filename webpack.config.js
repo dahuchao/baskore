@@ -32,15 +32,19 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 // });
 
 module.exports = {
-  entry: './src/app.js',
+  entry: [
+    // 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
+    './src/app.js'
+  ],
   output: {
-    path: path.join(__dirname, 'public'),
-    filename: "app.js"
+    path: path.join(__dirname, '/public'),
+    publicPath: '/',
+    filename: 'app.js'
   },
   // resolve: {
   //   extensions: ['', '.js', '.jsx']
   // },
-  devtool: "cheap-module-eval-source-map",
+  devtool: "inline-source-map",
   module: {
     loaders
     // loaders: [
@@ -61,12 +65,12 @@ module.exports = {
     inline: true,
     // serve index.html in place of 404 responses to allow HTML5 history
     historyApiFallback: true,
-    port: "8888",
-    host: "127.0.0.1"
+    // port: "8888",
+    // host: "127.0.0.1"
   },
   plugins: [
     new webpack.NoErrorsPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
+    // new webpack.HotModuleReplacementPlugin(),
     // new HtmlWebpackPlugin(),
   ],
   node: {

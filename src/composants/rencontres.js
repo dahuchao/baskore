@@ -68,28 +68,6 @@ const Rencontres = React.createClass({
           </div>
         </AppBar>
         <Card>
-          <List id="rencontres" >
-            {this.props.rencontres.map(rencontre => {
-              let strdate = this.preparationDate(rencontre.date)
-              return (
-                <ListItem
-                  key={rencontre.id}
-                  primaryText={rencontre.hote.nom + '-' + rencontre.visiteur.nom}
-                  secondaryText={strdate}
-                  onTouchTap={this.zoom.bind(this, rencontre.id)}
-                  rightIconButton={
-                    <IconButton
-                      style={poubelle.style}
-                      iconStyle={poubelle.icon}
-                      onClick={this.props.supprimeRencontre.bind(null, rencontre.id)}>
-                      <ActionDelete />
-                    </IconButton>}
-                  >
-                  <Link to={"/rencontres/" + rencontre.id} />
-                </ListItem>
-              )
-            })}
-          </List>
         </Card>
       </div>
     )
