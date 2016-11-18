@@ -31,19 +31,15 @@ function rencontreReducer(state = initState, action) {
     }
     actions[types.GET_RENCONTRE_SUCCESS] = function () {
         console.log("| rencontre: " + JSON.stringify(action.rencontre))
-        let commentaires = Immutable
-            .List()
-            .push({commentaire: "Morgane entre sur le terrain à la place de Jacqueline", valide: true})
-            .push({commentaire: "Panier magnifique de Tifanie", valide: true})
-            .push({commentaire: "Les visiteurs dominent la partie", valide: true})
-            .push({commentaire: "Dans la raquette les interieurs dominent sans partage", valide: true})
-            .push({commentaire: "Superbe action des Nantaises qui malheureusement ne donnera rien", valide: true})
-        let rencontreAvecCommentaire = Immutable
-            .fromJS(action.rencontre)
-            .set("commentaires", commentaires)
-        return Immutable
-            .fromJS(state)
-            .set("rencontre", rencontreAvecCommentaire)
+        let commentaires = Immutable.List()
+        action
+            .rencontre
+            .commentaires
+            .map(nouvCommentaire => {
+                commentaires = commentaires.push({commentaire: nouvCommentaire, valide: true})
+            })
+        let rencontreAvecCommentaire = Immutable.fromJS(action.rencontre).set("commentaires", commentaires)
+        return Immutable.fromJS(state).set("rencontre", rencontreAvecCommentaire)
     }
     actions[types.POST_RENCONTRE_SUCCESS] = function () {
         console.log("| rencontre (nouvelle): " + JSON.stringify(action.rencontre))

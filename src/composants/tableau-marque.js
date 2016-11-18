@@ -43,7 +43,11 @@ export default class Marque extends React.Component {
                 style={stylePeriode}
                 labelStyle={styleLabelPeriode}
                 key={periode}
-                onClick={this.surPeriode.bind(this, periode)}
+                onClick={
+                    !this.props.modeVerrouille
+                    ? this.surPeriode.bind(this, periode)
+                    : null
+                  }
                 label={"P" + periode}
                 />
             )
@@ -55,14 +59,22 @@ export default class Marque extends React.Component {
             className="hote"
             style={style}
             labelStyle={labelStyle}
-            onClick={this.props.surCorrectionHote}
+            onClick={
+                !this.props.modeVerrouille
+                ? this.props.surCorrectionHote
+                : null
+              }
             label={this.props.rencontre.hote.marque.toString()}
             />
           <FlatButton
             className="visiteur"
             style={style}
             labelStyle={labelStyle}
-            onClick={this.props.surCorrectionVisiteur}
+            onClick={
+                !this.props.modeVerrouille
+                ? this.props.surCorrectionVisiteur
+                : null
+              }
             label={this.props.rencontre.visiteur.marque.toString()}
             />
         </div>

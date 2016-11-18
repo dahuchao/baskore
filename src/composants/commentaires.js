@@ -23,6 +23,7 @@ export default React.createClass({
     this
       .props
       .surNouveauCommentaire(this.state.commentaire)
+    this.setState({commentaire: null})
   },
   render() {
     console.debug(`Commentaires: ` + Immutable.List(this.props.rencontre.commentaires).toJSON())
@@ -42,15 +43,15 @@ export default React.createClass({
         {this.props.modeVerrouille
           ? null
           : <div style={styleFlex}>
-            <TextField
-              hintText="Ajouter un commentaire"
-              multiLine={true}
-              rowsMax={2}
-              fullWidth={true}
-              maxLength="140"
-              onChange={this.nouveauC}/>
-            <FlatButton onClick={this.surNouveauCommentaire} icon={< Done />}/>
-          </div>
+              <TextField
+                hintText="Ajouter un commentaire"
+                multiLine={true}
+                rowsMax={2}
+                fullWidth={true}
+                maxLength="140"
+                onChange={this.nouveauC}/>
+              <FlatButton onClick={this.surNouveauCommentaire} icon={< Done />}/>
+            </div>
 }
         <List style={{
           padding: "0px"
