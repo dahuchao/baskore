@@ -76,6 +76,22 @@ let RencontreConteneur = React.createClass({
       periode: periode
     })
   },
+  surChangementHote(sor,ent) {
+    console.debug(`Changement hote ${sor} par ${ent}`)
+    store.dispatch({
+      type: types.CHANGEMENT_HOTE,
+      sortant: sor,
+      entrant:ent
+    })
+  },
+  surChangementVisiteur(sor,ent) {
+    console.debug(`Changement visiteur ${sor} par ${ent}`)
+    store.dispatch({
+      type: types.CHANGEMENT_VISITEUR,
+      sortant: sor,
+      entrant:ent
+    })
+  },
   sauver(infos) {
     let strInfo = JSON.stringify(infos)
     console.debug(`Rencontre cont(sauver): ${strInfo}`)
@@ -116,6 +132,8 @@ let RencontreConteneur = React.createClass({
           rencontre={this.props.rencontre}
           surNouvelleMarque={this.surNouvelleMarque}
           surPeriode={this.surPeriode}
+          surChangementHote={this.surChangementHote}
+          surChangementVisiteur={this.surChangementVisiteur}
           editer={this.editer}
           sauver={this.sauver}
           surNouveauCommentaire={this.surNouveauCommentaire}

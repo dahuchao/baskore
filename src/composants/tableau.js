@@ -37,7 +37,9 @@ export default React.createClass({
       <div id="tableau">
         <Equipe
           nom={this.props.rencontre.hote.nom}
+          joueuses={this.props.rencontre.hote.joueuses}
           surPanier={this.surPanierHote}
+          surChangement={this.props.surChangementHote}
           modeVerrouille={this.props.modeVerrouille} />
         <Marque
           rencontre={this.props.rencontre}
@@ -47,7 +49,9 @@ export default React.createClass({
           modeVerrouille={this.props.modeVerrouille} />
         <Equipe
           nom={this.props.rencontre.visiteur.nom}
+          joueuses={this.props.rencontre.visiteur.joueuses}
           surPanier={this.surPanierVisiteur}
+          surChangement={this.props.surChangementVisiteur}
           modeVerrouille={this.props.modeVerrouille} />
       </div>
     )
