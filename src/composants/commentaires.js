@@ -44,7 +44,7 @@ export default React.createClass({
           : <div style={styleFlex}>
             <TextField
               hintText="Ajouter un commentaire"
-              multiLine={true}
+              multiLine={false}
               rowsMax={2}
               fullWidth={true}
               maxLength="140"
