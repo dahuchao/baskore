@@ -1,64 +1,21 @@
 import React from "react"
 import action$ from "../repartiteur"
+import etat$ from "./rencontres-repartiteur"
 import Immutable from "immutable"
 import * as types from "../actions/actions-types"
 import request from "request"
 import Rencontres from "./rencontres"
 import RencontreAjout from "./rencontres-ajout"
 
-const init = {
-  rencontres: [],
-  modeAjout: false
-}
-
-const etat$ = action$.scan((etat, action) => {
-  console.log("##############################")
-  console.log("| ACTION: " + JSON.stringify(action.type))
-  let actions = {
-    "DEFAUT": function () {
-      return Immutable.fromJS(etat)
-    }
-  }
-  actions[types.GET_RENCONTRES_SUCCESS] = function () {
-    console.log("| rencontres: " + JSON.stringify(action.rencontres))
-    return Immutable
-      .fromJS(etat)
-      .set("rencontres", action.rencontres)
-  }
-  actions[types.AJOUTER_RENCONTRE] = function () {
-    let rencontre = {
-      id: 0,
-      date: new Date(),
-      hote: {
-        nom: "",
-        marque: 0
-      },
-      visiteur: {
-        nom: "",
-        marque: 0
-      }
-    }
-    console.log("| Mode ajout: " + JSON.stringify(etat.modeAjout))
-    return Immutable
-      .fromJS(etat)
-      .set("rencontre", rencontre)
-      .set("modeAjout", !etat.modeAjout)
-  }
-  actions[types.ANNULER_RENCONTRE] = function () {
-    console.log("| Annulation de l'ajout d'une rencontre.")
-    return Immutable
-      .fromJS(etat)
-      .set("modeAjout", !etat.modeAjout)
-  }
-  let etatNouveau = (actions[action.type] || actions['DEFAUT'])();
-  console.log("Nouvel état: " + etatNouveau)
-  console.log("-------------------")
-  return etatNouveau.toJS()
-}, init)
-
 export default class RencontresConteneur extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      rencontres: [],
+      modeAjout: false
+    }
+  }
   componentWillMount() {
-    etat$.subscribe(etat => this.setState(etat))
     var adresse = location.protocol + "//" + location.host + "/api/rencontres"
     console.info("Requete de l'API web: " + adresse)
     request(adresse, function (error, response, rencontres) {
@@ -70,6 +27,9 @@ export default class RencontresConteneur extends React.Component {
         })
       }
     })
+  }
+  componentDidMount() {
+    etat$.subscribe(etat => this.setState(etat))
   }
   ajouterRencontre() {
     console.log("Ajouter rencontre.")
@@ -98,7 +58,7 @@ export default class RencontresConteneur extends React.Component {
       })
       return
     }
-    let rencontre = this.props.rencontre
+    let rencontre = this.state.rencontre
     console.info("Info: " + JSON.stringify(infos))
     rencontre.date = infos.date
     rencontre.periode = infos.periode
@@ -127,7 +87,7 @@ export default class RencontresConteneur extends React.Component {
       this.state.modeAjout ?
         <RencontreAjout
           rencontre={this.state.rencontre}
-          ajoutRencontre={this.ajoutRencontre} />
+          ajoutRencontre={this.ajoutRencontre.bind(this)} />
         :
         <Rencontres rencontres={this.state.rencontres}
           supprimeRencontre={this.supprimeRencontre}
