@@ -29,11 +29,11 @@ const etat$ = action$.scan((etat, action) => {
     console.log("| rencontre: " + JSON.stringify(action.rencontre))
     let commentaires = Immutable
       .List()
-      .push({commentaire: "Morgane entre sur le terrain à la place de Jacqueline", valide: true})
-      .push({commentaire: "Panier magnifique de Tifanie", valide: true})
-      .push({commentaire: "Les visiteurs dominent la partie", valide: true})
-      .push({commentaire: "Dans la raquette les interieurs dominent sans partage", valide: true})
-      .push({commentaire: "Superbe action des Nantaises qui malheureusement ne donnera rien", valide: true})
+      .push({ commentaire: "Morgane entre sur le terrain à la place de Jacqueline", valide: true })
+      .push({ commentaire: "Panier magnifique de Tifanie", valide: true })
+      .push({ commentaire: "Les visiteurs dominent la partie", valide: true })
+      .push({ commentaire: "Dans la raquette les interieurs dominent sans partage", valide: true })
+      .push({ commentaire: "Superbe action des Nantaises qui malheureusement ne donnera rien", valide: true })
     let rencontreAvecCommentaire = Immutable
       .fromJS(action.rencontre)
       .set("commentaires", commentaires)
@@ -69,7 +69,7 @@ const etat$ = action$.scan((etat, action) => {
   }
   actions[types.NOUVELLE] = function () {
     console.log("| Nouvelle période: " + JSON.stringify(action.periode))
-    console.log("| Nouvelle période (rencontre): " + JSON.stringify(state.rencontre))
+    console.log("| Nouvelle période (rencontre): " + JSON.stringify(etat.rencontre))
     let rencontre = Immutable
       .fromJS(etat)
       .get("rencontre")
@@ -87,7 +87,7 @@ const etat$ = action$.scan((etat, action) => {
       .get("rencontre")
     let commentaires = rencontre
       .get("commentaires")
-      .push({commentaire: commentaire, valide: false})
+      .push({ commentaire: commentaire, valide: false })
     rencontre = rencontre.set("commentaires", commentaires)
     return Immutable
       .fromJS(etat)
@@ -117,8 +117,9 @@ const etat$ = action$.scan((etat, action) => {
 }, init)
 
 export default class RencontreConteneur extends React.Component {
-  componentWillMount() {
-    etat$.subscribe(etat => this.setState(etat))
+  constructor(props) {
+    super(props);
+    this.state = init
   }
   componentWillUnmount() {
     const idRencontre = this.state.rencontre.id
@@ -128,6 +129,7 @@ export default class RencontreConteneur extends React.Component {
       .emit("fermerRencontre", idRencontre)
   }
   componentDidMount() {
+    etat$.subscribe(etat => this.setState(etat))
     const idRencontre = this.props.params.idRencontre
     var adresse = location.href
     console.info("Adresse web socket: " + adresse)
@@ -141,7 +143,7 @@ export default class RencontreConteneur extends React.Component {
     request(rest, function (error, response, rencontre) {
       if (!error && response.statusCode == 200) {
         let oRencontre = JSON.parse(rencontre)
-        action$.next({type: types.GET_RENCONTRE_SUCCESS, rencontre: oRencontre})
+        action$.next({ type: types.GET_RENCONTRE_SUCCESS, rencontre: oRencontre })
       }
     })
   }
@@ -157,13 +159,12 @@ export default class RencontreConteneur extends React.Component {
       .on("nouvelleInfo", this.surReceptionNouvelleInfo)
   }
   surReceptionNouvelleInfo(rencontre) {
-    // console.debug("Reception d'une nouvelle info provenant du serveur: " +
-    // JSON.stringify(rencontre))
-    action$.next({type: types.NOUVELLE_INFO, rencontre: rencontre})
+    console.debug("Reception d'une nouvelle info provenant du serveur: " +
+      JSON.stringify(rencontre))
+    action$.next({ type: types.NOUVELLE_INFO, rencontre: rencontre })
   }
   surNouvelleMarque(rencontre) {
-    this
-      .socket
+    this.socket
       .emit('panierMarque', this.state.rencontre)
   }
   surNouveauCommentaire(commentaire) {
@@ -174,15 +175,15 @@ export default class RencontreConteneur extends React.Component {
         "idRencontre": this.props.params.idRencontre,
         "commentaire": commentaire
       })
-    action$.next({type: types.COMMENTAIRE_POST, commentaire: commentaire})
+    action$.next({ type: types.COMMENTAIRE_POST, commentaire: commentaire })
     this
       .socket
-      .on("nouveauCommentaire", () => action$.next({type: types.COMMENTAIRE_NOUVEAU, commentaire: commentaire}))
+      .on("nouveauCommentaire", () => action$.next({ type: types.COMMENTAIRE_NOUVEAU, commentaire: commentaire }))
   }
   surPeriode(periode) {
     // let rencontre = this.props.rencontre rencontre.periode = periode
     console.debug("Nouvelle periode: " + JSON.stringify(periode))
-    action$.next({type: types.NOUVELLE, periode: periode})
+    action$.next({ type: types.NOUVELLE, periode: periode })
   }
   sauver(infos) {
     let strInfo = JSON.stringify(infos)
@@ -204,29 +205,29 @@ export default class RencontreConteneur extends React.Component {
     }, function (error, response, rencontre) {
       if (!error && response.statusCode == 200) {
         console.info("Rencontre modifiée :" + JSON.stringify(rencontre))
-        action$.next({type: types.PUT_RENCONTRE_SUCCESS, rencontre: rencontre})
+        action$.next({ type: types.PUT_RENCONTRE_SUCCESS, rencontre: rencontre })
       }
     })
   }
   editer() {
-    action$.next({type: types.EDITER_RENCONTRE})
+    action$.next({ type: types.EDITER_RENCONTRE })
   }
   surVerrouillage() {
-    action$.next({type: types.VERROUILLAGE})
+    action$.next({ type: types.VERROUILLAGE })
   }
   render() {
-    console.debug(`Nouvelle rencontre` + Immutable.fromJS(this.state.rencontre))
+    console.debug(`Nouvelle rencontre: ` + this.state.rencontre)
     return (!this.state.rencontre
       ? null
       : <Rencontre
         rencontre={this.state.rencontre}
-        surNouvelleMarque={this.surNouvelleMarque}
+        surNouvelleMarque={this.surNouvelleMarque.bind(this)}
         surPeriode={this.surPeriode}
         editer={this.editer}
         sauver={this.sauver}
         surNouveauCommentaire={this.surNouveauCommentaire}
         modeEdition={this.state.modeEdition}
         modeVerrouille={this.state.modeVerrouille}
-        surVerrouillage={this.surVerrouillage}/>)
+        surVerrouillage={this.surVerrouillage} />)
   }
 }

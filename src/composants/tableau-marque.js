@@ -43,7 +43,7 @@ export default class Marque extends React.Component {
                 style={stylePeriode}
                 labelStyle={styleLabelPeriode}
                 key={periode}
-                onClick={this.surPeriode.bind(this, periode)}
+                onClick={this.props.modeVerrouille ? null : this.surPeriode.bind(this, periode)}
                 label={"P" + periode}
                 />
             )
@@ -55,6 +55,7 @@ export default class Marque extends React.Component {
             className="hote"
             style={style}
             labelStyle={labelStyle}
+            disabled={this.props.modeVerrouille}
             onClick={this.props.surCorrectionHote}
             label={this.props.rencontre.hote.marque.toString()}
             />
@@ -62,6 +63,7 @@ export default class Marque extends React.Component {
             className="visiteur"
             style={style}
             labelStyle={labelStyle}
+            disabled={this.props.modeVerrouille}
             onClick={this.props.surCorrectionVisiteur}
             label={this.props.rencontre.visiteur.marque.toString()}
             />
