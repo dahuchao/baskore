@@ -4,14 +4,14 @@ import injectTapEventPlugin from 'react-tap-event-plugin'
 injectTapEventPlugin();
 import { Router, IndexRedirect, Route, useRouterHistory } from "react-router"
 import { createHashHistory } from "history"
-import AccueilConteneur from "./composants/accueil-conteneur.js"
-import RencontresConteneur from "./composants/rencontres-conteneur.js"
-import RencontreConteneur from "./composants/rencontre-conteneur.js"
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider"
+import AccueilConteneur from "./accueil/accueil-conteneur.js"
+import RencontresConteneur from "./rencontres/rencontres-conteneur.js"
+import RencontreConteneur from "./rencontre/rencontre-conteneur.js"
 
 const appHistory = useRouterHistory(createHashHistory)({ queryKey: false })
 
-ReactDOM.render(( 
+ReactDOM.render(
   <MuiThemeProvider>
     <Router history={appHistory}>
       <Route path="/" component={AccueilConteneur} >
@@ -21,6 +21,6 @@ ReactDOM.render((
       </Route>
     </Router>
   </MuiThemeProvider>
-),
+  ,
   document.getElementById("content")
 )

@@ -1,10 +1,13 @@
 import React from "react"
-import action$ from "../repartiteur"
+import Rx from 'rxjs'
+// import action$ from "../repartiteur"
 import Immutable from "immutable"
-import * as types from "../actions/actions-types"
+import * as types from "./rencontre-actions"
 import request from "request"
 import io from "socket.io-client"
 import Rencontre from "./rencontre"
+
+const action$ = new Rx.BehaviorSubject({ type: "DEFAUT" })
 
 const init = {
   modeEdition: false,
@@ -116,4 +119,4 @@ const etat$ = action$.scan((etat, action) => {
   return etatNouveau.toJS()
 }, init)
 
-export default etat$
+export { etat$, action$ }

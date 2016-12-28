@@ -24,7 +24,7 @@ export default class Equipe extends React.Component {
             : <img onClick={this.props.surPanier} className="blason" src="img/ballon6.png"></img>
         }
         <div style={styleJoueuses}>{
-          this.props.joueuses.map(joueuse => {
+          joueuses.map(joueuse => {
             return <Joueuse key={id++} surChangement={this.props.surChangement} numero={joueuse} />
           })
         }

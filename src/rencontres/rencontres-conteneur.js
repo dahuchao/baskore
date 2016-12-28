@@ -1,9 +1,9 @@
 import React from "react"
-import action$ from "../repartiteur"
-import etat$ from "./rencontres-repartiteur"
+import Rx from 'rxjs'
 import Immutable from "immutable"
-import * as types from "../actions/actions-types"
 import request from "request"
+import { etat$, action$ } from "./rencontres-repartiteur"
+import * as types from "./rencontres-actions"
 import Rencontres from "./rencontres"
 import RencontreAjout from "./rencontres-ajout"
 

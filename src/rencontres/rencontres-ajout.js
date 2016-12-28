@@ -13,8 +13,8 @@ import Close from "material-ui/svg-icons/navigation/close"
 
 const RencontreAjout = React.createClass({
   getInitialState() {
-    let rencontre = this.props.rencontre
-    return { date: new Date(), periode: 1, hote: rencontre.hote.nom, visiteur: rencontre.visiteur.nom }
+    // let rencontre = this.props.rencontre
+    return { date: new Date() }
   },
   majDate(x, date) {
     let dateState = this.state.date
