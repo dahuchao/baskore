@@ -1,11 +1,11 @@
 import React from "react"
 import Rx from 'rxjs'
-import { etat$, action$ } from "./rencontre-repartiteur"
 import Immutable from "immutable"
-import * as types from "./rencontre-actions"
 import request from "request"
 import io from "socket.io-client"
 import Rencontre from "./rencontre"
+import * as types from "./rencontre-actions"
+import { etat$, action$ } from "./rencontre-repartiteur"
 
 export default class RencontreConteneur extends React.Component {
   constructor(props) {
