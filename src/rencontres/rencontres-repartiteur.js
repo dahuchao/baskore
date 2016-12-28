@@ -1,6 +1,5 @@
 import React from "react"
 import Rx from 'rxjs'
-// import action$ from "../repartiteur"
 import Immutable from "immutable"
 import * as types from "./rencontres-actions"
 import request from "request"
