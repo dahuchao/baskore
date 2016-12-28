@@ -79,6 +79,22 @@ export default class RencontreConteneur extends React.Component {
     console.debug("Nouvelle periode: " + JSON.stringify(periode))
     action$.next({ type: types.NOUVELLE, periode: periode })
   }
+  surChangementHote(sor, ent) {
+    console.debug(`Changement hote ${sor} par ${ent}`)
+    store.dispatch({
+      type: types.CHANGEMENT_HOTE,
+      sortant: sor,
+      entrant: ent
+    })
+  }
+  surChangementVisiteur(sor, ent) {
+    console.debug(`Changement visiteur ${sor} par ${ent}`)
+    store.dispatch({
+      type: types.CHANGEMENT_VISITEUR,
+      sortant: sor,
+      entrant: ent
+    })
+  }
   sauver(infos) {
     let strInfo = JSON.stringify(infos)
     console.debug(`Rencontre cont(sauver): ${strInfo}`)
@@ -107,7 +123,31 @@ export default class RencontreConteneur extends React.Component {
     action$.next({ type: types.EDITER_RENCONTRE })
   }
   surVerrouillage() {
+<<<<<<< HEAD
     action$.next({ type: types.VERROUILLAGE })
+=======
+    store.dispatch({
+      type: types.VERROUILLAGE
+    })
+  },
+  render() {
+    // console.debug(`Nouvelle rencontre` + Immutable.fromJS(this.props.rencontre))
+    return (
+      !this.props.rencontre ? null :
+        <Rencontre
+          rencontre={this.props.rencontre}
+          surNouvelleMarque={this.surNouvelleMarque}
+          surPeriode={this.surPeriode}
+          surChangementHote={this.surChangementHote}
+          surChangementVisiteur={this.surChangementVisiteur}
+          editer={this.editer}
+          sauver={this.sauver}
+          surNouveauCommentaire={this.surNouveauCommentaire}
+          modeEdition={this.props.modeEdition}
+          modeVerrouille={this.props.modeVerrouille}
+          surVerrouillage={this.surVerrouillage} />
+    )
+>>>>>>> 380230db91ca6b1fc46773f152e872d34fb55a97
   }
   render() {
     console.debug(`Nouvelle rencontre: ` + this.state.rencontre)

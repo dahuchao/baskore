@@ -16,13 +16,14 @@ import Done from "material-ui/svg-icons/action/done"
 export default React.createClass({
   nouveauC(e) {
     // console.debug("Commentaire: " + e.target.value)
-    this.setState({commentaire: e.target.value})
+    this.setState({ commentaire: e.target.value })
   },
   surNouveauCommentaire() {
     // console.debug("Commentaire: " + this.state.commentaire)
     this
       .props
       .surNouveauCommentaire(this.state.commentaire)
+    this.setState({ commentaire: null })
   },
   render() {
     console.debug(`Commentaires: ` + Immutable.List(this.props.rencontre.commentaires).toJSON())
@@ -44,14 +45,14 @@ export default React.createClass({
           : <div style={styleFlex}>
             <TextField
               hintText="Ajouter un commentaire"
-              multiLine={false}
+              multiLine={true}
               rowsMax={2}
               fullWidth={true}
               maxLength="140"
-              onChange={this.nouveauC}/>
-            <FlatButton onClick={this.surNouveauCommentaire} icon={< Done />}/>
+              onChange={this.nouveauC} />
+            <FlatButton onClick={this.surNouveauCommentaire} icon={< Done />} />
           </div>
-}
+        }
         <List style={{
           padding: "0px"
         }}>
@@ -63,15 +64,15 @@ export default React.createClass({
                 ? (<ListItem
                   key={id++}
                   primaryText={commentaire.commentaire}
-                  innerDivStyle={styleElement}/>)
+                  innerDivStyle={styleElement} />)
                 : (<ListItem
                   key={id++}
                   primaryText={commentaire.commentaire}
                   secondaryText="Enregistrement en cours..."
-                  innerDivStyle={styleElement}/>)
+                  innerDivStyle={styleElement} />)
               return element
             })
-}
+          }
         </List>
       </Card>
     )

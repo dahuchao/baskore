@@ -9,13 +9,12 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   target: 'node', 
-  externals: [nodeExternals()], 
+  // externals: [nodeExternals()], 
   module: {
     loaders: [
       {
         test: path.join(__dirname, 'src'),
         loader: 'babel-loader',
-        exclude: /node_modules/,
         query: {
           presets: ['es2015', 'react']
         }

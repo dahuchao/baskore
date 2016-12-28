@@ -6,7 +6,7 @@ const initState = {
     rencontres: [],
     modeEdition: false,
     modeAjout: false,
-    modeVerrouille: true
+    modeVerrouille: false
 }
 
 function rencontreReducer(state = initState, action) {
@@ -31,19 +31,37 @@ function rencontreReducer(state = initState, action) {
     }
     actions[types.GET_RENCONTRE_SUCCESS] = function () {
         console.log("| rencontre: " + JSON.stringify(action.rencontre))
-        let commentaires = Immutable
-            .List()
-            .push({commentaire: "Morgane entre sur le terrain à la place de Jacqueline", valide: true})
-            .push({commentaire: "Panier magnifique de Tifanie", valide: true})
-            .push({commentaire: "Les visiteurs dominent la partie", valide: true})
-            .push({commentaire: "Dans la raquette les interieurs dominent sans partage", valide: true})
-            .push({commentaire: "Superbe action des Nantaises qui malheureusement ne donnera rien", valide: true})
-        let rencontreAvecCommentaire = Immutable
-            .fromJS(action.rencontre)
-            .set("commentaires", commentaires)
-        return Immutable
+        let rencontre = Immutable.fromJS(action.rencontre)
+        let commentaires = rencontre.get("commentaires")
+            .reduce((commentaires, nouvCommentaire) => commentaires
+                .push({commentaire: nouvCommentaire, valide: true}), Immutable.List()) 
+        // let joueuses = rencontre
+        //     .getIn(["hote","joueuses"], Immutable.List.of(4, 5, 6, 7, 8))
+        rencontre = rencontre.setIn(["hote","joueuses"], rencontre
+            .getIn(["hote","joueuses"], Immutable.List.of(4, 5, 6, 7, 8)))
+        rencontre = rencontre.setIn(["visiteur","joueuses"], rencontre
+            .getIn(["visiteur","joueuses"], Immutable.List.of(4, 5, 6, 7, 8)))
+        rencontre = rencontre.set("commentaires", commentaires)
+        // let etat = Immutable.fromJS(state)
+        return Immutable.fromJS(state).set("rencontre", rencontre)
+    }
+    actions[types.CHANGEMENT_HOTE] = function () {
+        console.debug(`Changement hote ${action.sortant} par ${action.entrant}`)
+        let joueuses = Immutable
             .fromJS(state)
-            .set("rencontre", rencontreAvecCommentaire)
+            .getIn(["rencontre","hote","joueuses"])
+            .map(joueuse => joueuse==action.sortant ? action.entrant : joueuse)
+        return Immutable
+            .fromJS(state).setIn(["rencontre", "hote", "joueuses"], joueuses)
+    }
+    actions[types.CHANGEMENT_VISITEUR] = function () {
+        console.debug(`Changement visiteur ${action.sortant} par ${action.entrant}`)
+        let joueuses = Immutable
+            .fromJS(state)
+            .getIn(["rencontre","visiteur","joueuses"])
+            .map(joueuse => joueuse==action.sortant ? action.entrant : joueuse)
+        return Immutable
+            .fromJS(state).setIn(["rencontre", "visiteur", "joueuses"], joueuses)
     }
     actions[types.POST_RENCONTRE_SUCCESS] = function () {
         console.log("| rencontre (nouvelle): " + JSON.stringify(action.rencontre))
