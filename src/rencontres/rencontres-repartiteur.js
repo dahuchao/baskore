@@ -1,10 +1,6 @@
-import React from "react"
 import Rx from 'rxjs'
 import Immutable from "immutable"
 import * as types from "./rencontres-actions"
-import request from "request"
-import Rencontres from "./rencontres"
-import RencontreAjout from "./rencontres-ajout"
 
 const action$ = new Rx.BehaviorSubject({ type: "DEFAUT" })
 
