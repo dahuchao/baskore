@@ -53,16 +53,19 @@ const etat$ = action$.scan((etat, action) => {
   }
   actions[types.PUT_RENCONTRE_SUCCESS] = function () {
     console.log("| rencontre: " + JSON.stringify(action.rencontre))
-    let rencontre = Immutable
-      .fromJS(etat)
-      .get("rencontre")
-      .set("date", action.rencontre.date)
-      .set("periode", action.rencontre.periode)
-      .set("hote.nom", action.rencontre.hote.nom)
-      .set("visiteur.nom", action.rencontre.visiteur.nom)
-    return Immutable
-      .fromJS(etat)
-      .set("rencontre", rencontre)
+    // let rencontre = Immutable
+    //   .fromJS(etat)
+    //   .get("rencontre",new Object)
+    //   .set("date", action.rencontre.date)
+    //   .set("periode", action.rencontre.periode)
+    //   .set("hote.nom", action.rencontre.hote.nom)
+    //   .set("visiteur.nom", action.rencontre.visiteur.nom)
+    // return Immutable
+    //   .fromJS(etat)
+    //   .set("rencontre", rencontre)
+    //   .set("modeEdition", false)
+    return Immutable.fromJS(etat)
+      .set("rencontre", action.rencontre)
       .set("modeEdition", false)
   }
   actions[types.NOUVELLE] = function () {
