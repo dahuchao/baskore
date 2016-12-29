@@ -1,26 +1,16 @@
-var Immutable = require("immutable")
-const MongoClient = require("mongodb").MongoClient
+import { RxMongo, RxCollection } from 'rxmongo'
+import { MongoClient } from 'mongodb'
 
-const Rencontres = function (db) {
-  function lecture(id) {
-    const rencontres = Immutable.List
-    if (!db) 
-      console.log("Base de données indisponible.")
-    else 
-      db
-        .collection("rencontres")
-        .find({id: 4})
-        .each((err, rencontre) => {
-          if (err) 
-            console.log("Erreur: " + err)
-          if (rencontre) 
-            rencontres.push(rencontre)
-          console.log("rencontre: " + JSON.stringify(rencontre))
-        })
-    return rencontres
+export class Rencontres {
+  constructor(url) {
+    RxMongo.connect(url).subscribe(db => {
+    }, err => {
+      console.log(`Err: ${err}`)
+    })
   }
-}
-
-module.exports = {
-  Rencontres : Rencontres
+  lecture(id) {
+    return new RxCollection("rencontres")
+      .find({})
+      .first()
+  }
 }
