@@ -3,7 +3,7 @@ var exec = require("gulp-exec");
 var sass = require("gulp-sass");
 var browserify = require("browserify");
 var babelify = require("babelify");
-const babel = require('gulp-babel');
+var babel = require('gulp-babel');
 var uglify = require('gulp-uglify');
 var source = require("vinyl-source-stream");
 var buffer = require('vinyl-buffer');
@@ -16,7 +16,7 @@ var assert = require("assert");
 var gulp = require("gulp");
 var jasmine = require("gulp-jasmine");
 var proxyMiddleware = require("http-proxy-middleware");
-const watch = require('gulp-watch')
+var watch = require('gulp-watch')
 
 gulp.task("test", function () {
   // watch(["test/**/*.js", "src/**/*.js"])

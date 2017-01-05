@@ -4,7 +4,7 @@ let assert = chai.assert
 let expect = chai.expect
 chai.should()
 
-describe("Vrai", function () {
+describe("Test de chai par chai", function () {
     it("doit etre vrai", function () {
         assert.equal(true, true)
     })

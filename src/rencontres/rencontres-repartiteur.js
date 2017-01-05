@@ -42,6 +42,12 @@ const etat$ = action$.scan((etat, action) => {
       .set("rencontre", rencontre)
       .set("modeAjout", !etat.modeAjout)
   }
+  actions[types.ANNULER_RENCONTRE] = function () {
+    console.log("| Annulation de l'ajout d'une rencontre.")
+    return Immutable
+      .fromJS(etat)
+      .set("modeAjout", !etat.modeAjout)
+  }
   actions[types.POST_RENCONTRE_SUCCESS] = function () {
     console.log("| rencontre (nouvelle): " + JSON.stringify(action.rencontre))
     let rencontres = Immutable
@@ -54,7 +60,8 @@ const etat$ = action$.scan((etat, action) => {
       .set("modeAjout", false)
   }
   actions[types.DELETE_RENCONTRE_SUCCESS] = function () {
-    console.log("| rencontre (supprimée): " + action.idRencontre)
+    console.log("| liste des renc.: " + JSON.stringify(etat))
+    console.log("| id de la rencontre à supprimée: " + action.idRencontre)
     let rencontres = etat
       .rencontres
       .filter(rencontre => rencontre.id != action.idRencontre)
@@ -62,14 +69,8 @@ const etat$ = action$.scan((etat, action) => {
       .fromJS(etat)
       .set("rencontres", rencontres)
   }
-  actions[types.ANNULER_RENCONTRE] = function () {
-    console.log("| Annulation de l'ajout d'une rencontre.")
-    return Immutable
-      .fromJS(etat)
-      .set("modeAjout", !etat.modeAjout)
-  }
   let etatNouveau = (actions[action.type] || actions['DEFAUT'])();
-  console.log("Nouvel état: " + etatNouveau)
+  console.log("Nouvel état: " + JSON.stringify(etatNouveau.toJS()))
   console.log("-------------------")
   return etatNouveau.toJS()
 }, init)
