@@ -5,7 +5,9 @@ import request from "request"
 import io from "socket.io-client"
 import Rencontre from "./rencontre"
 import * as types from "./rencontre-actions"
-import { etat$, action$ } from "./rencontre-repartiteur"
+// import { etat$, action$ } from "./rencontre-repartiteur"
+import Repartiteur from "./rencontre-repartiteur"
+let {etat$, action$} = Repartiteur()
 
 export default class RencontreConteneur extends React.Component {
   constructor(props) {
@@ -57,7 +59,8 @@ export default class RencontreConteneur extends React.Component {
       JSON.stringify(rencontre))
     action$.next({ type: types.NOUVELLE_INFO, rencontre: rencontre })
   }
-  surNouvelleMarque(rencontre) {
+  surNouvelleMarque() {
+    console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
     this.socket
       .emit('panierMarque', this.state.rencontre)
   }
