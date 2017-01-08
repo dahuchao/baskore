@@ -54,12 +54,12 @@ export default class RencontreConteneur extends React.Component {
     this
       .socket
       .on("evenement", evenement => {
-        console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
+        // console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
         action$.next(evenement)
       })
   }
   surNouvelleMarque() {
-    console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
+    // console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
     this
       .socket
       .emit("commande", {
@@ -103,9 +103,14 @@ export default class RencontreConteneur extends React.Component {
       })
   }
   surPeriode(periode) {
-    // let rencontre = this.props.rencontre rencontre.periode = periode
     console.debug("Nouvelle periode: " + JSON.stringify(periode))
-    action$.next({type: types.NOUVELLE, periode: periode})
+    this
+      .socket
+      .emit("commande", {
+        type: typesCommande.CHANGER_PERIODE,
+        idRencontre: this.state.rencontre.id,
+        periode: periode
+      })
   }
   sauver(infos) {
     let strInfo = JSON.stringify(infos)
@@ -138,7 +143,7 @@ export default class RencontreConteneur extends React.Component {
     action$.next({type: types.VERROUILLAGE})
   }
   render() {
-    console.debug(`Nouvelle rencontre: ` + this.state.rencontre)
+    // console.debug(`Nouvelle rencontre: ` + this.state.rencontre)
     return (!this.state.rencontre
       ? null
       : <Rencontre
@@ -146,7 +151,9 @@ export default class RencontreConteneur extends React.Component {
         surNouvelleMarque={this
         .surNouvelleMarque
         .bind(this)}
-        surPeriode={this.surPeriode}
+        surPeriode={this
+        .surPeriode
+        .bind(this)}
         editer={this.editer}
         sauver={this.sauver}
         surNouveauCommentaire={this

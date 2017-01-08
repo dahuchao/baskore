@@ -36,7 +36,7 @@ export default class Marque extends React.Component {
             periode == this.props.rencontre.periode ?
               styleLabelPeriode.color = "red" :
               styleLabelPeriode.color = "white"
-            console.log("Couleur: " + JSON.stringify(style))
+            // console.log("Couleur: " + JSON.stringify(style))
             return (
               <FlatButton
                 className="periode"

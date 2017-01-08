@@ -2,47 +2,6 @@ var Rx = require("rxjs")
 var {RxMongo, RxCollection} = require('rxmongo')
 var {MongoClient} = require('mongodb')
 
-var rencontre$ = Rx
-  .Observable
-  .from([
-    {
-      id: 1,
-      periode: 1,
-      hote: {
-        nom: "NEC",
-        marque: 11
-      },
-      visiteur: {
-        nom: "USJA",
-        marque: 11
-      }
-    }, {
-      id: 2,
-      date: new Date("2016-09-02"),
-      periode: 1,
-      hote: {
-        nom: "NEC",
-        marque: 22
-      },
-      visiteur: {
-        nom: "Montaigu",
-        marque: 22
-      }
-    }, {
-      id: 3,
-      periode: 1,
-      date: new Date("2016-10-16"),
-      hote: {
-        nom: "NEC",
-        marque: 33
-      },
-      visiteur: {
-        nom: "Coulaine",
-        marque: 33
-      }
-    }
-  ]);
-
 var Rencontres = {
   connecte: false,
   connexion: function (url) {
@@ -110,6 +69,24 @@ var Rencontres = {
                 return rencontreAAjouter.id
             })
         })
+    } else {
+
+
+      // console.log("Base de données indisponible: ")
+      // console.log("Utilisation liste statique de test.")
+      // // Calcul du plus grand identifiant
+      // idCalcule = rencontres.reduce((max, rencontre) => rencontre.id > max
+      //   ? rencontre.id
+      //   : max, 0)
+      // // Calcul de l'identifiant de la nouvelle rencontre
+      // rencontre.id = idCalcule + 1
+      // // Calcul de la nouvelle liste des rencontres
+      // rencontres = [
+      //   ...rencontres,
+      //   rencontre
+      ]
+
+
     }
   },
   mettreAJour: {
@@ -145,5 +122,46 @@ var Rencontres = {
     }
   }
 }
+
+var rencontre$ = Rx
+  .Observable
+  .from([
+    {
+      id: 1,
+      periode: 1,
+      hote: {
+        nom: "NEC",
+        marque: 11
+      },
+      visiteur: {
+        nom: "USJA",
+        marque: 11
+      }
+    }, {
+      id: 2,
+      date: new Date("2016-09-02"),
+      periode: 1,
+      hote: {
+        nom: "NEC",
+        marque: 22
+      },
+      visiteur: {
+        nom: "Montaigu",
+        marque: 22
+      }
+    }, {
+      id: 3,
+      periode: 1,
+      date: new Date("2016-10-16"),
+      hote: {
+        nom: "NEC",
+        marque: 33
+      },
+      visiteur: {
+        nom: "Coulaine",
+        marque: 33
+      }
+    }
+  ]);
 
 module.exports = Rencontres

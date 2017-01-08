@@ -15,9 +15,16 @@ var evenement$ = commande$.map(commande => {
   }
   commandes[typesCommande.PANIER_MARQUE] = function () {
     console.log(`| Nouvelle marque ${commande.marqueHote}:${commande.marqueVisiteur}`)
+    
     return Immutable
       .fromJS(commande)
       .set("type", typesEvenement.CHANGEMENT_MARQUE)
+  }
+  commandes[typesCommande.CHANGER_PERIODE] = function () {
+    console.log("Nouvelle periode: " + JSON.stringify(commande.periode))
+    return Immutable
+      .fromJS(commande)
+      .set("type", typesEvenement.CHANGEMENT_PERIODE)
   }
   commandes[typesCommande.CHANGER_JOUEUR_HOTE] = function () {
     console.log("| CHANGER_JOUEUR_HOTE.")

@@ -385,6 +385,18 @@ io
               return Immutable.fromJS(evenement)
             }
           }
+          evenements[typesEvenement.CHANGEMENT_PERIODE] = function () {
+            console.log("Enregistrement de la nouvelle periode.")
+            db
+              .collection("rencontres")
+              .update({
+                id: evenement.idRencontre
+              }, {
+                $set: {
+                  "periode": evenement.periode
+                }
+              })
+          }
           evenements[typesEvenement.CHANGEMENT_MARQUE] = function () {
             console.log("Enregistrement de la nouvelle marque.")
             db
@@ -395,18 +407,6 @@ io
                 $set: {
                   "hote.marque": evenement.marqueHote,
                   "visiteur.marque": evenement.marqueVisiteur
-                }
-              })
-          }
-          evenements[typesEvenement.CHANGEMENT_PERIODE] = function () {
-            console.log("Enregistrement de la nouvelle periode.")
-            db
-              .collection("rencontres")
-              .update({
-                id: evenement.idRencontre
-              }, {
-                $set: {
-                  "periode": evenement.periode
                 }
               })
           }

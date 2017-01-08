@@ -52,6 +52,7 @@ export default function Repartiteur() {
       let rencontre = Immutable
         .fromJS(etat)
         .get("rencontre")
+
       return Immutable
         .fromJS(etat)
         .set("rencontre.marque.hote", action.marqueHote)
@@ -69,14 +70,14 @@ export default function Repartiteur() {
         .set("rencontre", action.rencontre)
         .set("modeEdition", false)
     }
-    actions[types.NOUVELLE] = function () {
+    actions[typesEvenement.CHANGEMENT_PERIODE] = function () {
       console.log("| Nouvelle période: " + JSON.stringify(action.periode))
-      console.log("| Nouvelle période (rencontre): " + JSON.stringify(etat.rencontre))
+      // console.log("| Nouvelle période (rencontre): " + JSON.stringify(etat.rencontre))
       let rencontre = Immutable
         .fromJS(etat)
         .get("rencontre")
         .set("periode", action.periode)
-      console.log("| Nouvelle période (nouvelle rencontre): " + JSON.stringify(rencontre))
+      // console.log("| Nouvelle période (nouvelle rencontre): " + JSON.stringify(rencontre))
       return Immutable
         .fromJS(etat)
         .set("rencontre", rencontre)
