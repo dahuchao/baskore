@@ -96,20 +96,21 @@ describe("Gestion des rencontres", () => {
             .not
             .equal(0);
           idRencontreCreeASupprimer = idRencontre
+          done()
         }, err => {
           expect(err).to.not.exist
-        }, () => done())
+        })
     })
     it("on peut mettre à jour une rencontre", (done) => {
       var rencontrer = {
         date: new Date("2016-10-01"),
         hote: {
           nom: "test hote maj",
-          marque: 111
+          marque: 112
         },
         visiteur: {
           nom: "test visiteur maj",
-          marque: 111
+          marque: 112
         }
       };
       Rencontres
@@ -123,9 +124,23 @@ describe("Gestion des rencontres", () => {
           expect(result.result.ok)
             .to
             .equal(1);
+          Rencontres
+            .lecture
+            .par
+            .id(4)
+            .subscribe(rencontre => {
+              // console.info(rencontre)
+              expect(rencontre).to.exist
+              expect(rencontre.hote.nom)
+                .to
+                .equal("test hote maj")
+            }, err => {
+              expect(err).to.not.exist
+            }, () => done())
+
         }, err => {
           expect(err).to.not.exist
-        }, () => done())
+        })
     })
     it("on peut supprimer une rencontre", (done) => {
       Rencontres

@@ -72,14 +72,6 @@ var Rencontres = {
       }
     }
   },
-  mettreAJour: {
-    par: {
-      critere: function (critere, rencontreMAJ) {
-        if (Rencontres.connecte) 
-          return new RxCollection("rencontres").updateOne(critere, rencontreMAJ)
-      }
-    }
-  },
   ajouter: function (rencontreNouvelle) {
     console.log(`Connexion: ${Rencontres.connecte}`)
     if (Rencontres.connecte) {
@@ -120,25 +112,33 @@ var Rencontres = {
         })
     }
   },
-  max: function () {
-    console.log(`Connexion: ${Rencontres.connecte}`)
-    if (Rencontres.connecte) {
-      return new RxCollection("rencontres")
-        .find({})
-        .toArray()
-        .flatMap(rencontres => {
-          console.info(`rencontree id: ${rencontres}`)
-          return rencontres
-        })
-        .map(rencontre => {
-          console.log(`rencontre id: ${rencontre.id}`)
-          return rencontre.id
-        })
+  mettreAJour: {
+    par: {
+      critere: function (critere, rencontreMAJ) {
+        console.log(`Critère de mise à jour: ${JSON.stringify(critere)}`)
+        if (Rencontres.connecte) {
+          return new RxCollection("rencontres")
+            .find(critere)
+            .first()
+            .flatMap(rencontre => {
+              rencontre.date = rencontreMAJ.date
+              rencontre.hote.nom = rencontreMAJ.hote.nom
+              rencontre.visiteur.nom = rencontreMAJ.visiteur.nom
+              return new RxCollection("rencontres")
+                .updateOne(critere, rencontre)
+                .map(result => {
+                  // console.info(result)
+                  return result
+                })
+            })
+        }
+      }
     }
   },
   supprimer: {
     par: {
       critere: function (critere) {
+        console.log(`Critère de suppression: ${JSON.stringify(critere)}`)
         if (Rencontres.connecte) 
           return new RxCollection("rencontres").deleteOne(critere)
       }
