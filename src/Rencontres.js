@@ -70,8 +70,6 @@ var Rencontres = {
             })
         })
     } else {
-
-
       // console.log("Base de données indisponible: ")
       // console.log("Utilisation liste statique de test.")
       // // Calcul du plus grand identifiant
@@ -84,8 +82,7 @@ var Rencontres = {
       // rencontres = [
       //   ...rencontres,
       //   rencontre
-      ]
-
+      // ]
 
     }
   },
