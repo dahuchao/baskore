@@ -1,9 +1,10 @@
 import Rx from 'rxjs'
 import Immutable from "immutable"
 import * as types from "./rencontre-actions"
+var typesEvenement = require("../types-evenement")
 
 export default function Repartiteur() {
-  const action$ = new Rx.BehaviorSubject({ type: "DEFAUT" })
+  const action$ = new Rx.BehaviorSubject({type: "DEFAUT"})
 
   const init = {
     modeEdition: false,
@@ -28,11 +29,11 @@ export default function Repartiteur() {
       console.log("| rencontre: " + JSON.stringify(action.rencontre))
       let commentaires = Immutable
         .List()
-        .push({ commentaire: "Morgane entre sur le terrain à la place de Jacqueline", valide: true })
-        .push({ commentaire: "Panier magnifique de Tifanie", valide: true })
-        .push({ commentaire: "Les visiteurs dominent la partie", valide: true })
-        .push({ commentaire: "Dans la raquette les interieurs dominent sans partage", valide: true })
-        .push({ commentaire: "Superbe action des Nantaises qui malheureusement ne donnera rien", valide: true })
+        .push({commentaire: "Morgane entre sur le terrain à la place de Jacqueline", valide: true})
+        .push({commentaire: "Panier magnifique de Tifanie", valide: true})
+        .push({commentaire: "Les visiteurs dominent la partie", valide: true})
+        .push({commentaire: "Dans la raquette les interieurs dominent sans partage", valide: true})
+        .push({commentaire: "Superbe action des Nantaises qui malheureusement ne donnera rien", valide: true})
       let rencontreAvecCommentaire = Immutable
         .fromJS(action.rencontre)
         .set("commentaires", commentaires)
@@ -46,7 +47,7 @@ export default function Repartiteur() {
         .fromJS(etat)
         .set("modeEdition", !etat.modeEdition)
     }
-    actions[types.NOUVELLE_INFO] = function () {
+    actions[typesEvenement.CHANGEMENT_MARQUE] = function () {
       console.log("| rencontre: " + JSON.stringify(action.rencontre))
       return Immutable
         .fromJS(etat)
@@ -54,18 +55,13 @@ export default function Repartiteur() {
     }
     actions[types.PUT_RENCONTRE_SUCCESS] = function () {
       console.log("| rencontre: " + JSON.stringify(action.rencontre))
-      // let rencontre = Immutable
-      //   .fromJS(etat)
-      //   .get("rencontre",new Object)
-      //   .set("date", action.rencontre.date)
-      //   .set("periode", action.rencontre.periode)
-      //   .set("hote.nom", action.rencontre.hote.nom)
-      //   .set("visiteur.nom", action.rencontre.visiteur.nom)
-      // return Immutable
-      //   .fromJS(etat)
-      //   .set("rencontre", rencontre)
-      //   .set("modeEdition", false)
-      return Immutable.fromJS(etat)
+      // let rencontre = Immutable   .fromJS(etat)   .get("rencontre",new Object)
+      // .set("date", action.rencontre.date)   .set("periode",
+      // action.rencontre.periode)   .set("hote.nom", action.rencontre.hote.nom)
+      // .set("visiteur.nom", action.rencontre.visiteur.nom) return Immutable
+      // .fromJS(etat)   .set("rencontre", rencontre)   .set("modeEdition", false)
+      return Immutable
+        .fromJS(etat)
         .set("rencontre", action.rencontre)
         .set("modeEdition", false)
     }
@@ -89,13 +85,13 @@ export default function Repartiteur() {
         .get("rencontre")
       let commentaires = rencontre
         .get("commentaires")
-        .push({ commentaire: commentaire, valide: false })
+        .push({commentaire: commentaire, valide: false})
       rencontre = rencontre.set("commentaires", commentaires)
       return Immutable
         .fromJS(etat)
         .set("rencontre", rencontre)
     }
-    actions[types.COMMENTAIRE_NOUVEAU] = function () {
+    actions[typesEvenement.NOUVEAU_COMMENTAIRE] = function () {
       let commentaire = action.commentaire
       console.log(` Nouveau commentaire sur la rencontre: ${commentaire}`)
       let rencontre = Immutable
@@ -105,17 +101,26 @@ export default function Repartiteur() {
         .get("commentaires")
         .map(commentaire => {
           return commentaire.set("valide", true)
-          // return commentaire
         })
       rencontre = rencontre.set("commentaires", commentaires)
       return Immutable
         .fromJS(etat)
         .set("rencontre", rencontre)
     }
+    actions[types.CHANGEMENT_JOUEUR_HOTE] = function () {
+      console.log(` Joueur sortant: ${action.sortant}`)
+      console.log(` Joueur entrant: ${action.entrant}`)
+      return Immutable.fromJS(etat)
+    }
+    actions[types.CHANGEMENT_JOUEUR_VISITEUR] = function () {
+      console.log(` Joueur sortant: ${action.sortant}`)
+      console.log(` Joueur entrant: ${action.entrant}`)
+      return Immutable.fromJS(etat)
+    }
     let etatNouveau = (actions[action.type] || actions['DEFAUT'])();
     console.log("Nouvel état: " + etatNouveau)
     console.log("-------------------")
     return etatNouveau.toJS()
   }, init)
-  return { etat$, action$ }
+  return {etat$, action$}
 }

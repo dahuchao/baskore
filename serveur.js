@@ -2,6 +2,8 @@
 var express = require("express")
 var cors = require("express-cors")
 var Immutable = require("immutable")
+var traitement = require("./src/traitement")
+var typesEvenement = require("./src/types-evenement")
 var MongoClient = require("mongodb").MongoClient
 var bodyParser = require("body-parser")
 var multer = require("multer")
@@ -381,85 +383,112 @@ io
       })
     });
     // Un panier est marqué
-    socket.on('panierMarque', function (rencontre) {
-      console.log("Panier marqué !")
-      console.log("Nouvelle marque:" + JSON.stringify(rencontre))
-      console.log("Nb abonnés:" + socketAbonnes.count())
-      socketAbonnes.filter(function (idRencontre) {
-        return idRencontre == rencontre.id
-      })
-        .forEach(function (idRencontre, soc) {
-          console.log("id: " + JSON.stringify(idRencontre))
-          soc.emit("nouvelleInfo", rencontre)
-          console.log("Envoie d'une nouvelle info sur la rencontre ! " + JSON.stringify(rencontre))
-        })
-      MongoClient.connect(url, function (err, db) {
-        if (err) {
-          console.log("Base de données indisponible.")
-        } else {
-          console.log("Enregistrement de la nouvelle marque.")
-          db
-            .collection("rencontres")
-            .update({
-              id: rencontre.id
-            }, {
-              $set: {
-                "hote.marque": rencontre.hote.marque,
-                "visiteur.marque": rencontre.visiteur.marque
-              }
-            })
-        }
-      })
+    // socket.on('panierMarque', function (rencontre) {
+    //   console.log("Panier marqué !")
+    //   console.log("Nouvelle marque:" + JSON.stringify(rencontre))
+    //   console.log("Nb abonnés:" + socketAbonnes.count())
+    //   socketAbonnes.filter(function (idRencontre) {
+    //     return idRencontre == rencontre.id
+    //   })
+    //     .forEach(function (idRencontre, soc) {
+    //       console.log("id: " + JSON.stringify(idRencontre))
+    //       soc.emit("nouvelleInfo", rencontre)
+    //       console.log("Envoie d'une nouvelle info sur la rencontre ! " + JSON.stringify(rencontre))
+    //     })
+    //   MongoClient.connect(url, function (err, db) {
+    //     if (err) {
+    //       console.log("Base de données indisponible.")
+    //     } else {
+    //       console.log("Enregistrement de la nouvelle marque.")
+    //       db
+    //         .collection("rencontres")
+    //         .update({
+    //           id: rencontre.id
+    //         }, {
+    //           $set: {
+    //             "hote.marque": rencontre.hote.marque,
+    //             "visiteur.marque": rencontre.visiteur.marque
+    //           }
+    //         })
+    //     }
+    //   })
+    // })
+    socket.on('commande', function (commande) {
+      console.log(`Commande: ${JSON.stringify(commande)}`)
+      traitement
+        .commande$
+        .next(commande)
     })
-    // Un commentaire est posté
-    socket.on("nouveauCommentaire", function (commentaire) {
-      console.log("Réception nouveau commentaire !")
-      console.log("Commentaire:" + JSON.stringify(commentaire))
-      const idRencontre = Number(commentaire.idRencontre)
-      console.log(`Id rencontre: ${idRencontre}`)
-      // Recherche des abonnés à la rencontre
-      socketAbonnes
-        .filter(idRencontre => {
-        return idRencontre == commentaire.idRencontre
-      })
-        .forEach((idRencontre, soc) => {
-          // console.log("id: " + JSON.stringify(idRencontre))
-          soc.emit("nouveauCommentaire", commentaire.commentaire)
-          // console.log(`Envoie du commentaire: ${commentaire.commentaire}`)
+    traitement
+      .evenement$
+      .subscribe(evenement => {
+        socketAbonnes
+          .filter(idRencontre => {
+          return idRencontre == evenement.idRencontre
         })
-      // Modification de la base de données
-      MongoClient.connect(url, (err, db) => {
-        if (err) {
-          console.log("Base de données indisponible.")
-          return
-        }
-        db
-          .collection("rencontres")
-          .find({id: idRencontre})
-          .each((err, rencontre) => {
-            if (err) 
-              return
-            if (!rencontre) 
-              return
-            console.log("Rencontre: " + JSON.stringify(rencontre))
-            let commentaires = Immutable
-              .fromJS(rencontre)
-              .get("commentaires", Immutable.List())
-              .push(commentaire.commentaire)
-            console.log(`Enregistrement du commentaire en base: ${commentaires}`)
+          .forEach((idRencontre, soc) => {
+            soc.emit("evenement", evenement)
+            console.log(`Envoi de l'évènement ${JSON.stringify(evenement)}`)
+          })
+      })
+    traitement
+      .evenement$
+      .subscribe(evenement => {
+        MongoClient.connect(url, (err, db) => {
+          if (err) {
+            console.log("Base de données indisponible.")
+            return
+          }
+
+          var evenements = {
+            "DEFAUT": function () {
+              return Immutable.fromJS(evenement)
+            }
+          }
+          evenements[typesEvenement.CHANGEMENT_MARQUE] = function () {
+            console.log("Enregistrement de la nouvelle marque.")
             db
               .collection("rencontres")
               .update({
-                id: idRencontre
+                id: evenement.rencontre.id
               }, {
                 $set: {
-                  "commentaires": commentaires.toArray()
+                  "hote.marque": evenement.rencontre.hote.marque,
+                  "visiteur.marque": evenement.rencontre.visiteur.marque
                 }
               })
-              .then(status => {
-                console.log(`Statut de l'enregistrement: ${status}`)
+          }
+          evenements[typesEvenement.NOUVEAU_COMMENTAIRE] = function () {
+            console.log("| NOUVEAU_COMMENTAIRE.")
+            db
+              .collection("rencontres")
+              .find({id: evenement.idRencontre})
+              .each((err, rencontre) => {
+                if (err) 
+                  return
+                if (!rencontre) 
+                  return
+                console.log("Rencontre: " + JSON.stringify(rencontre))
+                let commentaires = Immutable
+                  .fromJS(rencontre)
+                  .get("commentaires", Immutable.List())
+                  .push(evenement.commentaire)
+                console.log(`Enregistrement du commentaire en base: ${commentaires}`)
+                db
+                  .collection("rencontres")
+                  .update({
+                    id: evenement.idRencontre
+                  }, {
+                    $set: {
+                      "commentaires": commentaires.toArray()
+                    }
+                  })
+                  .then(status => {
+                    console.log(`Statut de l'enregistrement: ${status}`)
+                  })
               })
-          })
+          }
+          var rien = (evenements[evenement.type] || evenements['DEFAUT'])();
+        })
       })
-    })
   })
