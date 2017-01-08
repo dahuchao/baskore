@@ -72,10 +72,13 @@ var Rencontres = {
       }
     }
   },
-  ajouterr: function (rencontre) {
-
-    if (Rencontres.connecte) 
-      return RxMongo.collection("rencontres").flatMap(rencontres => RxMongo.insert(rencontres, rencontre))
+  mettreAJour: {
+    par: {
+      critere: function (critere, rencontreMAJ) {
+        if (Rencontres.connecte) 
+          return new RxCollection("rencontres").updateOne(critere, rencontreMAJ)
+      }
+    }
   },
   ajouter: function (rencontreNouvelle) {
     console.log(`Connexion: ${Rencontres.connecte}`)

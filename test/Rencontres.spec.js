@@ -13,7 +13,6 @@ describe("Gestion des rencontres", () => {
         .liste()
         .subscribe(rencontre => {
           // console.info(rencontre)
-
         }, err => {
           expect(err).to.not.exist
         }, () => done())
@@ -35,6 +34,7 @@ describe("Gestion des rencontres", () => {
     })
   })
   describe("Etant donné que la BDD est ouverte", () => {
+    var idRencontreCreeASupprimer = 0;
     before((done) => {
       // console.info(`Connecté? ${Rencontres.connecte}`)
       if (!Rencontres.connecte) 
@@ -95,6 +95,34 @@ describe("Gestion des rencontres", () => {
             .to
             .not
             .equal(0);
+          idRencontreCreeASupprimer = idRencontre
+        }, err => {
+          expect(err).to.not.exist
+        }, () => done())
+    })
+    it("on peut mettre à jour une rencontre", (done) => {
+      var rencontrer = {
+        date: new Date("2016-10-01"),
+        hote: {
+          nom: "test hote maj",
+          marque: 111
+        },
+        visiteur: {
+          nom: "test visiteur maj",
+          marque: 111
+        }
+      };
+      Rencontres
+        .mettreAJour
+        .par
+        .critere({
+          id: 4
+        }, rencontrer)
+        .subscribe(result => {
+          expect(result).to.exist;
+          expect(result.result.ok)
+            .to
+            .equal(1);
         }, err => {
           expect(err).to.not.exist
         }, () => done())
@@ -103,8 +131,9 @@ describe("Gestion des rencontres", () => {
       Rencontres
         .supprimer
         .par
-        .critere({id: 4})
+        .critere({id: idRencontreCreeASupprimer})
         .subscribe(result => {
+          console.info(`Id de la rencontre supprimée: ${idRencontreCreeASupprimer}`)
           expect(result).to.exist;
           expect(result.result.ok)
             .to

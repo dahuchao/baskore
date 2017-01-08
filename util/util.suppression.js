@@ -7,13 +7,23 @@ const url = "mongodb://@localhost:27017/baskoredb"
 console.log("url de la base de donnée: " + url)
 
 MongoClient.connect(url, function (err, db) {
-  db.collection("rencontres").remove({
-    // id: 5
-    // "hote.nom": "test hote" 
-  })
-  let rencontres = db.collection("rencontres").find()
+  db
+    .collection("rencontres")
+    .find()
+    .filter(rencontre => {
+      return rencontre != 3
+    })
+    .forEach((rencontre) => {
+      console.log("rencontre: " + JSON.stringify(rencontre))
+      db
+        .collection("rencontres")
+        .deleteOne({id: rencontre.id})
+    })
+  let rencontres = db
+    .collection("rencontres")
+    .find()
   rencontres.forEach((rencontre) => {
     console.log("rencontre: " + JSON.stringify(rencontre))
   })
-  db.close()
+  // db.close()
 })
