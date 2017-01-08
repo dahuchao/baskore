@@ -2,7 +2,7 @@
 var express = require("express")
 var cors = require("express-cors")
 var Immutable = require("immutable")
-var traitement = require("./src/traitement")
+var controleur = require("./src/controleur")
 var typesEvenement = require("./src/types-evenement")
 var MongoClient = require("mongodb").MongoClient
 var bodyParser = require("body-parser")
@@ -349,77 +349,17 @@ io
     // marque
     socket.on('fermerRencontre', function (idRencontre) {
       console.log('Des-abonnement à la recontre:' + idRencontre)
-      MongoClient.connect(url, function (err, db) {
-        if (err) {
-          console.log("Base de données indisponible.")
-          rencontres.filter(function (rencontre) {
-            return rencontre.id == idRencontre
-          })
-            .forEach(function (rencontre) {
-              socketAbonnes = socketAbonnes.delete(socket);
-              console.log("Fermeture abonnement rencontre: " + rencontre.id)
-              console.log("Nombres abonnés: " + socketAbonnes.count())
-            })
-        } else {
-          db
-            .collection("rencontres")
-            .find()
-            .toArray(function (err, rencontres) {
-              if (err) {
-                console.log("Les rencontres.")
-              } else {
-                rencontres
-                  .filter(function (rencontre) {
-                    return rencontre.id == idRencontre
-                  })
-                  .forEach(function (rencontre) {
-                    socketAbonnes = socketAbonnes.delete(socket)
-                    console.log("Fermeture abonnement rencontre: " + rencontre.id)
-                    console.log("Nombres abonnés: " + socketAbonnes.count())
-                  })
-              }
-            })
-        }
-      })
+      socketAbonnes = socketAbonnes.delete(socket);
+      console.log("Fermeture abonnement rencontre: " + rencontre.id)
+      console.log("Nombres abonnés: " + socketAbonnes.count())
     });
-    // Un panier est marqué
-    // socket.on('panierMarque', function (rencontre) {
-    //   console.log("Panier marqué !")
-    //   console.log("Nouvelle marque:" + JSON.stringify(rencontre))
-    //   console.log("Nb abonnés:" + socketAbonnes.count())
-    //   socketAbonnes.filter(function (idRencontre) {
-    //     return idRencontre == rencontre.id
-    //   })
-    //     .forEach(function (idRencontre, soc) {
-    //       console.log("id: " + JSON.stringify(idRencontre))
-    //       soc.emit("nouvelleInfo", rencontre)
-    //       console.log("Envoie d'une nouvelle info sur la rencontre ! " + JSON.stringify(rencontre))
-    //     })
-    //   MongoClient.connect(url, function (err, db) {
-    //     if (err) {
-    //       console.log("Base de données indisponible.")
-    //     } else {
-    //       console.log("Enregistrement de la nouvelle marque.")
-    //       db
-    //         .collection("rencontres")
-    //         .update({
-    //           id: rencontre.id
-    //         }, {
-    //           $set: {
-    //             "hote.marque": rencontre.hote.marque,
-    //             "visiteur.marque": rencontre.visiteur.marque
-    //           }
-    //         })
-    //     }
-    //   })
-    // })
     socket.on('commande', function (commande) {
       console.log(`Commande: ${JSON.stringify(commande)}`)
-      traitement
+      controleur
         .commande$
         .next(commande)
     })
-    traitement
+    controleur
       .evenement$
       .subscribe(evenement => {
         socketAbonnes
@@ -430,8 +370,8 @@ io
             soc.emit("evenement", evenement)
             console.log(`Envoi de l'évènement ${JSON.stringify(evenement)}`)
           })
-      })
-    traitement
+      });
+    controleur
       .evenement$
       .subscribe(evenement => {
         MongoClient.connect(url, (err, db) => {
@@ -450,11 +390,11 @@ io
             db
               .collection("rencontres")
               .update({
-                id: evenement.rencontre.id
+                id: evenement.idRencontre
               }, {
                 $set: {
-                  "hote.marque": evenement.rencontre.hote.marque,
-                  "visiteur.marque": evenement.rencontre.visiteur.marque
+                  "hote.marque": evenement.marqueHote,
+                  "visiteur.marque": evenement.marqueVisiteur
                 }
               })
           }
@@ -490,5 +430,5 @@ io
           }
           var rien = (evenements[evenement.type] || evenements['DEFAUT'])();
         })
-      })
+      });
   })

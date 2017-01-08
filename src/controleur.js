@@ -14,7 +14,7 @@ var evenement$ = commande$.map(commande => {
     }
   }
   commandes[typesCommande.PANIER_MARQUE] = function () {
-    console.log(`| Nouvelle marque ${commande.rencontre.hote.marque}:${commande.rencontre.visiteur.marque}`)
+    console.log(`| Nouvelle marque ${commande.marqueHote}:${commande.marqueVisiteur}`)
     return Immutable
       .fromJS(commande)
       .set("type", typesEvenement.CHANGEMENT_MARQUE)

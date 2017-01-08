@@ -48,10 +48,14 @@ export default function Repartiteur() {
         .set("modeEdition", !etat.modeEdition)
     }
     actions[typesEvenement.CHANGEMENT_MARQUE] = function () {
-      console.log("| rencontre: " + JSON.stringify(action.rencontre))
+      console.log(`| Nouvelle marque ${action.marqueHote}:${action.marqueVisiteur}`)
+      let rencontre = Immutable
+        .fromJS(etat)
+        .get("rencontre")
       return Immutable
         .fromJS(etat)
-        .set("rencontre", action.rencontre)
+        .set("rencontre.marque.hote", action.marqueHote)
+        .set("rencontre.marque.visiteur", action.marqueVisiteur)
     }
     actions[types.PUT_RENCONTRE_SUCCESS] = function () {
       console.log("| rencontre: " + JSON.stringify(action.rencontre))

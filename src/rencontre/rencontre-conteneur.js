@@ -58,17 +58,15 @@ export default class RencontreConteneur extends React.Component {
         action$.next(evenement)
       })
   }
-  // surReceptionNouvelleInfo(rencontre) {
-  //   console.debug("Reception d'une nouvelle info provenant du serveur: " + JSON.stringify(rencontre))
-  //   action$.next({type: types.NOUVELLE_INFO, rencontre: rencontre})
-  // }
   surNouvelleMarque() {
     console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
     this
       .socket
       .emit("commande", {
         type: typesCommande.PANIER_MARQUE,
-        rencontre: this.state.rencontre
+        idRencontre: this.state.rencontre.id,
+        marqueHote: this.state.rencontre.hote.marque,
+        marqueVisiteur: this.state.rencontre.visiteur.marque
       })
   }
   surNouveauCommentaire(commentaire) {
