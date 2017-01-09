@@ -11,10 +11,13 @@ MongoClient.connect(url, function (err, db) {
     .collection("rencontres")
     .find()
     .filter(rencontre => {
-      return rencontre != 3
+      return rencontre != null
+    })
+    .filter(rencontre => {
+      return rencontre.hote.nom.match("test .*")
     })
     .forEach((rencontre) => {
-      console.log("rencontre: " + JSON.stringify(rencontre))
+      console.log("Suppression rencontre: " + JSON.stringify(rencontre))
       db
         .collection("rencontres")
         .deleteOne({id: rencontre.id})

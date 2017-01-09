@@ -13,16 +13,17 @@ MongoClient.connect(url, (err, db) => {
   }
   db
     .collection("rencontres")
-    .find({
-      id: 5
-    })
+    .find()
     .each((err, rencontre) => {
       if (err) {
         console.log("Erreur: " + err)
         return
       }
-      if (rencontre) 
-        console.log("rencontre: " + JSON.stringify(rencontre))
+      if (rencontre==null) {
+        return
+      }
+      if (rencontre.hote.nom.match("test .*")) 
+        console.log("rencontre****: " + JSON.stringify(rencontre))
     })
   db
     .collection("rencontres")
