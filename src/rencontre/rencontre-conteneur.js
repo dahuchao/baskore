@@ -33,30 +33,25 @@ export default class RencontreConteneur extends React.Component {
     this.socket = io(adresse)
     this
       .socket
-      .on("connect", this.connexionTableMarque.bind(this))
-    this
-      .socket
-      .emit("ouvrirRencontre", idRencontre)
+      .on("connect", function () {
+        console.info("Connecté avec la table de marque")
+        this
+          .socket
+          .emit("ouvrirRencontre", idRencontre)
+        this.socket
+          .on("evenement", evenement => {
+            // console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
+            action$.next(evenement)
+          })
+      }.bind(this))
     let rest = location.protocol + "//" + location.host + "/api/rencontres/" + idRencontre
     console.info("Requete de l'API web: " + rest)
     request(rest, function (error, response, rencontre) {
       if (!error && response.statusCode == 200) {
         let oRencontre = JSON.parse(rencontre)
-        action$.next({type: types.GET_RENCONTRE_SUCCESS, rencontre: oRencontre})
+        action$.next({ type: types.GET_RENCONTRE_SUCCESS, rencontre: oRencontre })
       }
     })
-  }
-  connexionTableMarque() {
-    console.info("Connecté avec la table de marque")
-    this
-      .socket
-      .on("nouvelleInfo", this.surReceptionNouvelleInfo)
-    this
-      .socket
-      .on("evenement", evenement => {
-        // console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
-        action$.next(evenement)
-      })
   }
   surNouvelleMarque() {
     // console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
@@ -78,7 +73,7 @@ export default class RencontreConteneur extends React.Component {
         idRencontre: this.state.rencontre.id,
         "commentaire": commentaire
       })
-    action$.next({type: types.COMMENTAIRE_POST, commentaire: commentaire})
+    action$.next({ type: types.COMMENTAIRE_POST, commentaire: commentaire })
   }
   surChangementHote(sor, ent) {
     console.debug(`Changement hote ${sor} par ${ent}`)
@@ -132,41 +127,40 @@ export default class RencontreConteneur extends React.Component {
     }, function (error, response, rencontre) {
       if (!error && response.statusCode == 200) {
         console.info("Rencontre modifiée :" + JSON.stringify(rencontre))
-        action$.next({type: types.PUT_RENCONTRE_SUCCESS, rencontre: rencontre})
+        action$.next({ type: types.PUT_RENCONTRE_SUCCESS, rencontre: rencontre })
       }
     })
   }
   editer() {
-    action$.next({type: types.EDITER_RENCONTRE})
+    action$.next({ type: types.EDITER_RENCONTRE })
   }
   surVerrouillage() {
-    action$.next({type: types.VERROUILLAGE})
+    action$.next({ type: types.VERROUILLAGE })
   }
   render() {
     // console.debug(`Nouvelle rencontre: ` + this.state.rencontre)
-    return (!this.state.rencontre
-      ? null
-      : <Rencontre
-        rencontre={this.state.rencontre}
-        surNouvelleMarque={this
+    let rencontre = <Rencontre
+      rencontre={this.state.rencontre}
+      surNouvelleMarque={this
         .surNouvelleMarque
         .bind(this)}
-        surPeriode={this
+      surPeriode={this
         .surPeriode
         .bind(this)}
-        editer={this.editer}
-        sauver={this.sauver}
-        surNouveauCommentaire={this
+      editer={this.editer}
+      sauver={this.sauver}
+      surNouveauCommentaire={this
         .surNouveauCommentaire
         .bind(this)}
-        surChangementHote={this
+      surChangementHote={this
         .surChangementHote
         .bind(this)}
-        surChangementVisiteur={this
+      surChangementVisiteur={this
         .surChangementVisiteur
         .bind(this)}
-        modeEdition={this.state.modeEdition}
-        modeVerrouille={this.state.modeVerrouille}
-        surVerrouillage={this.surVerrouillage}/>)
+      modeEdition={this.state.modeEdition}
+      modeVerrouille={this.state.modeVerrouille}
+      surVerrouillage={this.surVerrouillage} />
+    return this.state.rencontre ? rencontre : null
   }
 }
