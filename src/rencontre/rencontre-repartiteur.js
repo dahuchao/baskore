@@ -4,7 +4,7 @@ import * as types from "./rencontre-actions"
 var typesEvenement = require("../types-evenement")
 
 export default function Repartiteur() {
-  const action$ = new Rx.BehaviorSubject({type: "DEFAUT"})
+  const action$ = new Rx.BehaviorSubject({ type: "DEFAUT" })
 
   const init = {
     modeEdition: false,
@@ -29,11 +29,11 @@ export default function Repartiteur() {
       console.log("| rencontre: " + JSON.stringify(action.rencontre))
       let commentaires = Immutable
         .List()
-        .push({commentaire: "Morgane entre sur le terrain à la place de Jacqueline", valide: true})
-        .push({commentaire: "Panier magnifique de Tifanie", valide: true})
-        .push({commentaire: "Les visiteurs dominent la partie", valide: true})
-        .push({commentaire: "Dans la raquette les interieurs dominent sans partage", valide: true})
-        .push({commentaire: "Superbe action des Nantaises qui malheureusement ne donnera rien", valide: true})
+        .push({ commentaire: "Morgane entre sur le terrain à la place de Jacqueline", valide: true })
+        .push({ commentaire: "Panier magnifique de Tifanie", valide: true })
+        .push({ commentaire: "Les visiteurs dominent la partie", valide: true })
+        .push({ commentaire: "Dans la raquette les interieurs dominent sans partage", valide: true })
+        .push({ commentaire: "Superbe action des Nantaises qui malheureusement ne donnera rien", valide: true })
       let rencontreAvecCommentaire = Immutable
         .fromJS(action.rencontre)
         .set("commentaires", commentaires)
@@ -55,8 +55,8 @@ export default function Repartiteur() {
 
       return Immutable
         .fromJS(etat)
-        .set("rencontre.marque.hote", action.marqueHote)
-        .set("rencontre.marque.visiteur", action.marqueVisiteur)
+        .setIn(['rencontre', 'hote', 'marque'], action.marqueHote)
+        .setIn(['rencontre', 'visiteur', 'marque'], action.marqueVisiteur)
     }
     actions[types.PUT_RENCONTRE_SUCCESS] = function () {
       console.log("| rencontre: " + JSON.stringify(action.rencontre))
@@ -90,11 +90,10 @@ export default function Repartiteur() {
         .get("rencontre")
       let commentaires = rencontre
         .get("commentaires")
-        .push({commentaire: commentaire, valide: false})
+        .push({ commentaire: commentaire, valide: false })
       rencontre = rencontre.set("commentaires", commentaires)
       return Immutable
         .fromJS(etat)
-        .set("rencontre", rencontre)
     }
     actions[typesEvenement.NOUVEAU_COMMENTAIRE] = function () {
       let commentaire = action.commentaire
@@ -104,9 +103,7 @@ export default function Repartiteur() {
         .get("rencontre")
       let commentaires = rencontre
         .get("commentaires")
-        .map(commentaire => {
-          return commentaire.set("valide", true)
-        })
+        .push({ commentaire: commentaire, valide: true })
       rencontre = rencontre.set("commentaires", commentaires)
       return Immutable
         .fromJS(etat)
@@ -127,5 +124,5 @@ export default function Repartiteur() {
     console.log("-------------------")
     return etatNouveau.toJS()
   }, init)
-  return {etat$, action$}
+  return { etat$, action$ }
 }
