@@ -363,7 +363,7 @@ io
 controleur
   .evenement$
   .subscribe(evenement => {
-    console.log("^^^^^^Communication vers les tableaux de marque^^^^^^^^^")
+    console.log(">---- Communication vers les tableaux de marque ----<")
     console.log(`\\ EVENEMENT: ${evenement.type}`)
     socketAbonnes
       .filter(client => {
@@ -373,13 +373,13 @@ controleur
         client
           .socket
           .emit("evenement", evenement)
-        console.log(`Envoi de l'évènement ${JSON.stringify(evenement)} au client: ${client.socket.id}`)
+        console.log(`| Envoi de l'évènement ${JSON.stringify(evenement)} au client: ${client.socket.id}`)
       })
   });
 controleur
   .evenement$
   .subscribe(evenement => {
-    console.log("^^^^^^Enregistrement en base^^^^^^^^^^^^")
+    console.log(">---- Enregistrement en base ----<")
     console.log(`\\ EVENEMENT: ${evenement.type}`)
     MongoClient.connect(url, (err, db) => {
       if (err) {

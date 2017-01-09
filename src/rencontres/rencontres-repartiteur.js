@@ -73,7 +73,7 @@ export default function Repartiteur() {
     let etatNouveau = (actions[action.type] || actions['DEFAUT'])();
     console.log("/--------Nouvel état-----------")
     console.log(`${etatNouveau}`)
-    console.log("-------------------------------")
+    console.log(">------------------------------")
     return etatNouveau.toJS()
   }, init)
 

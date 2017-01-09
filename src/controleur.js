@@ -21,7 +21,7 @@ var evenement$ = commande$.map(commande => {
       .set("type", typesEvenement.CHANGEMENT_MARQUE)
   }
   commandes[typesCommande.CHANGER_PERIODE] = function () {
-    console.log("Nouvelle periode: " + JSON.stringify(commande.periode))
+    console.log(`| Nouvelle periode: ${commande.periode}`)
     return Immutable
       .fromJS(commande)
       .set("type", typesEvenement.CHANGEMENT_PERIODE)
@@ -48,7 +48,7 @@ var evenement$ = commande$.map(commande => {
   }
   let evenement = (commandes[commande.type] || commandes['DEFAUT'])();
   console.log("/ Evenement: " + evenement)
-  console.log("-------------------")
+  console.log(">-------------------------------")
   return evenement.toJS()
 })
 

@@ -5,12 +5,10 @@ var typesEvenement = require("../types-evenement")
 
 export default function Repartiteur() {
   const action$ = new Rx.BehaviorSubject({type: "DEFAUT"})
-
   const init = {
     modeEdition: false,
     modeVerrouille: false
   }
-
   const etat$ = action$.scan((etat, action) => {
     console.log("##############################")
     console.log("\\ ACTION: " + JSON.stringify(action.type))
@@ -94,7 +92,7 @@ export default function Repartiteur() {
     let etatNouveau = (actions[action.type] || actions['DEFAUT'])();
     console.log("/----- Nouvel état ----------------")
     console.log(`${etatNouveau}`)
-    console.log("-----------------------------------")
+    console.log(">----------------------------------")
     return etatNouveau.toJS()
   }, init)
   return {etat$, action$}

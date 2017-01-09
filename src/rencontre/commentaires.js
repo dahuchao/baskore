@@ -27,7 +27,7 @@ export default React.createClass({
     this
       .props
       .surNouveauCommentaire(this.state.commentaire)
-    // this.setState({commentaire: ""})
+    this.setState({commentaire: ""})
     // console.debug(`surNouveauCommentaire: ` +this.state.commentaire)
   },
   render() {
