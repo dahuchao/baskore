@@ -65,7 +65,7 @@ export default class RencontreConteneur extends React.Component {
       })
   }
   surNouveauCommentaire(commentaire) {
-    console.debug(`Commentaire: ${commentaire}`)
+    // console.debug(`surNouveauCommentaire: ${commentaire}`)
     this
       .socket
       .emit("commande", {
