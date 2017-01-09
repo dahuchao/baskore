@@ -13,9 +13,9 @@ var ObjectId = require("mongodb").ObjectID
 // Codec base 64 var base64 = require('base-64') Création de l'application
 // express
 var app = express()
-app.use(cors({ allowedOrigins: ['localhost:3000'] }))
+app.use(cors({allowedOrigins: ['localhost:3000']}))
 app.use(bodyParser.json()) // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
 // Définition du port d'écoute
 app.set('port', (process.env.PORT || 80))
 // Répertoire des pages du site web
@@ -83,7 +83,7 @@ app.get("/api/rencontres/:id", function (req, res) {
     } else {
       db
         .collection("rencontres")
-        .find({ id: idRencontre })
+        .find({id: idRencontre})
         .each(function (err, rencontre) {
           if (err) {
             console.log("Erreur: " + err)
@@ -124,7 +124,7 @@ app.put("/api/rencontres/:id", upload.array(), function (req, res) {
     } else {
       db
         .collection("rencontres")
-        .find({ id: idRencontre })
+        .find({id: idRencontre})
         .each(function (err, rencontre) {
           if (err) {
             console.log("Erreur: " + err)
@@ -300,24 +300,22 @@ var serveur = app.listen(app.get('port'), function () {
 })
 // Chargement de socket.io
 var io = require('socket.io').listen(serveur);
-// Configuration du controleur de bonne connexion
-// io.set('heartbeat timeout', 3000); 
-// io.set('heartbeat interval', 10000);
-// Socket des abonnés au flux de publication des mesures de la sonde de
-// température
+// Configuration du controleur de bonne connexion io.set('heartbeat timeout',
+// 3000); io.set('heartbeat interval', 10000); Socket des abonnés au flux de
+// publication des mesures de la sonde de température
 var socketAbonnes = Immutable.Map()
 // Quand on client se connecte, on le note dans la console
 io
   .sockets
   .on('connect', function (socket) {
+    console.log('Nouvelle connexion:' + socket.id)
+    socket.emit('message', 'Vous êtes bien connecté au comité !')
     socket.on('disconnect', function () {
       console.log('déconnection:' + socket.id)
       console.log(`Désabonnement du client ${socket.id}.`)
       socketAbonnes = socketAbonnes.delete(socket.id)
       console.log(`Nombre d'abonnés: ${socketAbonnes.count()}`)
     });
-    console.log('Nouvelle connexion:' + socket.id)
-    socket.emit('message', 'Vous êtes bien connecté au comité !')
     // Quand la table de marque recoit une demande d'abonnement à un tableau de
     // marque
     socket.on('ouvrirRencontre', function (idRencontre) {
@@ -329,7 +327,7 @@ io
             return rencontre.id == idRencontre
           })
             .forEach(function (rencontre) {
-              socketAbonnes = socketAbonnes.set(socket.id, { socket, idRencontre })
+              socketAbonnes = socketAbonnes.set(socket.id, {socket, idRencontre})
               console.log(`Abonnement du client ${socket.id} à la rencontre ${rencontre.id}.`)
               console.log(`Nombre d'abonnés: ${socketAbonnes.count()}`)
             })
@@ -346,7 +344,7 @@ io
                     return rencontre.id == idRencontre
                   })
                   .forEach(function (rencontre) {
-                    socketAbonnes = socketAbonnes.set(socket.id, { socket, idRencontre })
+                    socketAbonnes = socketAbonnes.set(socket.id, {socket, idRencontre})
                     console.log(`Abonnement du client ${socket.id} à la rencontre ${rencontre.id}.`)
                     console.log(`Nombre d'abonnés: ${socketAbonnes.count()}`)
                   })
@@ -354,14 +352,6 @@ io
             })
         }
       })
-    });
-    // Quand la table de marque recoit une demande d'abonnement à un tableau de
-    // marque
-    socket.on('fermerRencontre', function (idRencontre) {
-      console.log('Des-abonnement à la recontre:' + idRencontre)
-      socketAbonnes = socketAbonnes.delete(socket.id);
-      console.log("Fermeture abonnement rencontre: " + rencontre.id)
-      console.log("Nombres abonnés: " + socketAbonnes.count())
     });
     socket.on('commande', function (commande) {
       console.log(`Commande: ${JSON.stringify(commande)}`)
@@ -373,31 +363,36 @@ io
 controleur
   .evenement$
   .subscribe(evenement => {
+    console.log("^^^^^^Communication vers les tableaux de marque^^^^^^^^^")
+    console.log(`\\ EVENEMENT: ${evenement.type}`)
     socketAbonnes
       .filter(client => {
-        return client.idRencontre == evenement.idRencontre
-      })
+      return client.idRencontre == evenement.idRencontre
+    })
       .forEach((client, idSocket) => {
-        client.socket.emit("evenement", evenement)
+        client
+          .socket
+          .emit("evenement", evenement)
         console.log(`Envoi de l'évènement ${JSON.stringify(evenement)} au client: ${client.socket.id}`)
       })
   });
 controleur
   .evenement$
   .subscribe(evenement => {
+    console.log("^^^^^^Enregistrement en base^^^^^^^^^^^^")
+    console.log(`\\ EVENEMENT: ${evenement.type}`)
     MongoClient.connect(url, (err, db) => {
       if (err) {
         console.log("Base de données indisponible.")
         return
       }
-
       var evenements = {
         "DEFAUT": function () {
           return Immutable.fromJS(evenement)
         }
       }
       evenements[typesEvenement.CHANGEMENT_MARQUE] = function () {
-        console.log("Enregistrement de la nouvelle marque.")
+        console.log(`| Nouvelle marque ${evenement.marqueHote}:${evenement.marqueVisiteur}`)
         db
           .collection("rencontres")
           .update({
@@ -410,7 +405,7 @@ controleur
           })
       }
       evenements[typesEvenement.CHANGEMENT_PERIODE] = function () {
-        console.log("Enregistrement de la nouvelle periode.")
+        console.log("| Nouvelle période: " + JSON.stringify(evenement.periode))
         db
           .collection("rencontres")
           .update({
@@ -422,21 +417,21 @@ controleur
           })
       }
       evenements[typesEvenement.NOUVEAU_COMMENTAIRE] = function () {
-        console.log("| NOUVEAU_COMMENTAIRE.")
+        console.log(`| Nouveau commentaire sur la rencontre: ${evenement.commentaire}`)
         db
           .collection("rencontres")
-          .find({ id: evenement.idRencontre })
+          .find({id: evenement.idRencontre})
           .each((err, rencontre) => {
-            if (err)
+            if (err) 
               return
-            if (!rencontre)
+            if (!rencontre) 
               return
-            console.log("Rencontre: " + JSON.stringify(rencontre))
+            console.log("| Rencontre: " + JSON.stringify(rencontre))
             let commentaires = Immutable
               .fromJS(rencontre)
               .get("commentaires", Immutable.List())
               .push(evenement.commentaire)
-            console.log(`Enregistrement du commentaire en base: ${commentaires}`)
+            console.log(`| Enregistrement du commentaire en base: ${commentaires}`)
             db
               .collection("rencontres")
               .update({

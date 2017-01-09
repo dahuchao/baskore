@@ -7,7 +7,7 @@ var commande$ = new Rx.BehaviorSubject({type: "DEFAUT"})
 
 var evenement$ = commande$.map(commande => {
   console.log("##############################")
-  console.log("\\ COMMANDE: " + JSON.stringify(commande.type))
+  console.log(`\\ COMMANDE: ${commande.type}`)
   let commandes = {
     "DEFAUT": function () {
       return Immutable.fromJS(commande)
@@ -15,7 +15,7 @@ var evenement$ = commande$.map(commande => {
   }
   commandes[typesCommande.PANIER_MARQUE] = function () {
     console.log(`| Nouvelle marque ${commande.marqueHote}:${commande.marqueVisiteur}`)
-    
+
     return Immutable
       .fromJS(commande)
       .set("type", typesEvenement.CHANGEMENT_MARQUE)
@@ -27,13 +27,15 @@ var evenement$ = commande$.map(commande => {
       .set("type", typesEvenement.CHANGEMENT_PERIODE)
   }
   commandes[typesCommande.CHANGER_JOUEUR_HOTE] = function () {
-    console.log("| CHANGER_JOUEUR_HOTE.")
+    console.log(`| Joueur sortant: ${commande.sortant}`)
+    console.log(`| Joueur entrant: ${commande.entrant}`)
     return Immutable
       .fromJS(commande)
       .set("type", typesEvenement.CHANGEMENT_JOUEUR_HOTE)
   }
   commandes[typesCommande.CHANGER_JOUEUR_VISITEUR] = function () {
-    console.log("| CHANGER_JOUEUR_VISITEUR.")
+    console.log(`| Joueur sortant: ${commande.sortant}`)
+    console.log(`| Joueur entrant: ${commande.entrant}`)
     return Immutable
       .fromJS(commande)
       .set("type", typesEvenement.CHANGEMENT_JOUEUR_VISITEUR)

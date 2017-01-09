@@ -5,7 +5,6 @@ import request from "request"
 import * as types from "./rencontres-actions"
 import Rencontres from "./rencontres"
 import RencontreAjout from "./rencontres-ajout"
-// import { etat$, action$ } from "./rencontres-repartiteur"
 import Repartiteur from "./rencontres-repartiteur"
 let {etat$, action$} = Repartiteur()
 

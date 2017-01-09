@@ -12,7 +12,7 @@ export default function Repartiteur() {
 
   const etat$ = action$.scan((etat, action) => {
     console.log("##############################")
-    console.log("| ACTION: " + JSON.stringify(action.type))
+    console.log("\\ ACTION: " + JSON.stringify(action.type))
     let actions = {
       "DEFAUT": function () {
         return Immutable.fromJS(etat)
@@ -71,8 +71,9 @@ export default function Repartiteur() {
         .set("rencontres", rencontres)
     }
     let etatNouveau = (actions[action.type] || actions['DEFAUT'])();
-    console.log("Nouvel état: " + JSON.stringify(etatNouveau.toJS()))
-    console.log("-------------------")
+    console.log("/--------Nouvel état-----------")
+    console.log(`${etatNouveau}`)
+    console.log("-------------------------------")
     return etatNouveau.toJS()
   }, init)
 

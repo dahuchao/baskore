@@ -15,11 +15,11 @@ import Done from "material-ui/svg-icons/action/done"
 
 export default React.createClass({
   componentWillMount() {
-    this.setState({ commentaire: "" })
+    this.setState({commentaire: ""})
   },
   saisieCommentaire(e) {
     // console.debug("saisieCommentaire: " + e.target.value)
-    this.setState({ commentaire: e.target.value })
+    this.setState({commentaire: e.target.value})
     // console.debug(`saisieCommentaire: ` + this.state.commentaire)
   },
   surNouveauCommentaire() {
@@ -27,7 +27,7 @@ export default React.createClass({
     this
       .props
       .surNouveauCommentaire(this.state.commentaire)
-    this.setState({ commentaire: "" })
+    // this.setState({commentaire: ""})
     // console.debug(`surNouveauCommentaire: ` +this.state.commentaire)
   },
   render() {
@@ -37,26 +37,20 @@ export default React.createClass({
       display: "flex"
     }
     const styleElement = {
-      fontSize: "0.8em",
-      paddingLeft: "0.8em",
-      paddingRight: "0.8em",
-      paddingTop: "0.3em",
-      paddingBottom: "0.3em"
+      fontSize: "0.8rem",
+      paddingLeft: "0.8rem",
+      paddingRight: "0.8rem",
+      paddingTop: "0.3rem",
+      paddingBottom: "0.3rem"
     }
     let commentaires = Immutable
       .List(this.props.rencontre.commentaires)
       .reverse()
       .map(commentaire => {
-        const element = commentaire.valide
-          ? (<ListItem
-            key={id++}
-            primaryText={commentaire.commentaire}
-            innerDivStyle={styleElement} />)
-          : (<ListItem
-            key={id++}
-            primaryText={commentaire.commentaire}
-            secondaryText="Enregistrement en cours..."
-            innerDivStyle={styleElement} />)
+        const element = (<ListItem
+          key={id++}
+          primaryText={commentaire}
+          innerDivStyle={styleElement}/>)
         return element
       })
     let champSaisie = <div style={styleFlex}>
@@ -67,13 +61,17 @@ export default React.createClass({
         fullWidth={true}
         maxLength="140"
         value={this.state.commentaire}
-        onChange={this.saisieCommentaire} />
-      <FlatButton onClick={this.surNouveauCommentaire} icon={< Done />} />
+        onChange={this.saisieCommentaire}/>
+      <FlatButton onClick={this.surNouveauCommentaire} icon={< Done />}/>
     </div>
     return (
       <Card>
-        {this.props.modeVerrouille ? null : champSaisie}
-        <List style={{ padding: "0px" }}>
+        {this.props.modeVerrouille
+          ? null
+          : champSaisie}
+        <List style={{
+          padding: "0px"
+        }}>
           {commentaires}
         </List>
       </Card>

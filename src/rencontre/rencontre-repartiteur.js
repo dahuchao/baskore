@@ -13,7 +13,7 @@ export default function Repartiteur() {
 
   const etat$ = action$.scan((etat, action) => {
     console.log("##############################")
-    console.log("| ACTION: " + JSON.stringify(action.type))
+    console.log("\\ ACTION: " + JSON.stringify(action.type))
     let actions = {
       "DEFAUT": function () {
         return Immutable.fromJS(etat)
@@ -27,16 +27,16 @@ export default function Repartiteur() {
     }
     actions[types.GET_RENCONTRE_SUCCESS] = function () {
       console.log("| rencontre: " + JSON.stringify(action.rencontre))
-      let commentaires = Immutable
-        .List()
-        .push({ commentaire: "Morgane entre sur le terrain à la place de Jacqueline", valide: true })
-        .push({ commentaire: "Panier magnifique de Tifanie", valide: true })
-        .push({ commentaire: "Les visiteurs dominent la partie", valide: true })
-        .push({ commentaire: "Dans la raquette les interieurs dominent sans partage", valide: true })
-        .push({ commentaire: "Superbe action des Nantaises qui malheureusement ne donnera rien", valide: true })
+      // let commentaires = Immutable
+      //   .List()
+      //   .push({ commentaire: "Morgane entre sur le terrain à la place de Jacqueline", valide: true })
+      //   .push({ commentaire: "Panier magnifique de Tifanie", valide: true })
+      //   .push({ commentaire: "Les visiteurs dominent la partie", valide: true })
+      //   .push({ commentaire: "Dans la raquette les interieurs dominent sans partage", valide: true })
+      //   .push({ commentaire: "Superbe action des Nantaises qui malheureusement ne donnera rien", valide: true })
       let rencontreAvecCommentaire = Immutable
         .fromJS(action.rencontre)
-        .set("commentaires", commentaires)
+        // .set("commentaires", commentaires)
       return Immutable
         .fromJS(etat)
         .set("rencontre", rencontreAvecCommentaire)
@@ -82,46 +82,34 @@ export default function Repartiteur() {
         .fromJS(etat)
         .set("rencontre", rencontre)
     }
-    actions[types.COMMENTAIRE_POST] = function () {
-      let commentaire = action.commentaire
-      console.log(` Nouveau commentaire sur la rencontre: ${commentaire}`)
-      let rencontre = Immutable
-        .fromJS(etat)
-        .get("rencontre")
-      let commentaires = rencontre
-        .get("commentaires")
-        .push({ commentaire: commentaire, valide: false })
-      rencontre = rencontre.set("commentaires", commentaires)
-      return Immutable
-        .fromJS(etat)
-    }
     actions[typesEvenement.NOUVEAU_COMMENTAIRE] = function () {
       let commentaire = action.commentaire
-      console.log(` Nouveau commentaire sur la rencontre: ${commentaire}`)
+      console.log(`| Nouveau commentaire sur la rencontre: ${commentaire}`)
       let rencontre = Immutable
         .fromJS(etat)
         .get("rencontre")
       let commentaires = rencontre
         .get("commentaires")
-        .push({ commentaire: commentaire, valide: true })
+        .push(commentaire)
       rencontre = rencontre.set("commentaires", commentaires)
       return Immutable
         .fromJS(etat)
         .set("rencontre", rencontre)
     }
     actions[types.CHANGEMENT_JOUEUR_HOTE] = function () {
-      console.log(` Joueur sortant: ${action.sortant}`)
-      console.log(` Joueur entrant: ${action.entrant}`)
+      console.log(`| Joueur sortant: ${action.sortant}`)
+      console.log(`| Joueur entrant: ${action.entrant}`)
       return Immutable.fromJS(etat)
     }
     actions[types.CHANGEMENT_JOUEUR_VISITEUR] = function () {
-      console.log(` Joueur sortant: ${action.sortant}`)
-      console.log(` Joueur entrant: ${action.entrant}`)
+      console.log(`| Joueur sortant: ${action.sortant}`)
+      console.log(`| Joueur entrant: ${action.entrant}`)
       return Immutable.fromJS(etat)
     }
     let etatNouveau = (actions[action.type] || actions['DEFAUT'])();
-    console.log("Nouvel état: " + etatNouveau)
-    console.log("-------------------")
+    console.log("/----- Nouvel état ----------------")
+    console.log(`${etatNouveau}`)
+    console.log("-----------------------------------")
     return etatNouveau.toJS()
   }, init)
   return { etat$, action$ }

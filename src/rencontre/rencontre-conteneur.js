@@ -6,7 +6,6 @@ import io from "socket.io-client"
 import Rencontre from "./rencontre"
 import * as types from "./rencontre-actions"
 var typesCommande = require("../types-commande")
-// import { etat$, action$ } from "./rencontre-repartiteur"
 import Repartiteur from "./rencontre-repartiteur"
 let {etat$, action$} = Repartiteur()
 
@@ -18,23 +17,16 @@ export default class RencontreConteneur extends React.Component {
       modeVerrouille: true
     }
   }
-  componentWillUnmount() {
-    const idRencontre = this.state.rencontre.id
-    console.info("Fermeture tableau rencontre " + idRencontre)
-    this
-      .socket
-      .emit("fermerRencontre", idRencontre)
-  }
   componentDidMount() {
     etat$.subscribe(etat => this.setState(etat))
     const idRencontre = this.props.params.idRencontre
     var adresse = location.href
-    console.info("Adresse web socket: " + adresse)
+    // console.info("Adresse web socket: " + adresse)
     this.socket = io(adresse)
     this
       .socket
       .on("connect", function () {
-        console.info("Connecté avec la table de marque")
+        // console.info("Connecté avec la table de marque")
         this
           .socket
           .emit("ouvrirRencontre", idRencontre)
@@ -45,7 +37,7 @@ export default class RencontreConteneur extends React.Component {
           })
       }.bind(this))
     let rest = location.protocol + "//" + location.host + "/api/rencontres/" + idRencontre
-    console.info("Requete de l'API web: " + rest)
+    // console.info("Requete de l'API web: " + rest)
     request(rest, function (error, response, rencontre) {
       if (!error && response.statusCode == 200) {
         let oRencontre = JSON.parse(rencontre)
@@ -65,7 +57,7 @@ export default class RencontreConteneur extends React.Component {
       })
   }
   surNouveauCommentaire(commentaire) {
-    // console.debug(`surNouveauCommentaire: ${commentaire}`)
+    console.debug(`surNouveauCommentaire: ${commentaire}`)
     this
       .socket
       .emit("commande", {
@@ -73,7 +65,7 @@ export default class RencontreConteneur extends React.Component {
         idRencontre: this.state.rencontre.id,
         "commentaire": commentaire
       })
-    action$.next({ type: types.COMMENTAIRE_POST, commentaire: commentaire })
+    // action$.next({ type: types.COMMENTAIRE_POST, commentaire: commentaire })
   }
   surChangementHote(sor, ent) {
     console.debug(`Changement hote ${sor} par ${ent}`)
@@ -138,7 +130,7 @@ export default class RencontreConteneur extends React.Component {
     action$.next({ type: types.VERROUILLAGE })
   }
   render() {
-    console.debug(`Nouvelle rencontre: ` + this.state.rencontre)
+    // console.debug(`Nouvelle rencontre: ` + this.state.rencontre)
     let rencontre = <Rencontre
       rencontre={this.state.rencontre}
       surNouvelleMarque={this
