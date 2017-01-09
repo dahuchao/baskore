@@ -55,8 +55,8 @@ export default function Repartiteur() {
 
       return Immutable
         .fromJS(etat)
-        .set("rencontre.marque.hote", action.marqueHote)
-        .set("rencontre.marque.visiteur", action.marqueVisiteur)
+        .setIn(['rencontre', 'hote', 'marque'], action.marqueHote)
+        .setIn(['rencontre', 'visiteur', 'marque'], action.marqueVisiteur)
     }
     actions[types.PUT_RENCONTRE_SUCCESS] = function () {
       console.log("| rencontre: " + JSON.stringify(action.rencontre))

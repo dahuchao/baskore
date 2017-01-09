@@ -300,6 +300,9 @@ var serveur = app.listen(app.get('port'), function () {
 })
 // Chargement de socket.io
 var io = require('socket.io').listen(serveur);
+// Configuration du controleur de bonne connexion
+// io.set('heartbeat timeout', 3000); 
+// io.set('heartbeat interval', 10000);
 // Socket des abonnés au flux de publication des mesures de la sonde de
 // température
 var socketAbonnes = Immutable.Map()
@@ -307,6 +310,12 @@ var socketAbonnes = Immutable.Map()
 io
   .sockets
   .on('connect', function (socket) {
+    socket.on('disconnect', function () {
+      console.log('déconnection:' + socket.id)
+      console.log(`Désabonnement du client ${socket.id}.`)
+      socketAbonnes = socketAbonnes.delete(socket.id)
+      console.log(`Nombre d'abonnés: ${socketAbonnes.count()}`)
+    });
     console.log('Nouvelle connexion:' + socket.id)
     socket.emit('message', 'Vous êtes bien connecté au comité !')
     // Quand la table de marque recoit une demande d'abonnement à un tableau de

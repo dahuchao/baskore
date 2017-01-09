@@ -138,7 +138,7 @@ export default class RencontreConteneur extends React.Component {
     action$.next({ type: types.VERROUILLAGE })
   }
   render() {
-    // console.debug(`Nouvelle rencontre: ` + this.state.rencontre)
+    console.debug(`Nouvelle rencontre: ` + this.state.rencontre)
     let rencontre = <Rencontre
       rencontre={this.state.rencontre}
       surNouvelleMarque={this
