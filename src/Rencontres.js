@@ -1,6 +1,8 @@
 var Rx = require("rxjs")
 var {RxMongo, RxCollection} = require('rxmongo')
 var {MongoClient} = require('mongodb')
+var Immutable = require("immutable")
+var typesEvenement = require("./types-evenement")
 
 var Rencontres = {
   connecte: false,
@@ -70,19 +72,12 @@ var Rencontres = {
             })
         })
     } else {
-      // console.log("Base de données indisponible: ")
-      // console.log("Utilisation liste statique de test.")
-      // // Calcul du plus grand identifiant
-      // idCalcule = rencontres.reduce((max, rencontre) => rencontre.id > max
-      //   ? rencontre.id
-      //   : max, 0)
-      // // Calcul de l'identifiant de la nouvelle rencontre
-      // rencontre.id = idCalcule + 1
-      // // Calcul de la nouvelle liste des rencontres
-      // rencontres = [
-      //   ...rencontres,
-      //   rencontre
-      // ]
+      // console.log("Base de données indisponible: ") console.log("Utilisation liste
+      // statique de test.") // Calcul du plus grand identifiant idCalcule =
+      // rencontres.reduce((max, rencontre) => rencontre.id > max   ? rencontre.id   :
+      // max, 0) // Calcul de l'identifiant de la nouvelle rencontre rencontre.id =
+      // idCalcule + 1 // Calcul de la nouvelle liste des rencontres rencontres = [
+      // ...rencontres,   rencontre ]
 
     }
   },
@@ -116,6 +111,27 @@ var Rencontres = {
         if (Rencontres.connecte) 
           return new RxCollection("rencontres").deleteOne(critere)
       }
+    }
+  },
+  traiter: function (evenement) {
+    console.log(`| Nouvelle marque ${evenement.marqueHote}:${evenement.marqueVisiteur}`)
+    if (Rencontres.connecte) {
+      var critere = {
+        id: evenement.idRencontre
+      }
+      return new RxCollection("rencontres")
+        .find(critere)
+        .first()
+        .flatMap(rencontre => {
+          rencontre.hote.marque = evenement.marqueHote
+          rencontre.visiteur.marque = evenement.marqueVisiteur
+          return new RxCollection("rencontres")
+            .updateOne(critere, rencontre)
+            .map(result => {
+              // console.info(result)
+              return result
+            })
+        })
     }
   }
 }

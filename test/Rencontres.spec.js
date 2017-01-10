@@ -1,6 +1,7 @@
 var chai = require("chai")
 var {RxMongo, RxCollection} = require('rxmongo')
 var Rencontres = require('../src/Rencontres')
+var typesEvenement = require("../src/types-evenement")
 
 var expect = chai.expect
 var should = chai.should()
@@ -153,6 +154,21 @@ describe("Gestion des rencontres", () => {
           expect(result.result.ok)
             .to
             .equal(1);
+        }, err => {
+          expect(err).to.not.exist
+        }, () => done())
+    })
+    it("on peut traiter un évènement de changement de marque une rencontre", (done) => {
+      Rencontres
+        .traiter({
+          type: typesEvenement.CHANGEMENT_MARQUE,
+          idRencontre: 3,
+          marqueHote: 10,
+          marqueVisiteur: 10
+        })
+        .subscribe(result => {
+          console.info(`Id de la rencontre supprimée: ${idRencontreCreeASupprimer}`)
+          expect(result).to.exist;
         }, err => {
           expect(err).to.not.exist
         }, () => done())

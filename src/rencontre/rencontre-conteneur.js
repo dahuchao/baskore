@@ -30,7 +30,8 @@ export default class RencontreConteneur extends React.Component {
         this
           .socket
           .emit("ouvrirRencontre", idRencontre)
-        this.socket
+        this
+          .socket
           .on("evenement", evenement => {
             // console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
             action$.next(evenement)
@@ -41,9 +42,14 @@ export default class RencontreConteneur extends React.Component {
     request(rest, function (error, response, rencontre) {
       if (!error && response.statusCode == 200) {
         let oRencontre = JSON.parse(rencontre)
-        action$.next({ type: types.GET_RENCONTRE_SUCCESS, rencontre: oRencontre })
+        action$.next({type: types.GET_RENCONTRE_SUCCESS, rencontre: oRencontre})
       }
     })
+  }
+  componentWillUnmount() {
+    this
+      .socket
+      .disconnect()
   }
   surNouvelleMarque() {
     // console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
@@ -119,40 +125,42 @@ export default class RencontreConteneur extends React.Component {
     }, function (error, response, rencontre) {
       if (!error && response.statusCode == 200) {
         console.info("Rencontre modifiée :" + JSON.stringify(rencontre))
-        action$.next({ type: types.PUT_RENCONTRE_SUCCESS, rencontre: rencontre })
+        action$.next({type: types.PUT_RENCONTRE_SUCCESS, rencontre: rencontre})
       }
     })
   }
   editer() {
-    action$.next({ type: types.EDITER_RENCONTRE })
+    action$.next({type: types.EDITER_RENCONTRE})
   }
   surVerrouillage() {
-    action$.next({ type: types.VERROUILLAGE })
+    action$.next({type: types.VERROUILLAGE})
   }
   render() {
     // console.debug(`Nouvelle rencontre: ` + this.state.rencontre)
     let rencontre = <Rencontre
       rencontre={this.state.rencontre}
       surNouvelleMarque={this
-        .surNouvelleMarque
-        .bind(this)}
+      .surNouvelleMarque
+      .bind(this)}
       surPeriode={this
-        .surPeriode
-        .bind(this)}
+      .surPeriode
+      .bind(this)}
       editer={this.editer}
       sauver={this.sauver}
       surNouveauCommentaire={this
-        .surNouveauCommentaire
-        .bind(this)}
+      .surNouveauCommentaire
+      .bind(this)}
       surChangementHote={this
-        .surChangementHote
-        .bind(this)}
+      .surChangementHote
+      .bind(this)}
       surChangementVisiteur={this
-        .surChangementVisiteur
-        .bind(this)}
+      .surChangementVisiteur
+      .bind(this)}
       modeEdition={this.state.modeEdition}
       modeVerrouille={this.state.modeVerrouille}
-      surVerrouillage={this.surVerrouillage} />
-    return this.state.rencontre ? rencontre : null
+      surVerrouillage={this.surVerrouillage}/>
+    return this.state.rencontre
+      ? rencontre
+      : null
   }
 }
