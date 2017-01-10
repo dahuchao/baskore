@@ -114,25 +114,34 @@ var Rencontres = {
     }
   },
   traiter: function (evenement) {
-    console.log(`| Nouvelle marque ${evenement.marqueHote}:${evenement.marqueVisiteur}`)
-    if (Rencontres.connecte) {
-      var critere = {
-        id: evenement.idRencontre
+    var evenements = {
+      "DEFAUT": function () {
+        return Immutable.fromJS(evenement)
       }
-      return new RxCollection("rencontres")
-        .find(critere)
-        .first()
-        .flatMap(rencontre => {
-          rencontre.hote.marque = evenement.marqueHote
-          rencontre.visiteur.marque = evenement.marqueVisiteur
-          return new RxCollection("rencontres")
-            .updateOne(critere, rencontre)
-            .map(result => {
-              // console.info(result)
-              return result
-            })
-        })
     }
+    evenements[typesEvenement.CHANGEMENT_MARQUE] = function () {
+      console.log(`| Nouvelle marque ${evenement.marqueHote}:${evenement.marqueVisiteur}`)
+      if (Rencontres.connecte) {
+        var critere = {
+          id: evenement.idRencontre
+        }
+        return new RxCollection("rencontres")
+          .find(critere)
+          .first()
+          .flatMap(rencontre => {
+            rencontre.hote.marque = evenement.marqueHote
+            rencontre.visiteur.marque = evenement.marqueVisiteur
+            return new RxCollection("rencontres")
+              .updateOne(critere, rencontre)
+              .map(result => {
+                // console.info(result)
+                return result
+              })
+          })
+      }
+    }
+    return (evenements[evenement.type] || evenements['DEFAUT'])();
+    // return reponse
   }
 }
 
