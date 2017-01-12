@@ -27,15 +27,13 @@ var evenement$ = commande$.map(commande => {
       .set("type", typesEvenement.CHANGEMENT_PERIODE)
   }
   commandes[typesCommande.CHANGER_JOUEUR_HOTE] = function () {
-    console.log(`| Joueur sortant: ${commande.sortant}`)
-    console.log(`| Joueur entrant: ${commande.entrant}`)
+    console.log(`| Nouvelles joueuses hote : ${commande.joueuses}`)
     return Immutable
       .fromJS(commande)
       .set("type", typesEvenement.CHANGEMENT_JOUEUR_HOTE)
   }
   commandes[typesCommande.CHANGER_JOUEUR_VISITEUR] = function () {
-    console.log(`| Joueur sortant: ${commande.sortant}`)
-    console.log(`| Joueur entrant: ${commande.entrant}`)
+    console.log(`| Nouvelles joueuses visiteur : ${commande.joueuses}`)
     return Immutable
       .fromJS(commande)
       .set("type", typesEvenement.CHANGEMENT_JOUEUR_VISITEUR)

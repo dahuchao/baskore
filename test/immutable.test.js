@@ -1,7 +1,11 @@
 let Immutable = require('immutable')
 
 describe("A suite", function () {
-  let rencontre = { id: 2, nom: "Nom de test", montant: 1000 }
+  let rencontre = {
+    id: 2,
+    nom: "Nom de test",
+    montant: 1000
+  }
   it("Montant mis à jour", function () {
     let rencontreModifiee = Immutable
       .fromJS(rencontre)
@@ -15,6 +19,13 @@ describe("A suite", function () {
     console.log("rencontre: " + JSON.stringify(rencontre))
     let rencontreModifiee = ajouterDate(rencontre)
     console.log("rencontreModifiee: " + JSON.stringify(rencontreModifiee))
+  })
+  it("Liste à l'envers", function () {
+    let liste = Immutable.List(["1", "2", "3", "4"])
+    console.log("liste: " + JSON.stringify(liste))
+    liste.map(num => {
+      console.log("liste à l'envers: " + JSON.stringify(liste.reverse()))
+    })
   })
 })
 

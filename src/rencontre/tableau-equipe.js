@@ -12,9 +12,6 @@ export default class Equipe extends React.Component {
       borderColor: "red"
     }
     let id = 1
-    const joueuses = Immutable
-      .List
-      .of(4, 10, 14, 6, 11)
     return (
       <div className="equipe">
         <div className="nom">{this.props.nom}</div>
@@ -24,7 +21,7 @@ export default class Equipe extends React.Component {
             : <img onClick={this.props.surPanier} className="blason" src="img/ballon6.png"></img>
         }
         <div style={styleJoueuses}>{
-          joueuses.map(joueuse => {
+          this.props.joueuses.map(joueuse => {
             return <Joueuse key={id++} surChangement={this.props.surChangement} numero={joueuse} />
           })
         }

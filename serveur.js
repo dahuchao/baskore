@@ -24,7 +24,7 @@ console.log('Ouverture du répertoire des pages du site web : %s', repertoireSit
 // Répertoire racine
 app.use('/', express.static(repertoireSite))
 
-// ********************************************** Connection à la base de
+// ****** Connection à la base de
 // données vars urlParDefaut = "mongodb://dahu:azerty@localhost:27017/baskoredb"
 var urlParDefaut = "mongodb://@localhost:27017/baskoredb"
 // var urlParDefaut =
@@ -34,7 +34,7 @@ const url = (process.env.MONGODB_URI || urlParDefaut)
 console.log("url de la base de donnée: " + url)
 
 //■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀
-// ********************************************** Traitement de la requête GET
+// ******* Traitement de la requête GET ********
 // http://localhost/rencontres
 app.get("/api/rencontres", function (req, res) {
   console.log("GET rencontres.")
@@ -63,7 +63,7 @@ app.get("/api/rencontres", function (req, res) {
   })
 })
 
-// ********************************************** Traitement de la requête GET
+// ***** Traitement de la requête GET *******
 // http://localhost/rencontres/2
 app.get("/api/rencontres/:id", function (req, res) {
   // Calcul du nom de la page recherchée
@@ -101,7 +101,7 @@ app.get("/api/rencontres/:id", function (req, res) {
   })
 })
 
-// ********************************************** Traitement de la requête PUT
+// ****** Traitement de la requête PUT ********
 // http://localhos t/rencontres/id
 app.put("/api/rencontres/:id", upload.array(), function (req, res) {
   // Calcul du nom de la page recherchée
@@ -255,52 +255,12 @@ app.delete("/api/rencontres/:id", upload.array(), function (req, res) {
   })
 })
 
-// Liste des rencontes utilisées lorsque la base de données est inaccessible
-var rencontres = [
-  {
-    id: 1,
-    periode: 1,
-    hote: {
-      nom: "NEC",
-      marque: 11
-    },
-    visiteur: {
-      nom: "USJA",
-      marque: 11
-    }
-  }, {
-    id: 2,
-    date: new Date("2016-09-02"),
-    periode: 1,
-    hote: {
-      nom: "NEC",
-      marque: 22
-    },
-    visiteur: {
-      nom: "Montaigu",
-      marque: 22
-    }
-  }, {
-    id: 3,
-    periode: 1,
-    date: new Date("2016-10-16"),
-    hote: {
-      nom: "NEC",
-      marque: 33
-    },
-    visiteur: {
-      nom: "Coulaine",
-      marque: 33
-    }
-  }
-];
-
 //********************************************** Démarrage du serveur
 var serveur = app.listen(app.get('port'), function () {
   console.log("Ecoute sur le port %d, à l'adresse http://localhost:80", serveur.address().port)
 })
-//■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀
 
+//■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀
 // Chargement de socket.io
 var io = require('socket.io').listen(serveur);
 // Configuration du controleur de bonne connexion io.set('heartbeat timeout',
@@ -363,6 +323,48 @@ io
         .next(commande)
     })
   })
+
+// Liste des rencontes utilisées lorsque la base de données est inaccessible
+var rencontres = [
+  {
+    id: 1,
+    periode: 1,
+    hote: {
+      nom: "NEC",
+      marque: 11
+    },
+    visiteur: {
+      nom: "USJA",
+      marque: 11
+    }
+  }, {
+    id: 2,
+    date: new Date("2016-09-02"),
+    periode: 1,
+    hote: {
+      nom: "NEC",
+      marque: 22
+    },
+    visiteur: {
+      nom: "Montaigu",
+      marque: 22
+    }
+  }, {
+    id: 3,
+    periode: 1,
+    date: new Date("2016-10-16"),
+    hote: {
+      nom: "NEC",
+      marque: 33
+    },
+    visiteur: {
+      nom: "Coulaine",
+      marque: 33
+    }
+  }
+];
+
+//■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀
 controleur
   .evenement$
   .subscribe(evenement => {
@@ -379,6 +381,8 @@ controleur
         console.log(`| Envoi de l'évènement ${JSON.stringify(evenement)} au client: ${client.socket.id}`)
       })
   });
+
+//■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀
 controleur
   .evenement$
   .subscribe(evenement => {
@@ -452,3 +456,4 @@ controleur
       var rien = (evenements[evenement.type] || evenements['DEFAUT'])();
     })
   });
+  

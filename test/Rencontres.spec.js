@@ -160,12 +160,27 @@ describe("Gestion des rencontres", () => {
     })
     it("on peut traiter un évènement de changement de marque une rencontre", (done) => {
       Rencontres
-        .traiter({
-          type: typesEvenement.CHANGEMENT_MARQUE,
-          idRencontre: 3,
-          marqueHote: 10,
-          marqueVisiteur: 10
-        })
+        .traiter({type: typesEvenement.CHANGEMENT_MARQUE, idRencontre: 3, marqueHote: 10, marqueVisiteur: 10})
+        .subscribe(result => {
+          console.info(`Id de la rencontre supprimée: ${idRencontreCreeASupprimer}`)
+          expect(result).to.exist;
+        }, err => {
+          expect(err).to.not.exist
+        }, () => done())
+    })
+    it("on peut traiter un évènement de changement de période sur une rencontre", (done) => {
+      Rencontres
+        .traiter({type: typesEvenement.CHANGEMENT_PERIODE, idRencontre: 3, periode: 2})
+        .subscribe(result => {
+          console.info(`Id de la rencontre supprimée: ${idRencontreCreeASupprimer}`)
+          expect(result).to.exist;
+        }, err => {
+          expect(err).to.not.exist
+        }, () => done())
+    })
+    it("on peut traiter un évènement d'ajout de commentaires", (done) => {
+      Rencontres
+        .traiter({type: typesEvenement.NOUVEAU_COMMENTAIRE, idRencontre: 3, commentaire: "Test un test!"})
         .subscribe(result => {
           console.info(`Id de la rencontre supprimée: ${idRencontreCreeASupprimer}`)
           expect(result).to.exist;

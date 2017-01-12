@@ -25,9 +25,20 @@ export default function Repartiteur() {
     }
     actions[types.GET_RENCONTRE_SUCCESS] = function () {
       console.log("| rencontre: " + JSON.stringify(action.rencontre))
+      const joueuses = Immutable
+        .List
+        .of(4, 5, 6, 7, 8)
+      let rencontre = Immutable
+        .fromJS(action.rencontre)
+        .setIn([
+          'hote', 'joueuses'
+        ], joueuses)
+      rencontre = rencontre.setIn([
+        'visiteur', 'joueuses'
+      ], joueuses)
       return Immutable
         .fromJS(etat)
-        .set("rencontre", action.rencontre)
+        .set("rencontre", rencontre)
     }
     actions[types.EDITER_RENCONTRE] = function () {
       console.log("| Mode édition: " + JSON.stringify(etat.modeEdition))
@@ -80,14 +91,20 @@ export default function Repartiteur() {
         ], commentaires)
     }
     actions[types.CHANGEMENT_JOUEUR_HOTE] = function () {
-      console.log(`| Joueur sortant: ${action.sortant}`)
-      console.log(`| Joueur entrant: ${action.entrant}`)
-      return Immutable.fromJS(etat)
+      console.log(`| Nouvelles joueuses hote : ${action.joueuses}`)
+      return Immutable
+        .fromJS(etat)
+        .setIn([
+          'rencontre', 'hote', 'joueuses'
+        ], action.joueuses)
     }
     actions[types.CHANGEMENT_JOUEUR_VISITEUR] = function () {
-      console.log(`| Joueur sortant: ${action.sortant}`)
-      console.log(`| Joueur entrant: ${action.entrant}`)
-      return Immutable.fromJS(etat)
+      console.log(`| Nouvelles joueuses visiteur : ${action.joueuses}`)
+      return Immutable
+        .fromJS(etat)
+        .setIn([
+          'rencontre', 'visiteur', 'joueuses'
+        ], action.joueuses)
     }
     let etatNouveau = (actions[action.type] || actions['DEFAUT'])();
     console.log("/----- Nouvel état ----------------")

@@ -140,6 +140,53 @@ var Rencontres = {
           })
       }
     }
+    evenements[typesEvenement.CHANGEMENT_PERIODE] = function () {
+      console.log("| Nouvelle période: " + JSON.stringify(evenement.periode))
+
+      if (Rencontres.connecte) {
+        var critere = {
+          id: evenement.idRencontre
+        }
+        return new RxCollection("rencontres")
+          .find(critere)
+          .first()
+          .flatMap(rencontre => {
+            rencontre.periode = evenement.periode
+            return new RxCollection("rencontres")
+              .updateOne(critere, rencontre)
+              .map(result => {
+                // console.info(result)
+                return result
+              })
+          })
+      }
+    }
+    evenements[typesEvenement.NOUVEAU_COMMENTAIRE] = function () {
+      console.log(`| Nouveau commentaire sur la rencontre: $evenement.commentaire}`)
+      if (Rencontres.connecte) {
+        var critere = {
+          id: evenement.idRencontre
+        }
+        return new RxCollection("rencontres")
+          .find(critere)
+          .first()
+          .flatMap(rencontre => {
+            console.log("| Rencontre: " + JSON.stringify(rencontre))
+            let commentaires = Immutable
+              .fromJS(rencontre)
+              .get("commentaires", Immutable.List())
+              .push(evenement.commentaire)
+            console.log(`| Enregistrement du commentaire en base: ${commentaires}`)
+            rencontre.commentaires = commentaires
+            return new RxCollection("rencontres")
+              .updateOne(critere, rencontre)
+              .map(result => {
+                // console.info(result)
+                return result
+              })
+          })
+      }
+    }
     return (evenements[evenement.type] || evenements['DEFAUT'])();
     // return reponse
   }

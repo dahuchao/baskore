@@ -75,24 +75,38 @@ export default class RencontreConteneur extends React.Component {
   }
   surChangementHote(sor, ent) {
     console.debug(`Changement hote ${sor} par ${ent}`)
+    let joueuses = Immutable
+      .List(this.state.rencontre.hote.joueuses)
+      .map(joueuse => {
+        if (joueuse == sor) 
+          return ent
+        else 
+          return joueuse
+      })
     this
       .socket
       .emit("commande", {
         type: typesCommande.CHANGER_JOUEUR_HOTE,
         idRencontre: this.state.rencontre.id,
-        sortant: sor,
-        entrant: ent
+        joueuses: joueuses
       })
   }
   surChangementVisiteur(sor, ent) {
     console.debug(`Changement visiteur ${sor} par ${ent}`)
+    let joueuses = Immutable
+      .List(this.state.rencontre.hote.joueuses)
+      .map(joueuse => {
+        if (joueuse == sor) 
+          return ent
+        else 
+          return joueuse
+      })
     this
       .socket
       .emit("commande", {
         type: typesCommande.CHANGER_JOUEUR_VISITEUR,
         idRencontre: this.state.rencontre.id,
-        sortant: sor,
-        entrant: ent
+        joueuses: joueuses
       })
   }
   surPeriode(periode) {
