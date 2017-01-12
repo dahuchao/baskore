@@ -33,6 +33,7 @@ var urlParDefaut = "mongodb://@localhost:27017/baskoredb"
 const url = (process.env.MONGODB_URI || urlParDefaut)
 console.log("url de la base de donnée: " + url)
 
+//■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀
 // ********************************************** Traitement de la requête GET
 // http://localhost/rencontres
 app.get("/api/rencontres", function (req, res) {
@@ -298,6 +299,8 @@ var rencontres = [
 var serveur = app.listen(app.get('port'), function () {
   console.log("Ecoute sur le port %d, à l'adresse http://localhost:80", serveur.address().port)
 })
+//■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀
+
 // Chargement de socket.io
 var io = require('socket.io').listen(serveur);
 // Configuration du controleur de bonne connexion io.set('heartbeat timeout',
