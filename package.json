@@ -67,7 +67,7 @@
     "node": "6.6.0"
   },
   "scripts": {
-    "start": "gulp start",
+    "start": "gulp prod",
     "compile": "webpack --watch",
     "dev": "webpack-dev-server --progress --colors",
     "dev-gulp": "gulp dev",

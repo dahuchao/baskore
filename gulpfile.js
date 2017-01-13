@@ -130,6 +130,12 @@ gulp.task("stop", function () {
   browserSync.exit();
 });
 
+// Fabrique à destination du serveur de production
+gulp.task("prod", [
+  "compression", "styles", "start"
+], function () {
+});
+
 // Tache pour tester la bonne connexion à la base de données
 gulp.task("essai", function () {
   console.log("Lancement de l'utilitaire: ")

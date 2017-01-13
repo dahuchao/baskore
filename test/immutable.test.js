@@ -1,4 +1,9 @@
-let Immutable = require('immutable')
+import Immutable from "immutable"
+import chai from "chai"
+
+let assert = chai.assert
+let expect = chai.expect
+let should = chai.should()
 
 describe("A suite", function () {
   let rencontre = {
