@@ -60,7 +60,7 @@ export default function Repartiteur() {
       console.log("| Mise à jour de la rencontre: " + JSON.stringify(action.rencontre))
       let rencontre = Immutable
         .fromJS(etat)
-        .get("rencontre", new Object)
+        .get("rencontre", Immutable.Map())
         .set("date", action.rencontre.date)
         // .set("periode", action.rencontre.periode)
         .set("hote.nom", action.rencontre.hote.nom)
@@ -87,7 +87,7 @@ export default function Repartiteur() {
         return nouvelEtat
       console.log(`| ****rencontre: ${rencontre}`)
       let commentaires = rencontre
-        .get("commentaires", [])
+        .get("commentaires", Immutable.List())
         .push(action.commentaire)
       console.log(`| ****commentaires: ${commentaires}`)
       rencontre = rencontre.set("commentaires", commentaires)

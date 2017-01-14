@@ -52,7 +52,7 @@ export default class RencontreConteneur extends React.Component {
       .disconnect()
   }
   surNouvelleMarque() {
-    console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
+    // console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
     this
       .socket
       .emit("commande", {
@@ -63,7 +63,7 @@ export default class RencontreConteneur extends React.Component {
       })
   }
   surNouveauCommentaire(commentaire) {
-    console.debug(`surNouveauCommentaire: ${commentaire}`)
+    // console.debug(`surNouveauCommentaire: ${commentaire}`)
     this
       .socket
       .emit("commande", {
@@ -71,10 +71,9 @@ export default class RencontreConteneur extends React.Component {
         idRencontre: this.state.rencontre.id,
         "commentaire": commentaire
       })
-    // action$.next({ type: types.COMMENTAIRE_POST, commentaire: commentaire })
   }
   surChangementHote(sor, ent) {
-    console.debug(`Changement hote ${sor} par ${ent}`)
+    // console.debug(`Changement hote ${sor} par ${ent}`)
     let joueuses = Immutable
       .List(this.state.rencontre.hote.joueuses)
       .map(joueuse => {
@@ -92,7 +91,7 @@ export default class RencontreConteneur extends React.Component {
       })
   }
   surChangementVisiteur(sor, ent) {
-    console.debug(`Changement visiteur ${sor} par ${ent}`)
+    // console.debug(`Changement visiteur ${sor} par ${ent}`)
     let joueuses = Immutable
       .List(this.state.rencontre.hote.joueuses)
       .map(joueuse => {
@@ -110,7 +109,7 @@ export default class RencontreConteneur extends React.Component {
       })
   }
   surPeriode(periode) {
-    console.debug("Nouvelle periode: " + JSON.stringify(periode))
+    // console.debug("Nouvelle periode: " + JSON.stringify(periode))
     this
       .socket
       .emit("commande", {
