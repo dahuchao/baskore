@@ -21,22 +21,22 @@ const RencontreAjout = React.createClass({
     dateState.setMonth(date.getMonth())
     dateState.setFullYear(date.getFullYear())
     this.setState({ date: dateState })
-    console.debug("Ajout date: " + JSON.stringify(this.state))
+    // console.debug("Ajout date: " + JSON.stringify(this.state))
   },
   majHeure(x, heure) {
     let dateState = this.state.date
     dateState.setHours(heure.getHours())
     dateState.setMinutes(heure.getMinutes())
     this.setState({ date: dateState })
-    console.debug("Ajout heure: " + JSON.stringify(this.state))
+    // console.debug("Ajout heure: " + JSON.stringify(this.state))
   },
   majHote(e) {
     this.setState({ hote: e.target.value })
-    console.debug("Ajout hote: " + JSON.stringify(this.state))
+    // console.debug("Ajout hote: " + JSON.stringify(this.state))
   },
   majVisiteur(e) {
     this.setState({ visiteur: e.target.value })
-    console.debug("Ajout visiteur: " + JSON.stringify(this.state))
+    // console.debug("Ajout visiteur: " + JSON.stringify(this.state))
   },
   sauver() {
     // let date = this.state.date

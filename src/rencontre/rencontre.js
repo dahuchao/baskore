@@ -28,14 +28,14 @@ const Rencontre = React.createClass({
     dateState.setMonth(date.getMonth())
     dateState.setFullYear(date.getFullYear())
     this.setState({ date: dateState })
-    console.debug("MAJ date: " + JSON.stringify(this.state))
+    // console.debug("MAJ date: " + JSON.stringify(this.state))
   },
   majHeure(x, heure) {
     let dateState = new Date(this.props.rencontre.date)
     dateState.setHours(heure.getHours() + 2)
     dateState.setMinutes(heure.getMinutes())
     this.setState({ date: dateState })
-    console.debug("MAJ heure: " + JSON.stringify(dateState))
+    // console.debug("MAJ heure: " + JSON.stringify(dateState))
   },
   majHote(e) {
     this.setState({ hote: e.target.value })

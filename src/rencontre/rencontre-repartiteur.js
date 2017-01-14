@@ -80,16 +80,21 @@ export default function Repartiteur() {
     }
     actions[typesEvenement.NOUVEAU_COMMENTAIRE] = function () {
       console.log(`| Nouveau commentaire sur la rencontre: ${action.commentaire}`)
-      let commentaires = Immutable
-        .fromJS(etat)
-        .get("rencontre")
+      let nouvelEtat = Immutable.fromJS(etat)
+      console.log(`| **************** etat : ${nouvelEtat}`)
+      let rencontre = nouvelEtat.get("rencontre")
+      if (!rencontre) 
+        return nouvelEtat
+      console.log(`| ****rencontre: ${rencontre}`)
+      let commentaires = rencontre
         .get("commentaires", [])
         .push(action.commentaire)
+      console.log(`| ****commentaires: ${commentaires}`)
+      rencontre = rencontre.set("commentaires", commentaires)
+      console.log(`| ****rencontre: ${rencontre}`)
       return Immutable
         .fromJS(etat)
-        .setIn([
-          'rencontre', 'commentaires'
-        ], commentaires)
+        .set("rencontre", rencontre)
     }
     actions[types.CHANGEMENT_JOUEUR_HOTE] = function () {
       console.log(`| Nouvelles joueuses hote : ${action.joueuses}`)

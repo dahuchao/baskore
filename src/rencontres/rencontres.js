@@ -21,7 +21,7 @@ const Rencontres = React.createClass({
   },
   preparationDate(date) {
     let dateRencontre = new Date(date)
-    console.debug("date Rencontres: " + JSON.stringify(dateRencontre))
+    // console.debug("date Rencontres: " + JSON.stringify(dateRencontre))
     let jour = new Date()
     let strdate = !dateRencontre ?
       "date à préciser" :
@@ -31,7 +31,7 @@ const Rencontres = React.createClass({
     return strdate
   },
   zoom(idRencontre) {
-    console.debug(`Ouverture de la rencontre: ${idRencontre}`)
+    // console.debug(`Ouverture de la rencontre: ${idRencontre}`)
     this.context.router.push(`/rencontres/${idRencontre}`)
   },
   render() {
