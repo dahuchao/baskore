@@ -7,7 +7,7 @@ export default function Repartiteur() {
   const action$ = new Rx.BehaviorSubject({type: "DEFAUT"})
   const init = {
     modeEdition: false,
-    modeVerrouille: false
+    modeVerrouille: true
   }
   const etat$ = action$.scan((etat, action) => {
     console.log("##############################")
