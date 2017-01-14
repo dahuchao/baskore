@@ -81,7 +81,7 @@ export default function Repartiteur() {
       let commentaires = Immutable
         .fromJS(etat)
         .get("rencontre")
-        .get("commentaires")
+        .get("commentaires",[])
         .push(action.commentaire)
       return Immutable
         .fromJS(etat)
