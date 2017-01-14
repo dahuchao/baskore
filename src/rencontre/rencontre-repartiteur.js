@@ -58,14 +58,16 @@ export default function Repartiteur() {
     }
     actions[types.PUT_RENCONTRE_SUCCESS] = function () {
       console.log("| Mise à jour de la rencontre: " + JSON.stringify(action.rencontre))
-      // let rencontre = Immutable   .fromJS(etat)   .get("rencontre",new Object)
-      // .set("date", action.rencontre.date)   .set("periode",
-      // action.rencontre.periode)   .set("hote.nom", action.rencontre.hote.nom)
-      // .set("visiteur.nom", action.rencontre.visiteur.nom) return Immutable
-      // .fromJS(etat)   .set("rencontre", rencontre)   .set("modeEdition", false)
+      let rencontre = Immutable
+        .fromJS(etat)
+        .get("rencontre", new Object)
+        .set("date", action.rencontre.date)
+        // .set("periode", action.rencontre.periode)
+        .set("hote.nom", action.rencontre.hote.nom)
+        .set("visiteur.nom", action.rencontre.visiteur.nom)
       return Immutable
         .fromJS(etat)
-        .set("rencontre", action.rencontre)
+        .set("rencontre", rencontre)
         .set("modeEdition", false)
     }
     actions[typesEvenement.CHANGEMENT_PERIODE] = function () {
@@ -81,7 +83,7 @@ export default function Repartiteur() {
       let commentaires = Immutable
         .fromJS(etat)
         .get("rencontre")
-        .get("commentaires",[])
+        .get("commentaires", [])
         .push(action.commentaire)
       return Immutable
         .fromJS(etat)
