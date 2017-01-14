@@ -18,7 +18,7 @@ export default class Marque extends React.Component {
       paddingRight: "0"
     }
     // console.debug("Conteneur4.")
-    console.debug("Rencontre: " + JSON.stringify(this.props.rencontre))
+    // console.debug("Rencontre: " + JSON.stringify(this.props.rencontre))
     return (
       <div id="marque">
         <div id="periodes">{
@@ -36,14 +36,14 @@ export default class Marque extends React.Component {
             periode == this.props.rencontre.periode ?
               styleLabelPeriode.color = "red" :
               styleLabelPeriode.color = "white"
-            console.log("Couleur: " + JSON.stringify(style))
+            // console.log("Couleur: " + JSON.stringify(style))
             return (
               <FlatButton
                 className="periode"
                 style={stylePeriode}
                 labelStyle={styleLabelPeriode}
                 key={periode}
-                onClick={this.surPeriode.bind(this, periode)}
+                onClick={this.props.modeVerrouille ? null : this.surPeriode.bind(this, periode)}
                 label={"P" + periode}
                 />
             )
@@ -55,6 +55,7 @@ export default class Marque extends React.Component {
             className="hote"
             style={style}
             labelStyle={labelStyle}
+            disabled={this.props.modeVerrouille}
             onClick={this.props.surCorrectionHote}
             label={this.props.rencontre.hote.marque.toString()}
             />
@@ -62,6 +63,7 @@ export default class Marque extends React.Component {
             className="visiteur"
             style={style}
             labelStyle={labelStyle}
+            disabled={this.props.modeVerrouille}
             onClick={this.props.surCorrectionVisiteur}
             label={this.props.rencontre.visiteur.marque.toString()}
             />

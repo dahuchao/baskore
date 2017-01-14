@@ -32,21 +32,27 @@ export default React.createClass({
     this.props.surNouvelleMarque()
   },
   render() {
-    // console.debug("Conteneur3.")
     // this.ouvertureRencontre(this.props.rencontre.id)
     return (
       <div id="tableau">
         <Equipe
           nom={this.props.rencontre.hote.nom}
-          surPanier={this.surPanierHote} />
+          joueuses={this.props.rencontre.hote.joueuses}
+          surPanier={this.surPanierHote}
+          surChangement={this.props.surChangementHote}
+          modeVerrouille={this.props.modeVerrouille} />
         <Marque
           rencontre={this.props.rencontre}
           surPeriode={this.props.surPeriode}
           surCorrectionHote={this.surCorrectionHote}
-          surCorrectionVisiteur={this.surCorrectionVisiteur} />
+          surCorrectionVisiteur={this.surCorrectionVisiteur}
+          modeVerrouille={this.props.modeVerrouille} />
         <Equipe
           nom={this.props.rencontre.visiteur.nom}
-          surPanier={this.surPanierVisiteur} />
+          joueuses={this.props.rencontre.visiteur.joueuses}
+          surPanier={this.surPanierVisiteur}
+          surChangement={this.props.surChangementVisiteur}
+          modeVerrouille={this.props.modeVerrouille} />
       </div>
     )
   }

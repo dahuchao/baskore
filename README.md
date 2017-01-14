@@ -13,18 +13,22 @@ Voici comment installer et démarrer l'application :
 npm install
 ```
 
-## Lancement de l'application
+## Lancement
 
 ```
 npm start
 ```
 ouvrir l'application à l'adresse http://localhost
 
+## Utilisation
+
+Voir le wiki de l'application : https://github.com/dahuchao/baskore/wiki
+
 ## Architecture
 
 Cette application est un pretexte (POC) pour la mise en oeuvre des technologies suivantes : 
 * REACT : https://facebook.github.io/react
-* REDUX (FLUX) : http://redux.js.org
+* ReactiveX (PRF) : http://reactivex.io/
 * Material-design (RWD) : http://www.material-ui.com
 * Expressjs (API REST) : http://expressjs.com
 * Socket.io (WebSocket) : http://socket.io

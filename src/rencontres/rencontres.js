@@ -62,7 +62,8 @@ const Rencontres = React.createClass({
           iconClassNameRight="muidocs-icon-navigation-expand-more">
           <div className="flottant">
             <FloatingActionButton style={style}
-              onMouseDown={this.props.ajouterRencontre}>
+              onMouseDown={this.props.ajouterRencontre}
+              >
               <ContentAdd />
             </FloatingActionButton>
           </div>
@@ -81,7 +82,8 @@ const Rencontres = React.createClass({
                     <IconButton
                       style={poubelle.style}
                       iconStyle={poubelle.icon}
-                      onClick={this.props.supprimeRencontre.bind(null, rencontre.id)}>
+                      onClick={this.props.supprimeRencontre.bind(null, rencontre.id)}
+                      >
                       <ActionDelete />
                     </IconButton>}
                   >

@@ -1,9 +1,11 @@
 import React from "react"
+import Immutable from "immutable"
 import { Link } from 'react-router'
 import {
   AppBar,
   Card,
   IconButton,
+  Toggle,
   CardText,
   TimePicker,
   TextField,
@@ -18,7 +20,7 @@ const Rencontre = React.createClass({
   getInitialState() {
     let rencontre = this.props.rencontre
     let date = rencontre.date ? rencontre.date : new Date()
-    return { date: date, hote: rencontre.hote.nom, visiteur: rencontre.visiteur.nom }
+    return { date: new Date() }
   },
   majDate(x, date) {
     let dateState = this.state.date
@@ -48,12 +50,13 @@ const Rencontre = React.createClass({
     this.props.sauver(this.state)
   },
   render() {
+    // console.debug(`Nouvelle rencontre` + Immutable.fromJS(this.props.rencontre))
     const style = {
       color: "white"
     }
     let labelBouton = this.props.modeEdition ? "Sauver" : "Edition"
     let date = this.props.rencontre.date ? new Date(this.props.rencontre.date) : new Date()
-    console.debug(`test: ${date}`)
+    // console.debug(`test: ${date}`)
     return this.props.modeEdition ? (
       <div>
         <AppBar
@@ -64,7 +67,7 @@ const Rencontre = React.createClass({
             </IconButton>
           }
           />
-        <Card >
+        <Card>
           <CardText>
             <DatePicker floatingLabelText="Date de la rencontre"
               defaultDate={date}
@@ -79,8 +82,12 @@ const Rencontre = React.createClass({
             <TextField floatingLabelText="Club Visiteur"
               defaultValue={this.props.rencontre.visiteur.nom}
               onChange={this.majVisiteur} />
+            <Toggle
+              defaultToggled={this.props.modeVerrouille} 
+              onToggle={this.props.surVerrouillage}
+              label="Verrouillé" />
           </CardText>
-        </Card >
+        </Card>
       </div>
     ) : (
         <div>
@@ -102,7 +109,14 @@ const Rencontre = React.createClass({
           <Tableau
             rencontre={this.props.rencontre}
             surNouvelleMarque={this.props.surNouvelleMarque}
-            surPeriode={this.props.surPeriode} />
+            surPeriode={this.props.surPeriode}
+            surChangementHote={this.props.surChangementHote}
+            surChangementVisiteur={this.props.surChangementVisiteur}
+            modeVerrouille={this.props.modeVerrouille} />
+          <Commentaires
+            rencontre={this.props.rencontre}
+            surNouveauCommentaire={this.props.surNouveauCommentaire}
+            modeVerrouille={this.props.modeVerrouille} />
         </div>
       )
   }

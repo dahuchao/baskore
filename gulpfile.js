@@ -3,6 +3,7 @@ var exec = require("gulp-exec");
 var sass = require("gulp-sass");
 var browserify = require("browserify");
 var babelify = require("babelify");
+var babel = require('gulp-babel');
 var uglify = require('gulp-uglify');
 var source = require("vinyl-source-stream");
 var buffer = require('vinyl-buffer');
@@ -15,36 +16,37 @@ var assert = require("assert");
 var gulp = require("gulp");
 var jasmine = require("gulp-jasmine");
 var proxyMiddleware = require("http-proxy-middleware");
+var watch = require('gulp-watch')
 
 gulp.task("test", function () {
-  return gulp.src("test/tableau-test.js")
-    // gulp-jasmine works on filepaths so you can't have any plugins before it
-    .pipe(jasmine());
-});
+  // watch(["test/**/*.js", "src/**/*.js"])
+  // .pipe(gulp.src("test/Rencontres-spec.js"))   .pipe(jasmine())
+  // watch(["immutable.test.1.js"])
+  gulp.src("test/immutable.test.1.js")
+    .pipe(babel({
+      presets: ['es2015']
+    }))
+    .pipe(jasmine())
+})
 
 gulp.task("styles", function () {
-  gulp.src("sass/**/*.scss")
+  gulp
+    .src("sass/**/*.scss")
     .pipe(sass().on("error", sass.logError))
     .pipe(gulp.dest("public/"))
-    .pipe(reload({
-      stream: true
-    }));
+    .pipe(reload({ stream: true }));
 });
 
 // Convertit es6 en es5 et assemble les morceaux
 gulp.task("fabrique", function () {
-  browserify({
-    entries: "src/app.js",
-    debug: true
-  }).transform(babelify)
+  browserify({ entries: "src/app.js", debug: true })
+    .transform(babelify)
     .on("error", gutil.log)
     .bundle()
     .on("error", gutil.log)
     .pipe(source("app.js"))
     .pipe(gulp.dest("public"))
-    .pipe(reload({
-      stream: true
-    }));
+    .pipe(reload({ stream: true }));
 });
 
 // Convertit es6 en es5 et assemble les morceaux
@@ -70,14 +72,13 @@ gulp.task("charger", function () {
 });
 
 // Refabrique automatiquement sur tout Chargement des sources
-gulp.task("dev", ["fabrique", "styles"], function () {
-  // configure proxy middleware
-  // context: "/" will proxy all requests
-  //     use: "/api" to proxy request when path starts with "/api"
+gulp.task("dev", [
+  "fabrique", "styles"
+], function () {
+  // configure proxy middleware context: "/" will proxy all requests     use:
+  // "/api" to proxy request when path starts with "/api"
   var proxies = [];
-  proxies.push(proxyMiddleware(["/api/**"], {
-    target: "http://localhost"
-  }));
+  proxies.push(proxyMiddleware(["/api/**"], { target: "http://localhost" }));
   proxies.push(proxyMiddleware("/socket.io/**", {
     target: "http://localhost",
     ws: true
@@ -88,7 +89,9 @@ gulp.task("dev", ["fabrique", "styles"], function () {
       middleware: proxies
     }
   });
-  gulp.watch(["*.html", "src/**/*.js"], ["fabrique"])
+  gulp.watch([
+    "*.html", "src/**/*.js"
+  ], ["fabrique"])
   gulp.watch("sass/**/*.scss", ["styles"])
   // gulp.watch("public/**/*").on("change", browserSync.reload);
   server.run(["serveur.js"]);
@@ -96,13 +99,10 @@ gulp.task("dev", ["fabrique", "styles"], function () {
 
 // Refabrique automatiquement sur tout Chargement des sources
 gulp.task("styler", ["styles"], function () {
-  // configure proxy middleware
-  // context: "/" will proxy all requests
-  //     use: "/api" to proxy request when path starts with "/api"
+  // configure proxy middleware context: "/" will proxy all requests     use:
+  // "/api" to proxy request when path starts with "/api"
   var proxies = [];
-  proxies.push(proxyMiddleware(["/api/**"], {
-    target: "http://localhost"
-  }));
+  proxies.push(proxyMiddleware(["/api/**"], { target: "http://localhost" }));
   proxies.push(proxyMiddleware("/socket.io/**", {
     target: "http://localhost",
     ws: true
@@ -119,7 +119,7 @@ gulp.task("styler", ["styles"], function () {
 });
 
 // Tache de démarrage du serveur
-gulp.task("start", ["compression", "styles"], function () {
+gulp.task("start", function () {
   console.log("Lancement du serveur");
   server.run(["serveur.js"]);
 });
@@ -128,6 +128,12 @@ gulp.task("start", ["compression", "styles"], function () {
 gulp.task("stop", function () {
   //server.stop()
   browserSync.exit();
+});
+
+// Fabrique à destination du serveur de production
+gulp.task("prod", [
+  "compression", "styles", "start"
+], function () {
 });
 
 // Tache pour tester la bonne connexion à la base de données
