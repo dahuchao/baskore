@@ -24,8 +24,8 @@ console.log('Ouverture du répertoire des pages du site web : %s', repertoireSit
 // Répertoire racine
 app.use('/', express.static(repertoireSite))
 
-// ****** Connection à la base de
-// données vars urlParDefaut = "mongodb://dahu:azerty@localhost:27017/baskoredb"
+// ****** Connection à la base de données vars urlParDefaut =
+// "mongodb://dahu:azerty@localhost:27017/baskoredb"
 var urlParDefaut = "mongodb://@localhost:27017/baskoredb"
 // var urlParDefaut =
 // "mongodb://baskore:baskore123@ds015774.mlab.com:15774/heroku_cmw92kb6"
@@ -33,9 +33,8 @@ var urlParDefaut = "mongodb://@localhost:27017/baskoredb"
 const url = (process.env.MONGODB_URI || urlParDefaut)
 console.log("url de la base de donnée: " + url)
 
-//■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀
-// ******* Traitement de la requête GET ********
-// http://localhost/rencontres
+// ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀
+// ******* Traitement de la requête GET ******** http://localhost/rencontres
 app.get("/api/rencontres", function (req, res) {
   console.log("GET rencontres.")
   MongoClient.connect(url, function (err, db) {
@@ -63,8 +62,7 @@ app.get("/api/rencontres", function (req, res) {
   })
 })
 
-// ***** Traitement de la requête GET *******
-// http://localhost/rencontres/2
+// ***** Traitement de la requête GET ******* http://localhost/rencontres/2
 app.get("/api/rencontres/:id", function (req, res) {
   // Calcul du nom de la page recherchée
   let idRencontre = parseInt(req.params.id)
@@ -101,8 +99,7 @@ app.get("/api/rencontres/:id", function (req, res) {
   })
 })
 
-// ****** Traitement de la requête PUT ********
-// http://localhos t/rencontres/id
+// ****** Traitement de la requête PUT ******** http://localhos t/rencontres/id
 app.put("/api/rencontres/:id", upload.array(), function (req, res) {
   // Calcul du nom de la page recherchée
   let idRencontre = parseInt(req.params.id)
@@ -260,7 +257,7 @@ var serveur = app.listen(app.get('port'), function () {
   console.log("Ecoute sur le port %d, à l'adresse http://localhost:80", serveur.address().port)
 })
 
-//■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀
+// ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀
 // Chargement de socket.io
 var io = require('socket.io').listen(serveur);
 // Configuration du controleur de bonne connexion io.set('heartbeat timeout',
@@ -410,6 +407,10 @@ controleur
               "visiteur.marque": evenement.marqueVisiteur
             }
           })
+          .then(status => {
+            console.log(`Statut de l'enregistrement: ${status}`)
+            db.close()
+          })
       }
       evenements[typesEvenement.CHANGEMENT_PERIODE] = function () {
         console.log("| Nouvelle période: " + JSON.stringify(evenement.periode))
@@ -456,4 +457,3 @@ controleur
       var rien = (evenements[evenement.type] || evenements['DEFAUT'])();
     })
   });
-  

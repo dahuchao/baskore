@@ -52,7 +52,7 @@ export default class RencontreConteneur extends React.Component {
       .disconnect()
   }
   surNouvelleMarque() {
-    // console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
+    console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
     this
       .socket
       .emit("commande", {

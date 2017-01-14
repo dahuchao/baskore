@@ -25,14 +25,13 @@ export default function Repartiteur() {
     }
     actions[types.GET_RENCONTRE_SUCCESS] = function () {
       console.log("| rencontre: " + JSON.stringify(action.rencontre))
+      let rencontre = Immutable.fromJS(action.rencontre)
       const joueuses = Immutable
         .List
         .of(4, 5, 6, 7, 8)
-      let rencontre = Immutable
-        .fromJS(action.rencontre)
-        .setIn([
-          'hote', 'joueuses'
-        ], joueuses)
+      rencontre = rencontre.setIn([
+        'hote', 'joueuses'
+      ], joueuses)
       rencontre = rencontre.setIn([
         'visiteur', 'joueuses'
       ], joueuses)
