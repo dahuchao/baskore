@@ -12,7 +12,7 @@ var evenement$ = commande$.map(commande => {
     "DEFAUT": function (commande) {
       return Immutable.fromJS(commande)
     },
-    [typesCommande.PANIER_MARQUE]: (commande) => {
+    [typesCommande.PANIER_MARQUE]: commande => {
       console.log(`\\ COMMANDE: ${JSON.stringify(commande)}`)
       console.log(`| Nouvelle marque ${commande.marqueHote}:${commande.marqueVisiteur}`)
 
@@ -20,25 +20,25 @@ var evenement$ = commande$.map(commande => {
         .fromJS(commande)
         .set("type", typesEvenement.CHANGEMENT_MARQUE)
     },
-    [typesCommande.CHANGER_PERIODE]: function () {
+    [typesCommande.CHANGER_PERIODE]: commande => {
       console.log(`| Nouvelle periode: ${commande.periode}`)
       return Immutable
         .fromJS(commande)
         .set("type", typesEvenement.CHANGEMENT_PERIODE)
     },
-    [typesCommande.CHANGER_JOUEUR_HOTE]: function () {
+    [typesCommande.CHANGER_JOUEUR_HOTE]: commande => {
       console.log(`| Nouvelles joueuses hote : ${commande.joueuses}`)
       return Immutable
         .fromJS(commande)
         .set("type", typesEvenement.CHANGEMENT_JOUEUR_HOTE)
     },
-    [typesCommande.CHANGER_JOUEUR_VISITEUR]: function () {
+    [typesCommande.CHANGER_JOUEUR_VISITEUR]: commande => {
       console.log(`| Nouvelles joueuses visiteur : ${commande.joueuses}`)
       return Immutable
         .fromJS(commande)
         .set("type", typesEvenement.CHANGEMENT_JOUEUR_VISITEUR)
     },
-    [typesCommande.ENREGISTRER_COMMENTAIRE]: function () {
+    [typesCommande.ENREGISTRER_COMMENTAIRE]: commande => {
       console.log(`| Commentaire: ${commande.commentaire}.`)
       return Immutable
         .fromJS(commande)
