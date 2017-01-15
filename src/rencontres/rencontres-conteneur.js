@@ -18,7 +18,7 @@ export default class RencontresConteneur extends React.Component {
   }
   componentWillMount() {
     var adresse = location.protocol + "//" + location.host + "/api/rencontres"
-    console.info("Requete de l'API web: " + adresse)
+    console.info(`Requete de l'API web: ${adresse}`)
     request(adresse, function (error, response, rencontres) {
       if (!error && response.statusCode == 200) {
         let oRencontres = JSON.parse(rencontres)

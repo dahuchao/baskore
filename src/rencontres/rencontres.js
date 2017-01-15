@@ -21,13 +21,14 @@ const Rencontres = React.createClass({
   },
   preparationDate(date) {
     let dateRencontre = new Date(date)
-    // console.debug("date Rencontres: " + JSON.stringify(dateRencontre))
+    // console.debug(`date Rencontres: ${JSON.stringify(dateRencontre)}`)
     let jour = new Date()
     let strdate = !dateRencontre ?
       "date à préciser" :
       dateRencontre < jour ?
-        `${jour.toLocaleDateString()}` :
+        `${dateRencontre.toLocaleDateString()}` :
         `${dateRencontre.toLocaleDateString()} ${dateRencontre.getHours()}:${dateRencontre.getMinutes()}`
+      // console.debug(`date Rencontres: ${JSON.stringify(strdate)}`)
     return strdate
   },
   zoom(idRencontre) {
@@ -71,12 +72,12 @@ const Rencontres = React.createClass({
         <Card>
           <List id="rencontres" >
             {this.props.rencontres.map(rencontre => {
-              let strdate = this.preparationDate(rencontre.date)
+              let strDate = this.preparationDate(rencontre.date)
               return (
                 <ListItem
                   key={rencontre.id}
                   primaryText={rencontre.hote.nom + '-' + rencontre.visiteur.nom}
-                  secondaryText={strdate}
+                  secondaryText={strDate}
                   onTouchTap={this.zoom.bind(this, rencontre.id)}
                   rightIconButton={
                     <IconButton
