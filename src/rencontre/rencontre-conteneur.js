@@ -133,12 +133,12 @@ export default class RencontreConteneur extends React.Component {
       ], infos.visiteur)
     // rencontre.hote.nom = infos.hote
     var adresse = location.protocol + "//" + location.host + "/api/rencontres/" + this.rencontre.id
-    console.debug(`rencontre.date: ${rencontre.date}`)
+    console.debug(`rencontre.date: ${rencontre.get("date")}`)
     console.info("Requete de l'API web: " + adresse)
     request({
       url: adresse,
       method: "PUT",
-      json: rencontre
+      json: rencontre.toJS()
     }, function (error, response, rencontre) {
       if (!error && response.statusCode == 200) {
         console.info("Rencontre modifiée :" + JSON.stringify(rencontre))

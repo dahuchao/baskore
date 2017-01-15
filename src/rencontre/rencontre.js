@@ -20,7 +20,7 @@ const Rencontre = React.createClass({
   getInitialState() {
     let rencontre = this.props.rencontre
     let date = rencontre.date ? rencontre.date : new Date()
-    return { date: new Date() }
+    return rencontre
   },
   majDate(x, date) {
     let dateState = this.state.date

@@ -58,9 +58,14 @@ export default function Repartiteur() {
     }
     actions[types.PUT_RENCONTRE_SUCCESS] = function () {
       console.log("| Mise à jour de la rencontre: " + JSON.stringify(action.rencontre))
+
+      const joueuses = Immutable
+        .List
+        .of(4, 5, 6, 7, 8)
+
       let rencontre = Immutable
         .fromJS(etat)
-        .get("rencontre", Immutable.Map())
+        .get("rencontre", Immutable.fromJS(action.rencontre))
         .set("date", action.rencontre.date)
         .setIn([
           "hote", "nom"
@@ -68,6 +73,12 @@ export default function Repartiteur() {
         .setIn([
           "visiteur", "nom"
         ], action.rencontre.visiteur.nom)
+        .setIn([
+          'hote', 'joueuses'
+        ], joueuses)
+        .setIn([
+          'visiteur', 'joueuses'
+        ], joueuses)
       return Immutable
         .fromJS(etat)
         .set("rencontre", rencontre)
