@@ -30,6 +30,14 @@ export default class RencontreConteneur extends React.Component {
         this
           .socket
           .emit("ouvrirRencontre", idRencontre)
+        console.info("Envoi commande lecture")
+        this
+          .socket
+          .emit("commande", {
+            type: typesCommande.LIRE_RENCONTRE,
+            idRencontre: idRencontre,
+            idSocket: this.socket.id
+          })
         this
           .socket
           .on("evenement", evenement => {

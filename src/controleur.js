@@ -8,12 +8,25 @@ var commande$ = new Rx.BehaviorSubject({type: "DEFAUT"})
 var evenement$ = commande$.map(commande => {
   console.log("##############################")
   console.log(`\\ COMMANDE: ${commande.type}`)
+  console.log(`\\ ${JSON.stringify(commande)}`)
   let commandes = {
     "DEFAUT": function (commande) {
       return Immutable.fromJS(commande)
     },
+    [typesCommande.CREER_CONNEXION]: commande => {
+      console.log(`| idSocket ${commande.idSocket}`)
+      return Immutable
+        .fromJS(commande)
+        .set("type", typesEvenement.CREATION_CONNEXION)
+    },
+    [typesCommande.LIRE_RENCONTRE]: commande => {
+      console.log(`| idRencontre ${commande.idRencontre}`)
+      console.log(`| idSocket ${commande.idSocket}`)
+      return Immutable
+        .fromJS(commande)
+        .set("type", typesEvenement.LECTURE_RENCONTRE)
+    },
     [typesCommande.PANIER_MARQUE]: commande => {
-      console.log(`\\ COMMANDE: ${JSON.stringify(commande)}`)
       console.log(`| Nouvelle marque ${commande.marqueHote}:${commande.marqueVisiteur}`)
 
       return Immutable

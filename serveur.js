@@ -4,6 +4,7 @@ var cors = require("express-cors")
 var Immutable = require("immutable")
 var controleur = require("./src/controleur")
 var typesEvenement = require("./src/types-evenement")
+var typesCommande = require("./src/types-commande")
 var MongoClient = require("mongodb").MongoClient
 var bodyParser = require("body-parser")
 var multer = require("multer")
@@ -33,8 +34,8 @@ var urlParDefaut = "mongodb://@localhost:27017/baskoredb"
 const url = (process.env.MONGODB_URI || urlParDefaut)
 console.log("url de la base de donnée: " + url)
 
-// ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀
-// ******* Traitement de la requête GET ******** http://localhost/rencontres
+// ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■
+// ▀ ******* Traitement de la requête GET ******** http://localhost/rencontres
 app.get("/api/rencontres", function (req, res) {
   console.log("GET rencontres.")
   MongoClient.connect(url, function (err, db) {
@@ -257,8 +258,8 @@ var serveur = app.listen(app.get('port'), function () {
   console.log("Ecoute sur le port %d, à l'adresse http://localhost:80", serveur.address().port)
 })
 
-// ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀
-// Chargement de socket.io
+// ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■
+// ▀ Chargement de socket.io
 var io = require('socket.io').listen(serveur);
 // Configuration du controleur de bonne connexion io.set('heartbeat timeout',
 // 3000); io.set('heartbeat interval', 10000); Socket des abonnés au flux de
@@ -270,6 +271,9 @@ io
   .on('connect', function (socket) {
     console.log('Nouvelle connexion:' + socket.id)
     socket.emit('message', 'Vous êtes bien connecté au comité !')
+    controleur
+      .commande$
+      .next({type: typesCommande.CREER_CONNEXION, idSocket: socket.id})
     socket.on('disconnect', function () {
       console.log('déconnection:' + socket.id)
       console.log(`Désabonnement du client ${socket.id}.`)
