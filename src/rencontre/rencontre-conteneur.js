@@ -119,9 +119,8 @@ export default class RencontreConteneur extends React.Component {
       })
   }
   sauver(majRencontre) {
-    console.debug(`sauver(${JSON.stringify(majRencontre)})`)
+    // console.debug(`sauver(${JSON.stringify(majRencontre)})`)
     var adresse = location.protocol + "//" + location.host + "/api/rencontres/" + majRencontre.id
-    console.debug(`mise à jour à envoyer: ${JSON.stringify(majRencontre)}`)
     console.info("Requete de l'API web: " + adresse)
     request({
       url: adresse,
@@ -129,7 +128,7 @@ export default class RencontreConteneur extends React.Component {
       json: majRencontre
     }, function (error, response, rencontre) {
       if (!error && response.statusCode == 200) {
-        console.info("Rencontre modifiée :" + JSON.stringify(rencontre))
+        // console.info("Rencontre modifiée :" + JSON.stringify(rencontre))
         action$.next({type: types.PUT_RENCONTRE_SUCCESS, rencontre: rencontre})
       }
     })
