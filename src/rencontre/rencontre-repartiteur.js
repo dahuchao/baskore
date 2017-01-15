@@ -62,9 +62,12 @@ export default function Repartiteur() {
         .fromJS(etat)
         .get("rencontre", Immutable.Map())
         .set("date", action.rencontre.date)
-        // .set("periode", action.rencontre.periode)
-        .set("hote.nom", action.rencontre.hote.nom)
-        .set("visiteur.nom", action.rencontre.visiteur.nom)
+        .setIn([
+          "hote", "nom"
+        ], action.rencontre.hote.nom)
+        .setIn([
+          "visiteur", "nom"
+        ], action.rencontre.visiteur.nom)
       return Immutable
         .fromJS(etat)
         .set("rencontre", rencontre)
@@ -114,7 +117,7 @@ export default function Repartiteur() {
     }
     let etatNouveau = (actions[action.type] || actions['DEFAUT'])();
     console.log("/----- Nouvel état ----------------")
-    console.log(`${etatNouveau}`)
+    console.log(`${JSON.stringify(etatNouveau.toJS())}`)
     console.log(">----------------------------------")
     return etatNouveau.toJS()
   }, init)

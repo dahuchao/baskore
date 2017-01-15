@@ -125,8 +125,12 @@ export default class RencontreConteneur extends React.Component {
       .fromJS(this.rencontre)
       .set("date", infos.date)
       .set("periode", infos.periode)
-      .set("hote.nom", infos.hote)
-      .set("visiteur.nom", infos.visiteur)
+      .setIn([
+        "hote", "nom"
+      ], infos.hote)
+      .setIn([
+        "visiteur", "nom"
+      ], infos.visiteur)
     // rencontre.hote.nom = infos.hote
     var adresse = location.protocol + "//" + location.host + "/api/rencontres/" + this.rencontre.id
     console.debug(`rencontre.date: ${rencontre.date}`)
