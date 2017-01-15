@@ -48,7 +48,7 @@ const Rencontre = React.createClass({
     // console.debug("MAJ visiteur: " + JSON.stringify(this.state))
   },
   sauver() {
-    console.debug(`Rencontre.sauver(${this.state})).`)
+    // console.debug(`Rencontre.sauver(${this.state})).`)
     this.props.sauver(this.state)
   },
   render() {
