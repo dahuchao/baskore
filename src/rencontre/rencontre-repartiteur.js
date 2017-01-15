@@ -57,30 +57,21 @@ export default function Repartiteur() {
         ], action.marqueVisiteur)
     }
     actions[types.PUT_RENCONTRE_SUCCESS] = function () {
-      console.log("| Mise à jour de la rencontre: " + JSON.stringify(action.rencontre))
+      console.log("| Mise à jour: " + JSON.stringify(action.rencontre))
       const joueuses = Immutable
         .List
         .of(4, 5, 6, 7, 8)
-      let rencontre = Immutable
+      const netat = Immutable
         .fromJS(etat)
-        .get("rencontre", Immutable.fromJS(action.rencontre))
-        .set("date", action.rencontre.date)
-        .setIn([
-          "hote", "nom"
-        ], action.rencontre.hote.nom)
-        .setIn([
-          "visiteur", "nom"
-        ], action.rencontre.visiteur.nom)
-        .setIn([
-          'hote', 'joueuses'
-        ], joueuses)
-        .setIn([
-          'visiteur', 'joueuses'
-        ], joueuses)
-      return Immutable
-        .fromJS(etat)
-        .set("rencontre", rencontre)
-        .set("modeEdition", false)
+        .set("rencontre", Immutable.fromJS(action.rencontre))
+      console.log(`| netat: ${netat}`)
+      return netat.setIn([
+        "rencontre", "hote", "joueuses"
+      ], joueuses).setIn([
+        "rencontre", "visiteur", "joueuses"
+      ], joueuses).set("modeEdition", false)
+      // return Immutable   .fromJS(etat)   .set("rencontre", rencontre)
+      // .set("modeEdition", false)
     }
     actions[typesEvenement.CHANGEMENT_PERIODE] = function () {
       console.log("| Nouvelle période: " + JSON.stringify(action.periode))
