@@ -58,11 +58,9 @@ export default function Repartiteur() {
     }
     actions[types.PUT_RENCONTRE_SUCCESS] = function () {
       console.log("| Mise à jour de la rencontre: " + JSON.stringify(action.rencontre))
-
       const joueuses = Immutable
         .List
         .of(4, 5, 6, 7, 8)
-
       let rencontre = Immutable
         .fromJS(etat)
         .get("rencontre", Immutable.fromJS(action.rencontre))

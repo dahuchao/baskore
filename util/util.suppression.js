@@ -13,9 +13,9 @@ MongoClient.connect(url, function (err, db) {
     .filter(rencontre => {
       return rencontre != null
     })
-    .filter(rencontre => {
-      return rencontre.hote.nom.match("test .*")
-    })
+    // .filter(rencontre => {
+    //   return rencontre.hote.nom.match("test .*")
+    // })
     .forEach((rencontre) => {
       console.log("Suppression rencontre: " + JSON.stringify(rencontre))
       db

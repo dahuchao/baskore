@@ -119,26 +119,25 @@ export default class RencontreConteneur extends React.Component {
       })
   }
   sauver(infos) {
-    let strInfo = JSON.stringify(infos)
-    console.debug(`Rencontre cont(sauver): ${strInfo}`)
+    console.debug(`sauver(${JSON.stringify(infos)})`)
     let rencontre = Immutable
-      .fromJS(this.rencontre)
-      .set("date", infos.date)
-      .set("periode", infos.periode)
-      .setIn([
-        "hote", "nom"
-      ], infos.hote)
-      .setIn([
-        "visiteur", "nom"
-      ], infos.visiteur)
+      .fromJS(this.rencontre).toJS()
+      // .set("date", infos.date)
+      // .set("periode", infos.periode)
+      // .setIn([
+      //   "hote", "nom"
+      // ], infos.hote)
+      // .setIn([
+      //   "visiteur", "nom"
+      // ], infos.visiteur).toJS()
     // rencontre.hote.nom = infos.hote
     var adresse = location.protocol + "//" + location.host + "/api/rencontres/" + this.rencontre.id
-    console.debug(`rencontre.date: ${rencontre.get("date")}`)
+    console.debug(`rencontre à envoyer: ${JSON.stringify(rencontre)}`)
     console.info("Requete de l'API web: " + adresse)
     request({
       url: adresse,
       method: "PUT",
-      json: rencontre.toJS()
+      json: rencontre
     }, function (error, response, rencontre) {
       if (!error && response.statusCode == 200) {
         console.info("Rencontre modifiée :" + JSON.stringify(rencontre))

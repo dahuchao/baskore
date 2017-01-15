@@ -22,10 +22,9 @@ gulp.task("test", function () {
   // watch(["test/**/*.js", "src/**/*.js"])
   // .pipe(gulp.src("test/Rencontres-spec.js"))   .pipe(jasmine())
   // watch(["immutable.test.1.js"])
-  gulp.src("test/immutable.test.1.js")
-    .pipe(babel({
-      presets: ['es2015']
-    }))
+  gulp
+    .src("test/immutable.test.1.js")
+    .pipe(babel({presets: ['es2015']}))
     .pipe(jasmine())
 })
 
@@ -34,19 +33,19 @@ gulp.task("styles", function () {
     .src("sass/**/*.scss")
     .pipe(sass().on("error", sass.logError))
     .pipe(gulp.dest("public/"))
-    .pipe(reload({ stream: true }));
+    .pipe(reload({stream: true}));
 });
 
 // Convertit es6 en es5 et assemble les morceaux
 gulp.task("fabrique", function () {
-  browserify({ entries: "src/app.js", debug: true })
+  browserify({entries: "src/app.js", debug: true})
     .transform(babelify)
     .on("error", gutil.log)
     .bundle()
     .on("error", gutil.log)
     .pipe(source("app.js"))
     .pipe(gulp.dest("public"))
-    .pipe(reload({ stream: true }));
+    .pipe(reload({stream: true}));
 });
 
 // Convertit es6 en es5 et assemble les morceaux
@@ -78,7 +77,7 @@ gulp.task("dev", [
   // configure proxy middleware context: "/" will proxy all requests     use:
   // "/api" to proxy request when path starts with "/api"
   var proxies = [];
-  proxies.push(proxyMiddleware(["/api/**"], { target: "http://localhost" }));
+  proxies.push(proxyMiddleware(["/api/**"], {target: "http://localhost"}));
   proxies.push(proxyMiddleware("/socket.io/**", {
     target: "http://localhost",
     ws: true
@@ -102,7 +101,7 @@ gulp.task("styler", ["styles"], function () {
   // configure proxy middleware context: "/" will proxy all requests     use:
   // "/api" to proxy request when path starts with "/api"
   var proxies = [];
-  proxies.push(proxyMiddleware(["/api/**"], { target: "http://localhost" }));
+  proxies.push(proxyMiddleware(["/api/**"], {target: "http://localhost"}));
   proxies.push(proxyMiddleware("/socket.io/**", {
     target: "http://localhost",
     ws: true
@@ -119,7 +118,9 @@ gulp.task("styler", ["styles"], function () {
 });
 
 // Tache de démarrage du serveur
-gulp.task("start", function () {
+gulp.task("start", [
+  "compression", "styles"
+], function () {
   console.log("Lancement du serveur");
   server.run(["serveur.js"]);
 });
@@ -128,12 +129,6 @@ gulp.task("start", function () {
 gulp.task("stop", function () {
   //server.stop()
   browserSync.exit();
-});
-
-// Fabrique à destination du serveur de production
-gulp.task("prod", [
-  "compression", "styles", "start"
-], function () {
 });
 
 // Tache pour tester la bonne connexion à la base de données

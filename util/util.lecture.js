@@ -3,6 +3,7 @@ var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
 console.log("Lancement de l'utilitaire de lecture.")
 // const url = "mongodb://admin:pass@localhost:27017/test"
+// const url = "mongodb://organisateur:orga123@ds055905.mongolab.com:55905/heroku_5cn196b4"
 const url = "mongodb://@localhost:27017/baskoredb"
 console.log("url de la base de donnée: " + url)
 
@@ -19,11 +20,10 @@ MongoClient.connect(url, (err, db) => {
         console.log("Erreur: " + err)
         return
       }
-      if (rencontre==null) {
+      if (rencontre == null) {
         return
       }
-      if (rencontre.hote.nom.match("test .*")) 
-        console.log("rencontre****: " + JSON.stringify(rencontre))
+      console.log("rencontre****: " + JSON.stringify(rencontre))
     })
   db
     .collection("rencontres")

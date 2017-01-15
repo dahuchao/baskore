@@ -38,15 +38,17 @@ const Rencontre = React.createClass({
     // console.debug("MAJ heure: " + JSON.stringify(dateState))
   },
   majHote(e) {
-    this.setState({ hote: e.target.value })
+    // this.setState({ hote: e.target.value })
+    this.state.hote.nom = e.target.value
     // console.debug("MAJ Hote: " + JSON.stringify(this.state))
   },
   majVisiteur(e) {
-    this.setState({ visiteur: e.target.value })
+    // this.setState({ visiteur: e.target.value })
+    this.state.visiteur.nom = e.target.value
     // console.debug("MAJ visiteur: " + JSON.stringify(this.state))
   },
   sauver() {
-    console.debug(`Rencontre(sauver).`)
+    console.debug(`Rencontre.sauver(${this.state})).`)
     this.props.sauver(this.state)
   },
   render() {
