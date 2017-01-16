@@ -10,6 +10,8 @@ var bodyParser = require("body-parser")
 var multer = require("multer")
 var upload = multer()
 var ObjectId = require("mongodb").ObjectID
+var Rx = require("rxjs")
+var Rencontres = require('./src/Rencontres')
 
 // Codec base 64 var base64 = require('base-64') Création de l'application
 // express
@@ -263,59 +265,17 @@ var serveur = app.listen(app.get('port'), function () {
 var io = require('socket.io').listen(serveur);
 // Configuration du controleur de bonne connexion io.set('heartbeat timeout',
 // 3000); io.set('heartbeat interval', 10000); Socket des abonnés au flux de
-// publication des mesures de la sonde de température
-var socketAbonnes = Immutable.Map()
+var nbSockets = 0
 // Quand on client se connecte, on le note dans la console
 io
   .sockets
   .on('connect', function (socket) {
     console.log('Nouvelle connexion:' + socket.id)
     socket.emit('message', 'Vous êtes bien connecté au comité !')
-    controleur
-      .commande$
-      .next({type: typesCommande.CREER_CONNEXION, idSocket: socket.id})
+    console.log(`Nombre d'abonnés: ${++ nbSockets}`)
     socket.on('disconnect', function () {
       console.log('déconnection:' + socket.id)
-      console.log(`Désabonnement du client ${socket.id}.`)
-      socketAbonnes = socketAbonnes.delete(socket.id)
-      console.log(`Nombre d'abonnés: ${socketAbonnes.count()}`)
-    });
-    // Quand la table de marque recoit une demande d'abonnement à un tableau de
-    // marque
-    socket.on('ouvrirRencontre', function (idRencontre) {
-      console.log('Abonnement à la recontre:' + idRencontre)
-      MongoClient.connect(url, function (err, db) {
-        if (err) {
-          console.log("Base de données indisponible.")
-          rencontres.filter(function (rencontre) {
-            return rencontre.id == idRencontre
-          })
-            .forEach(function (rencontre) {
-              socketAbonnes = socketAbonnes.set(socket.id, {socket, idRencontre})
-              console.log(`Abonnement du client ${socket.id} à la rencontre ${rencontre.id}.`)
-              console.log(`Nombre d'abonnés: ${socketAbonnes.count()}`)
-            })
-        } else {
-          db
-            .collection("rencontres")
-            .find()
-            .toArray(function (err, rencontres) {
-              if (err) {
-                console.log("Les rencontres.")
-              } else {
-                rencontres
-                  .filter(function (rencontre) {
-                    return rencontre.id == idRencontre
-                  })
-                  .forEach(function (rencontre) {
-                    socketAbonnes = socketAbonnes.set(socket.id, {socket, idRencontre})
-                    console.log(`Abonnement du client ${socket.id} à la rencontre ${rencontre.id}.`)
-                    console.log(`Nombre d'abonnés: ${socketAbonnes.count()}`)
-                  })
-              }
-            })
-        }
-      })
+      console.log(`Nombre d'abonnés: ${-- nbSockets}`)
     });
     socket.on('commande', function (commande) {
       console.log(`Commande: ${JSON.stringify(commande)}`)
@@ -323,6 +283,37 @@ io
         .commande$
         .next(commande)
     })
+    controleur
+      .evenement$
+      .flatMap(evenement => {
+        if (!evenement.type.match(typesEvenement.LECTURE_RENCONTRE)) 
+          return Rx.Observable.of(evenement)
+        console.log("| type: >>>>>>>>>>>>>>>>>LECTURE_RENCONTRE.")
+        return Rencontres
+          .lecture
+          .par
+          .id(1)
+          .map(rencontre => {
+            evenement.rencontre = rencontre
+            return evenement
+          })
+      })
+      .scan((message, evenement) => {
+        if (evenement.type.match(typesEvenement.LECTURE_RENCONTRE)) 
+          message.idRencontre = evenement.idRencontre
+        message.evenement = evenement
+        return message
+      }, {
+        idRencontre: 0,
+        evenement: null
+      })
+      .filter(message => message.evenement != null)
+      .filter(message => message.evenement.idRencontre == message.idRencontre)
+      .subscribe(message => {
+        console.log(">---- Communication vers les tableaux de marque ----<")
+        console.log(`\\ MESSAGE: ${JSON.stringify(message)}`)
+        socket.emit("evenement", message.evenement)
+      });
   })
 
 // Liste des rencontes utilisées lorsque la base de données est inaccessible
@@ -365,25 +356,7 @@ var rencontres = [
   }
 ];
 
-//■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀
-controleur
-  .evenement$
-  .subscribe(evenement => {
-    console.log(">---- Communication vers les tableaux de marque ----<")
-    console.log(`\\ EVENEMENT: ${evenement.type}`)
-    socketAbonnes
-      .filter(client => {
-      return client.idRencontre == evenement.idRencontre
-    })
-      .forEach((client, idSocket) => {
-        client
-          .socket
-          .emit("evenement", evenement)
-        console.log(`| Envoi de l'évènement ${JSON.stringify(evenement)} au client: ${client.socket.id}`)
-      })
-  });
-
-//■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀
+// ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■
 controleur
   .evenement$
   .subscribe(evenement => {

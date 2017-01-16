@@ -41,18 +41,18 @@ export default class RencontreConteneur extends React.Component {
         this
           .socket
           .on("evenement", evenement => {
-            // console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
+            console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
             action$.next(evenement)
           })
       }.bind(this))
     let rest = location.protocol + "//" + location.host + "/api/rencontres/" + idRencontre
     // console.info("Requete de l'API web: " + rest)
-    request(rest, function (error, response, rencontre) {
-      if (!error && response.statusCode == 200) {
-        let oRencontre = JSON.parse(rencontre)
-        action$.next({type: types.GET_RENCONTRE_SUCCESS, rencontre: oRencontre})
-      }
-    })
+    // request(rest, function (error, response, rencontre) {
+    //   if (!error && response.statusCode == 200) {
+    //     let oRencontre = JSON.parse(rencontre)
+    //     action$.next({type: types.GET_RENCONTRE_SUCCESS, rencontre: oRencontre})
+    //   }
+    // })
   }
   componentWillUnmount() {
     this
