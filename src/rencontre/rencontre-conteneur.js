@@ -20,12 +20,11 @@ export default class RencontreConteneur extends React.Component {
   componentDidMount() {
     etat$.subscribe(etat => this.setState(etat))
     const idRencontre = this.props.params.idRencontre
-    var adresse = location.href
     // console.info("Adresse web socket: " + adresse)
-    this.socket = io(adresse)
+    this.socket = io(location.href)
     this
       .socket
-      .on("connect", function () {
+      .on("connect", () => {
         // console.info("Connecté avec la table de marque")
         console.info("Envoi commande lecture")
         this
@@ -41,15 +40,7 @@ export default class RencontreConteneur extends React.Component {
             console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
             action$.next(evenement)
           })
-      }.bind(this))
-    // let rest = location.protocol + "//" + location.host + "/api/rencontres/" + idRencontre
-    // console.info("Requete de l'API web: " + rest)
-    // request(rest, function (error, response, rencontre) {
-    //   if (!error && response.statusCode == 200) {
-    //     let oRencontre = JSON.parse(rencontre)
-    //     action$.next({type: types.GET_RENCONTRE_SUCCESS, rencontre: oRencontre})
-    //   }
-    // })
+      })
   }
   componentWillUnmount() {
     this

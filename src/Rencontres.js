@@ -7,7 +7,7 @@ var typesEvenement = require("./types-evenement")
 var Rencontres = {
   connecte: false,
   connexion: function (url) {
-    // console.log(`Connexion: ${url}`)
+    console.log(`Connexion: ${url}`)
     return RxMongo.connect(url)
   },
   deconnexion: function () {
@@ -27,7 +27,7 @@ var Rencontres = {
           return new RxCollection("rencontres").find({id: idRencontre}).first()
         else 
           return rencontre$.filter(rencontre => {
-            // console.log(`Rencontre: ${JSON.stringify(rencontre)}`)
+            console.log(`STATIC Rencontre: ${JSON.stringify(rencontre)}`)
             return rencontre.id == idRencontre
           })
       }

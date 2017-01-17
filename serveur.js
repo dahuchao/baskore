@@ -35,73 +35,16 @@ var urlParDefaut = "mongodb://@localhost:27017/baskoredb"
 // PROD_MONGODB=mongodb://dbuser:dbpass@host1:port1/dbname
 const url = (process.env.MONGODB_URI || urlParDefaut)
 console.log("url de la base de donnée: " + url)
+Rencontres
+  .connexion(url)
+  .subscribe(db => {
+    Rencontres.connecte = true
+    // console.info(`Connecté? ${Rencontres.connecte}`)
+  }, err => {
+    console.log(`Err: ${err}`)
+  });
 
 // ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■
-// ▀ ******* Traitement de la requête GET ******** http://localhost/rencontres
-app.get("/api/rencontres", function (req, res) {
-  console.log("GET rencontres.")
-  MongoClient.connect(url, function (err, db) {
-    if (err) {
-      console.log("Base de données indisponible: " + err)
-      console.log("Utilisation liste statique de test : " + JSON.stringify(rencontres))
-      console.log("Nb rencontre dans la liste: " + rencontres.length)
-      res.jsonp(rencontres);
-    } else {
-      db
-        .collection("rencontres")
-        .find()
-        .toArray(function (err, rencontres) {
-          if (err) {
-            console.log("Les données rencontres indisponible: " + err)
-          } else {
-            // Lecture de la liste des rencontres
-            console.log("Nombre de rencontre en base", rencontres.length)
-            res.jsonp(rencontres);
-          }
-        })
-      // Fermeture de la base de données
-      db.close()
-    }
-  })
-})
-
-// ***** Traitement de la requête GET ******* http://localhost/rencontres/2
-app.get("/api/rencontres/:id", function (req, res) {
-  // Calcul du nom de la page recherchée
-  let idRencontre = parseInt(req.params.id)
-  console.log("GET rencontre: " + idRencontre)
-  MongoClient.connect(url, function (err, db) {
-    if (err) {
-      console.log("Base de données indisponible.")
-      console.log('Ouverture de la recontre de puis la liste statique :' + idRencontre)
-      rencontres.filter(function (rencontre) {
-        return rencontre.id == idRencontre
-      })
-        .forEach(function (rencontre) {
-          // Lecture de la rencontre
-          res.jsonp(rencontre)
-          console.log('Envoie de la rencontre ! ' + JSON.stringify(rencontre))
-        })
-    } else {
-      db
-        .collection("rencontres")
-        .find({id: idRencontre})
-        .each(function (err, rencontre) {
-          if (err) {
-            console.log("Erreur: " + err)
-          }
-          if (rencontre != null) {
-            // Lecture de la rencontre
-            console.log("Envoie de la rencontre: " + JSON.stringify(rencontre))
-            res.jsonp(rencontre)
-          }
-        })
-      // Fermeture de la base de données
-      db.close();
-    }
-  })
-})
-
 // ****** Traitement de la requête PUT ******** http://localhos t/rencontres/id
 app.put("/api/rencontres/:id", upload.array(), function (req, res) {
   // Calcul du nom de la page recherchée
@@ -313,7 +256,7 @@ io
           })
       })
       .scan((message, evenement) => {
-        // console.log(` | type: ${JSON.stringify(evenement)}.`)
+        console.log(` | type: ${JSON.stringify(evenement)}.`)
         if (evenement.type.match(typesEvenement.LECTURE_RENCONTRE)) 
           message.idRencontre = evenement.idRencontre
         message.evenement = evenement
