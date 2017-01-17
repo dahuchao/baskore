@@ -27,9 +27,6 @@ export default class RencontreConteneur extends React.Component {
       .socket
       .on("connect", function () {
         // console.info("Connecté avec la table de marque")
-        this
-          .socket
-          .emit("ouvrirRencontre", idRencontre)
         console.info("Envoi commande lecture")
         this
           .socket
@@ -45,7 +42,7 @@ export default class RencontreConteneur extends React.Component {
             action$.next(evenement)
           })
       }.bind(this))
-    let rest = location.protocol + "//" + location.host + "/api/rencontres/" + idRencontre
+    // let rest = location.protocol + "//" + location.host + "/api/rencontres/" + idRencontre
     // console.info("Requete de l'API web: " + rest)
     // request(rest, function (error, response, rencontre) {
     //   if (!error && response.statusCode == 200) {

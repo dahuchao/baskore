@@ -16,9 +16,9 @@ var Rencontres = require('./src/Rencontres')
 // Codec base 64 var base64 = require('base-64') Création de l'application
 // express
 var app = express()
-app.use(cors({allowedOrigins: ['localhost:3000']}))
+app.use(cors({ allowedOrigins: ['localhost:3000'] }))
 app.use(bodyParser.json()) // for parsing application/json
-app.use(bodyParser.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 // Définition du port d'écoute
 app.set('port', (process.env.PORT || 80))
 // Répertoire des pages du site web
@@ -85,7 +85,7 @@ app.get("/api/rencontres/:id", function (req, res) {
     } else {
       db
         .collection("rencontres")
-        .find({id: idRencontre})
+        .find({ id: idRencontre })
         .each(function (err, rencontre) {
           if (err) {
             console.log("Erreur: " + err)
@@ -125,7 +125,7 @@ app.put("/api/rencontres/:id", upload.array(), function (req, res) {
     } else {
       db
         .collection("rencontres")
-        .find({id: idRencontre})
+        .find({ id: idRencontre })
         .each(function (err, rencontre) {
           if (err) {
             console.log("Erreur: " + err)
@@ -271,11 +271,11 @@ io
   .sockets
   .on('connect', function (socket) {
     console.log('Nouvelle connexion:' + socket.id)
-    socket.emit('message', 'Vous êtes bien connecté au comité !')
-    console.log(`Nombre d'abonnés: ${++ nbSockets}`)
+    // socket.emit('message', 'Vous êtes bien connecté au comité !')
+    console.log(`Nombre d'abonnés: ${++nbSockets}`)
     socket.on('disconnect', function () {
       console.log('déconnection:' + socket.id)
-      console.log(`Nombre d'abonnés: ${-- nbSockets}`)
+      console.log(`Nombre d'abonnés: ${--nbSockets}`)
     });
     socket.on('commande', function (commande) {
       console.log(`Commande: ${JSON.stringify(commande)}`)
@@ -286,9 +286,8 @@ io
     controleur
       .evenement$
       .flatMap(evenement => {
-        if (!evenement.type.match(typesEvenement.LECTURE_RENCONTRE)) 
+        if (!evenement.type.match(typesEvenement.LECTURE_RENCONTRE))
           return Rx.Observable.of(evenement)
-        console.log("| type: >>>>>>>>>>>>>>>>>LECTURE_RENCONTRE.")
         return Rencontres
           .lecture
           .par
@@ -298,8 +297,17 @@ io
             return evenement
           })
       })
+      .map(evenement => {
+        if (!evenement.type.match(typesEvenement.LECTURE_RENCONTRES))
+          return Rx.Observable.of(evenement)
+        evenement.rencontres = Rencontres
+          .lecture
+          .liste()
+        return evenement
+      })
       .scan((message, evenement) => {
-        if (evenement.type.match(typesEvenement.LECTURE_RENCONTRE)) 
+        console.log(` | type*********************: ${JSON.stringify(evenement)}.`)
+        if (evenement.type.match(typesEvenement.LECTURE_RENCONTRE))
           message.idRencontre = evenement.idRencontre
         message.evenement = evenement
         return message
@@ -310,8 +318,10 @@ io
       .filter(message => message.evenement != null)
       .filter(message => message.evenement.idRencontre == message.idRencontre)
       .subscribe(message => {
-        console.log(">---- Communication vers les tableaux de marque ----<")
-        console.log(`\\ MESSAGE: ${JSON.stringify(message)}`)
+        console.log("\\---- Communication vers les tableaux de marque ----<")
+        console.log(` | type: ${message.evenement.type}.`)
+        console.log(` | Envoi du message: ${JSON.stringify(message)}`)
+        console.log(`/`)
         socket.emit("evenement", message.evenement)
       });
   })
@@ -405,11 +415,11 @@ controleur
         console.log(`| Nouveau commentaire sur la rencontre: ${evenement.commentaire}`)
         db
           .collection("rencontres")
-          .find({id: evenement.idRencontre})
+          .find({ id: evenement.idRencontre })
           .each((err, rencontre) => {
-            if (err) 
+            if (err)
               return
-            if (!rencontre) 
+            if (!rencontre)
               return
             console.log("| Rencontre: " + JSON.stringify(rencontre))
             let commentaires = Immutable
