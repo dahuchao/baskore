@@ -1,7 +1,7 @@
 import Rx from 'rxjs'
 import Immutable from "immutable"
 import * as types from "./rencontre-actions"
-var typesEvenement = require("../types-evenement")
+import typesEvenement from "../types-evenement"
 
 export default function Repartiteur() {
   const action$ = new Rx.BehaviorSubject({type: "DEFAUT"})

@@ -4,6 +4,7 @@ import Immutable from "immutable"
 import io from "socket.io-client"
 import request from "request"
 import * as types from "./rencontres-actions"
+import typesCommande from "../types-commande"
 import Rencontres from "./rencontres"
 import RencontreAjout from "./rencontres-ajout"
 import Repartiteur from "./rencontres-repartiteur"
@@ -17,25 +18,13 @@ export default class RencontresConteneur extends React.Component {
       modeAjout: false
     }
   }
-  componentWillMount() {
-    var adresse = location.protocol + "//" + location.host + "/api/rencontres"
-    console.info(`Requete de l'API web: ${adresse}`)
-    request(adresse, function (error, response, rencontres) {
-      if (!error && response.statusCode == 200) {
-        let oRencontres = JSON.parse(rencontres)
-        action$.next({ type: types.GET_RENCONTRES_SUCCESS, rencontres: oRencontres })
-      }
-    })
-  }
   componentDidMount() {
     etat$.subscribe(etat => this.setState(etat))
-    console.info(`Adresse socket io: ${location.href}`)
-
-    // console.info("Adresse web socket: " + adresse)
+    // console.info(`Adresse socket io: ${location.href}`)
     this.socket = io(location.href)
     this
       .socket
-      .on("connect", function () {
+      .on("connect", () => {
         // console.info("Connecté avec la table de marque")
         this
           .socket
@@ -46,14 +35,14 @@ export default class RencontresConteneur extends React.Component {
         this
           .socket
           .on("evenement", evenement => {
-            console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
+            // console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
             action$.next(evenement)
           })
-      }.bind(this))
+      })
   }
   ajouterRencontre() {
     console.log("Ajouter rencontre.")
-    action$.next({ type: types.AJOUTER_RENCONTRE })
+    action$.next({type: types.AJOUTER_RENCONTRE})
   }
   supprimeRencontre(idRencontre) {
     console.info("Suppression: " + idRencontre)
@@ -64,13 +53,13 @@ export default class RencontresConteneur extends React.Component {
       method: "DELETE"
     }, function (error, response) {
       if (!error && response.statusCode == 204) {
-        action$.next({ type: types.DELETE_RENCONTRE_SUCCESS, idRencontre: idRencontre })
+        action$.next({type: types.DELETE_RENCONTRE_SUCCESS, idRencontre: idRencontre})
       }
     })
   }
   ajoutRencontre(infos) {
     if (infos == null) {
-      action$.next({ type: types.ANNULER_RENCONTRE, rencontre: rencontre })
+      action$.next({type: types.ANNULER_RENCONTRE, rencontre: rencontre})
       return
     }
     let rencontre = this.state.rencontre
@@ -89,26 +78,27 @@ export default class RencontresConteneur extends React.Component {
     }, function (error, response, rencontres) {
       if (!error && response.statusCode == 201) {
         // Calcul de l'identifiant de la nouvelle rencontre
-        let [, id] = /^\/api\/rencontres\/(.*)$/.exec(response.headers.location);
+        let [,
+          id] = /^\/api\/rencontres\/(.*)$/.exec(response.headers.location);
         // let id = response.headers.location.replace(new
         // RegExp("/api\/rencontre\/(.*)"), "$1")
         console.info("id: " + id)
         rencontre.id = id
         console.info("Rencontre: " + JSON.stringify(rencontre))
-        action$.next({ type: types.POST_RENCONTRE_SUCCESS, rencontre: rencontre })
+        action$.next({type: types.POST_RENCONTRE_SUCCESS, rencontre: rencontre})
       }
     })
   }
   render() {
     return (this.state.modeAjout
       ? <RencontreAjout
-        rencontre={this.state.rencontre}
-        ajoutRencontre={this
+          rencontre={this.state.rencontre}
+          ajoutRencontre={this
           .ajoutRencontre
-          .bind(this)} />
+          .bind(this)}/>
       : <Rencontres
         rencontres={this.state.rencontres}
         supprimeRencontre={this.supprimeRencontre}
-        ajouterRencontre={this.ajouterRencontre} />)
+        ajouterRencontre={this.ajouterRencontre}/>)
   }
 }

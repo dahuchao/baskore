@@ -1,6 +1,7 @@
 import Rx from 'rxjs'
 import Immutable from "immutable"
 import * as types from "./rencontres-actions"
+import typesEvenement from "../types-evenement"
 
 export default function Repartiteur() {
   const action$ = new Rx.BehaviorSubject({type: "DEFAUT"})
@@ -17,6 +18,12 @@ export default function Repartiteur() {
       "DEFAUT": function () {
         return Immutable.fromJS(etat)
       }
+    }
+    actions[typesEvenement.LECTURE_RENCONTRES] = function () {
+      console.log("| rencontres: " + JSON.stringify(action.rencontres))
+      return Immutable
+        .fromJS(etat)
+        .set("rencontres", action.rencontres)
     }
     actions[types.GET_RENCONTRES_SUCCESS] = function () {
       console.log("| rencontres: " + JSON.stringify(action.rencontres))
