@@ -65,12 +65,16 @@ describe("Gestion des rencontres", () => {
       Rencontres
         .lecture
         .par
-        .id(3)
+        .id(2)
         .subscribe(rencontre => {
-          // console.info(rencontre) expect(rencontre).to.exist
+          console.info(rencontre)
+          expect(rencontre).to.exist
           expect(rencontre.id)
             .to
-            .equal(3)
+            .equal(2)    
+          expect(rencontre.hote.nom)
+            .to
+            .equal("NEC")
         }, err => {
           expect(err).to.not.exist
         }, () => done())
@@ -118,7 +122,7 @@ describe("Gestion des rencontres", () => {
         .mettreAJour
         .par
         .critere({
-          id: 4
+          id: 1
         }, rencontrer)
         .subscribe(result => {
           expect(result).to.exist;
@@ -128,7 +132,7 @@ describe("Gestion des rencontres", () => {
           Rencontres
             .lecture
             .par
-            .id(4)
+            .id(1)
             .subscribe(rencontre => {
               // console.info(rencontre)
               expect(rencontre).to.exist
@@ -158,9 +162,9 @@ describe("Gestion des rencontres", () => {
           expect(err).to.not.exist
         }, () => done())
     })
-    it("on peut traiter un évènement de changement de marque une rencontre", (done) => {
+    it("on peut traiter un changement de marque sur une rencontre", (done) => {
       Rencontres
-        .traiter({type: typesEvenement.CHANGEMENT_MARQUE, idRencontre: 3, marqueHote: 10, marqueVisiteur: 10})
+        .traiter({type: typesEvenement.CHANGEMENT_MARQUE, idRencontre: 1, marqueHote: 10, marqueVisiteur: 10})
         .subscribe(result => {
           console.info(`Id de la rencontre supprimée: ${idRencontreCreeASupprimer}`)
           expect(result).to.exist;
@@ -168,9 +172,9 @@ describe("Gestion des rencontres", () => {
           expect(err).to.not.exist
         }, () => done())
     })
-    it("on peut traiter un évènement de changement de période sur une rencontre", (done) => {
+    it("on peut traiter un changement de période sur une rencontre", (done) => {
       Rencontres
-        .traiter({type: typesEvenement.CHANGEMENT_PERIODE, idRencontre: 3, periode: 2})
+        .traiter({type: typesEvenement.CHANGEMENT_PERIODE, idRencontre: 1, periode: 2})
         .subscribe(result => {
           console.info(`Id de la rencontre supprimée: ${idRencontreCreeASupprimer}`)
           expect(result).to.exist;
@@ -180,9 +184,9 @@ describe("Gestion des rencontres", () => {
     })
     it("on peut traiter un évènement d'ajout de commentaires", (done) => {
       Rencontres
-        .traiter({type: typesEvenement.NOUVEAU_COMMENTAIRE, idRencontre: 3, commentaire: "Test un test!"})
+        .traiter({type: typesEvenement.NOUVEAU_COMMENTAIRE, idRencontre: 1, commentaire: "Test un test!"})
         .subscribe(result => {
-          console.info(`Id de la rencontre supprimée: ${idRencontreCreeASupprimer}`)
+          console.info(`Id de la rencontre modifiée d'un commentaire: ${idRencontreCreeASupprimer}`)
           expect(result).to.exist;
         }, err => {
           expect(err).to.not.exist

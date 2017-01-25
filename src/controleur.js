@@ -27,6 +27,22 @@ var evenement$ = commande$.map(commande => {
         .fromJS(commande)
         .set("type", typesEvenement.LECTURE_RENCONTRES)
     },
+    [typesCommande.MAJ_RENCONTRE]: commande => {
+      console.log(`| idRencontre ${commande.idRencontre}`)
+      console.log(`| dateRencontre ${commande.dateRencontre}`)
+      console.log(`| hoteRencontre ${commande.hoteRencontre}`)
+      console.log(`| visiteurRencontre ${commande.visiteurRencontre}`)
+      console.log(`| idSocket ${commande.idSocket}`)
+      return Immutable
+        .fromJS(commande)
+        .set("type", typesEvenement.MAJ_RENCONTRE)
+    },
+    [typesCommande.AJOUTER_RENCONTRE]: commande => {
+      console.log(`| idSocket ${commande.idSocket}`)
+      return Immutable
+        .fromJS(commande)
+        .set("type", typesEvenement.AJOUT_RENCONTRE)
+    },
     [typesCommande.LIRE_RENCONTRE]: commande => {
       console.log(`| idRencontre ${commande.idRencontre}`)
       console.log(`| idSocket ${commande.idSocket}`)

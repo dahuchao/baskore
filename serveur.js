@@ -252,6 +252,7 @@ io
           }, [])
           .map(liste => {
             evenement.rencontres = liste
+            console.log(` | liste des rencontres: ${JSON.stringify(liste)}.`)
             return evenement
           })
       })

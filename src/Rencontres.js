@@ -15,17 +15,31 @@ var Rencontres = {
   },
   lecture: {
     liste: function () {
-      // console.log(`Connecté? ${Rencontres.connecte}`)
-      if (Rencontres.connecte) 
-        return new RxCollection("rencontres").find({}).toArray()
-      else 
+      console.log(`Connecté? ${Rencontres.connecte}`)
+      if (Rencontres.connecte) {
+        return new RxCollection("rencontres")
+          .find({})
+          .toArray()
+          // .map(liste => {
+          //   console.log(` | //////////////rencontres: ${JSON.stringify(liste)}.`)
+          //   return liste
+          // })
+          // .subscribe(liste => {
+          //   // console.log(` | //////////////rencontres: ${JSON.stringify(liste)}.`)
+          //   return Rx
+          //     .Observable
+          //     .of(liste)
+          // })
+      } else 
         return rencontre$
     },
     par: {
       id: function (idRencontre) {
-        if (Rencontres.connecte) 
-          return new RxCollection("rencontres").find({id: idRencontre}).first()
-        else 
+        if (Rencontres.connecte) {
+          return new RxCollection("rencontres")
+            .find({id: idRencontre})
+            .first()
+        } else 
           return rencontre$.filter(rencontre => {
             console.log(`STATIC Rencontre: ${JSON.stringify(rencontre)}`)
             return rencontre.id == idRencontre
@@ -162,7 +176,7 @@ var Rencontres = {
       }
     }
     evenements[typesEvenement.NOUVEAU_COMMENTAIRE] = function () {
-      console.log(`| Nouveau commentaire sur la rencontre: $evenement.commentaire}`)
+      console.log(`| Nouveau commentaire sur la rencontre: ${evenement.commentaire}`)
       if (Rencontres.connecte) {
         var critere = {
           id: evenement.idRencontre
@@ -177,7 +191,7 @@ var Rencontres = {
               .get("commentaires", Immutable.List())
               .push(evenement.commentaire)
             console.log(`| Enregistrement du commentaire en base: ${commentaires}`)
-            rencontre.commentaires = commentaires
+            rencontre.commentaires = commentaires.toJS()
             return new RxCollection("rencontres")
               .updateOne(critere, rencontre)
               .map(result => {
