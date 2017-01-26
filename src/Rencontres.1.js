@@ -86,6 +86,7 @@ var Rencontres = {
                 bdd.close()
               }
             })
+          evenement.id = idCalcule
           return evenement
         })
     }
@@ -156,6 +157,28 @@ var Rencontres = {
         .map(rencontre => {
           evenement.rencontre = rencontre
           return evenement
+        })
+    }
+    evenements[typesEvenement.SUPPRESSION_RENCONTRE] = evenement => {
+      console.log(`| idRencontre: ${evenement.idRencontre}`)
+      return Rx
+        .Observable
+        .create(function (subscriber) {
+          console.log(` Suppression rencontre.`)
+          return bdd
+            .collection("rencontres")
+            .remove({
+              id: evenement.idRencontre
+            }, function (err, result) {
+              if (err) {
+                console.log("Erreur: " + err)
+                subscriber.error(err);
+              } else {
+                console.log(`Résultat suppression: ${JSON.stringify(result)}`)
+                subscriber.next(evenement)
+                subscriber.complete();
+              }
+            })
         })
     }
     evenements[typesEvenement.LECTURE_RENCONTRES] = evenement => {

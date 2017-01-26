@@ -24,6 +24,42 @@ describe("Gestion des rencontres", () => {
     Rencontres.deconnexion()
     done()
   })
+  it("on peut supprimer une rencontre", (done) => {
+    controleur
+      .commande$
+      .next({
+        type: typesCommande.SUPPRIMER_RENCONTRE,
+        idRencontre: 2,
+        idSocket: 1
+      });
+    controleur
+      .evenement$
+      .flatMap(evenement => {
+        if (!evenement.type.match(typesEvenement.SUPPRESSION_RENCONTRE)) 
+          return Rx.Observable.of(evenement)
+        return Rencontres.traiter(evenement)
+      })
+      .scan((message, evenement) => {
+        message.evenement = evenement
+        return message
+      }, {
+        idRencontre: 0,
+        evenement: null
+      })
+      .filter(message => message.evenement != null)
+      .filter(message => message.evenement.idRencontre == message.idRencontre)
+      .subscribe(message => {
+        console.log("\\---- Communication vers les tableaux de marque ---->")
+        console.log(` | type: ${message.evenement.type}.`)
+        console.log(`_| Envoi du message `)
+        console.log(`${JSON.stringify(message)}`)
+        console.log(`/`)
+        done()
+      }, err => {
+        console.log(`Une erreur sur la suppression d'une rencontre est survenue`)
+        console.log(`Err: ${err}`)
+      }, () => done())
+  })
   it("on peut modifier une rencontre", (done) => {
     controleur
       .commande$
@@ -181,7 +217,7 @@ describe("Gestion des rencontres", () => {
         console.log(`/`)
         done()
       }, err => {
-        console.log(`Une erreur sur la lecture d'une rencontre est survenue`)
+        console.log(`Une erreur sur l'écriture d'une rencontre est survenue`)
         console.log(`Err: ${err}`)
       }, () => done())
   })

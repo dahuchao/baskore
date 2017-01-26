@@ -50,6 +50,13 @@ var evenement$ = commande$.map(commande => {
         .fromJS(commande)
         .set("type", typesEvenement.LECTURE_RENCONTRE)
     },
+    [typesCommande.SUPPRIMER_RENCONTRE]: commande => {
+      console.log(`| idRencontre ${commande.idRencontre}`)
+      console.log(`| idSocket ${commande.idSocket}`)
+      return Immutable
+        .fromJS(commande)
+        .set("type", typesEvenement.SUPPRESSION_RENCONTRE)
+    },
     [typesCommande.PANIER_MARQUE]: commande => {
       console.log(`| Nouvelle marque ${commande.marqueHote}:${commande.marqueVisiteur}`)
       return Immutable
