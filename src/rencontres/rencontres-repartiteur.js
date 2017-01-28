@@ -16,6 +16,7 @@ export default function Repartiteur() {
     console.log("\\ ACTION: " + JSON.stringify(action.type))
     let actions = {
       "DEFAUT": function () {
+        console.log(`| Action par défaut`)
         return Immutable.fromJS(etat)
       }
     }
@@ -25,13 +26,7 @@ export default function Repartiteur() {
         .fromJS(etat)
         .set("rencontres", action.rencontres)
     }
-    actions[types.GET_RENCONTRES_SUCCESS] = function () {
-      console.log("| rencontres: " + JSON.stringify(action.rencontres))
-      return Immutable
-        .fromJS(etat)
-        .set("rencontres", action.rencontres)
-    }
-    actions[types.AJOUTER_RENCONTRE] = function () {
+    actions[types.CREER_RENCONTRE] = function () {
       let rencontre = {
         id: 0,
         date: new Date(),
@@ -56,7 +51,7 @@ export default function Repartiteur() {
         .fromJS(etat)
         .set("modeAjout", !etat.modeAjout)
     }
-    actions[types.POST_RENCONTRE_SUCCESS] = function () {
+    actions[typesEvenement.AJOUT_RENCONTRE] = function () {
       console.log("| rencontre (nouvelle): " + JSON.stringify(action.rencontre))
       let rencontres = Immutable
         .fromJS(etat)
@@ -67,9 +62,9 @@ export default function Repartiteur() {
         .set("rencontres", rencontres)
         .set("modeAjout", false)
     }
-    actions[types.DELETE_RENCONTRE_SUCCESS] = function () {
-      console.log("| liste des renc.: " + JSON.stringify(etat))
-      console.log("| id de la rencontre à supprimée: " + action.idRencontre)
+    actions[typesEvenement.SUPPRESSION_RENCONTRE] = function () {
+      // console.log("| liste des renc.: " + JSON.stringify(etat))
+      console.log("| id de la rencontre à supprimer: " + action.idRencontre)
       let rencontres = etat
         .rencontres
         .filter(rencontre => rencontre.id != action.idRencontre)

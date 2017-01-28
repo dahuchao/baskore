@@ -11,7 +11,7 @@ var multer = require("multer")
 var upload = multer()
 var ObjectId = require("mongodb").ObjectID
 var Rx = require("rxjs")
-var Rencontres = require('./src/Rencontres.1')
+var Rencontres = require('./src/Rencontres')
 
 // Codec base 64 var base64 = require('base-64') Création de l'application
 // express
@@ -45,7 +45,7 @@ Rencontres
   });
 
 // ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■
-// ********************************************** Démarrage du serveur
+// *** Démarrage du serveur
 var serveur = app.listen(app.get('port'), function () {
   console.log("Ecoute sur le port %d, à l'adresse http://localhost:80", serveur.address().port)
 })
@@ -53,8 +53,6 @@ var serveur = app.listen(app.get('port'), function () {
 // ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■
 // ▀ Chargement de socket.io
 var io = require('socket.io').listen(serveur);
-// Configuration du controleur de bonne connexion io.set('heartbeat timeout',
-// 3000); io.set('heartbeat interval', 10000); Socket des abonnés au flux de
 var nbSockets = 0
 // Quand on client se connecte, on le note dans la console
 io
@@ -66,6 +64,13 @@ io
     socket.on('disconnect', function () {
       console.log('déconnection:' + socket.id)
       console.log(`Nombre d'abonnés: ${-- nbSockets}`)
+      console.log(`ààààààààààààààààààààààààààààààààààà`) 
+      console.log(`ààààààààààààààààààààààààààààààààààà`) 
+      console.log(`ààààààààààààààààààààààààààààààààààà`) 
+      console.log(`ààààààààààààààààààààààààààààààààààà`) 
+      console.log(`ààààààààààààààààààààààààààààààààààà`) 
+      console.log(`ààààààààààààààààààààààààààààààààààà`) 
+      eve.unsubscribe()
     })
     socket.on('commande', function (commande) {
       console.log(`Commande: ${JSON.stringify(commande)}`)
@@ -73,7 +78,7 @@ io
         .commande$
         .next(commande)
     })
-    controleur
+    var eve = controleur
       .evenement$
       .flatMap(evenement => {
         if (!evenement.type.match(typesEvenement.LECTURE_RENCONTRE)) 
@@ -85,8 +90,13 @@ io
           return Rx.Observable.of(evenement)
         return Rencontres.traiter(evenement)
       })
+      .flatMap(evenement => {
+        if (!evenement.type.match(typesEvenement.AJOUT_RENCONTRE)) 
+          return Rx.Observable.of(evenement)
+        return Rencontres.traiter(evenement)
+      })
       .scan((message, evenement) => {
-        console.log(` | type: ${JSON.stringify(evenement)}.`)
+        // console.log(` | type: ${JSON.stringify(evenement)}.`)
         if (evenement.type.match(typesEvenement.LECTURE_RENCONTRE)) 
           message.idRencontre = evenement.idRencontre
         message.evenement = evenement
@@ -95,68 +105,24 @@ io
         idRencontre: 0,
         evenement: null
       })
-      // .filter(message => message.evenement != null)
-      // .filter(message => message.evenement.idRencontre == message.idRencontre)
+      .filter(message => message.evenement != null)
+      .filter(message => message.evenement.idRencontre == message.idRencontre)
+      .filter(message => message.evenement.idSocket == socket.id)
       .subscribe(message => {
-        console.log("\\---- Communication vers les tableaux de marque ---->")
+        console.log("\\---- Communication vers le tableau de marque ---->")
         console.log(` | type: ${message.evenement.type}.`)
-        console.log(`_| Envoi du message`)
+        console.log(`/ Envoi du message (${socket.id}):`)
         console.log(`${JSON.stringify(message)}`)
-        console.log(`/`)
+        // console.log(`/`)
         socket.emit("evenement", message.evenement)
       })
   })
 // ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■
-controleur
-  .evenement$
-  .flatMap(evenement => {
-    return Rencontres.traiter(evenement)
-  })
-  .subscribe(evenement => {
-    console.log(` | type: ${evenement.type}.`)
-    console.log(`${JSON.stringify(evenement)}`)
-    console.log(`/`)
-  }, err => {
-    console.log(`Une erreur est survenue`)
-    console.log(`Err: ${err}`)
-  })
+// controleur   .evenement$   .flatMap(evenement => {     if
+// (evenement.type.match(typesEvenement.AJOUT_RENCONTRE))       return
+// Rx.Observable.of(evenement)     return Rencontres.traiter(evenement)   })
+// .subscribe(evenement => {     console.log(` | typeeeee: ${evenement.type}.`)
+// console.log(`${JSON.stringify(evenement)}`)     console.log(`/`)   }, err =>
+// {     console.log(`Une erreur est survenue`)     console.log(`Err: ${err}`)
+// })
 // ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■
-// Liste des rencontes utilisées lorsque la base de données est inaccessible
-var rencontres = [
-  {
-    id: 1,
-    periode: 1,
-    hote: {
-      nom: "NEC",
-      marque: 11
-    },
-    visiteur: {
-      nom: "USJA",
-      marque: 11
-    }
-  }, {
-    id: 2,
-    date: new Date("2016-09-02"),
-    periode: 1,
-    hote: {
-      nom: "NEC",
-      marque: 22
-    },
-    visiteur: {
-      nom: "Montaigu",
-      marque: 22
-    }
-  }, {
-    id: 3,
-    periode: 1,
-    date: new Date("2016-10-16"),
-    hote: {
-      nom: "NEC",
-      marque: 33
-    },
-    visiteur: {
-      nom: "Coulaine",
-      marque: 33
-    }
-  }
-];

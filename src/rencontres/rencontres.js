@@ -63,7 +63,7 @@ const Rencontres = React.createClass({
           iconClassNameRight="muidocs-icon-navigation-expand-more">
           <div className="flottant">
             <FloatingActionButton style={style}
-              onMouseDown={this.props.ajouterRencontre}
+              onMouseDown={this.props.creerRencontre}
               >
               <ContentAdd />
             </FloatingActionButton>

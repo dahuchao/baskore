@@ -2,7 +2,6 @@ import React from "react"
 import Rx from 'rxjs'
 import Immutable from "immutable"
 import io from "socket.io-client"
-import request from "request"
 import * as types from "./rencontres-actions"
 import typesCommande from "../types-commande"
 import Rencontres from "./rencontres"
@@ -13,6 +12,7 @@ let {etat$, action$} = Repartiteur()
 export default class RencontresConteneur extends React.Component {
   constructor(props) {
     super(props);
+    this.socket = io(location.href)
     this.state = {
       rencontres: [],
       modeAjout: false
@@ -20,8 +20,6 @@ export default class RencontresConteneur extends React.Component {
   }
   componentDidMount() {
     etat$.subscribe(etat => this.setState(etat))
-    // console.info(`Adresse socket io: ${location.href}`)
-    this.socket = io(location.href)
     this
       .socket
       .on("connect", () => {
@@ -40,22 +38,19 @@ export default class RencontresConteneur extends React.Component {
           })
       })
   }
-  ajouterRencontre() {
-    console.log("Ajouter rencontre.")
-    action$.next({type: types.AJOUTER_RENCONTRE})
+  creerRencontre() {
+    console.log("creer rencontre.")
+    action$.next({type: types.CREER_RENCONTRE})
   }
   supprimeRencontre(idRencontre) {
     console.info("Suppression: " + idRencontre)
-    var adresse = location.protocol + "//" + location.host + "/api/rencontres/" + idRencontre
-    console.info("Requete de l'API web: " + adresse)
-    request({
-      url: adresse,
-      method: "DELETE"
-    }, function (error, response) {
-      if (!error && response.statusCode == 204) {
-        action$.next({type: types.DELETE_RENCONTRE_SUCCESS, idRencontre: idRencontre})
-      }
-    })
+    this
+      .socket
+      .emit("commande", {
+        type: typesCommande.SUPPRIMER_RENCONTRE,
+        idRencontre: idRencontre,
+        idSocket: this.socket.id
+      })
   }
   ajoutRencontre(infos) {
     if (infos == null) {
@@ -63,31 +58,19 @@ export default class RencontresConteneur extends React.Component {
       return
     }
     let rencontre = this.state.rencontre
-    console.info("Info: " + JSON.stringify(infos))
+    // console.info("Info: " + JSON.stringify(infos))
     rencontre.date = infos.date
     rencontre.periode = infos.periode
     rencontre.hote.nom = infos.hote
     rencontre.visiteur.nom = infos.visiteur
-    console.log("Ajout rencontre : " + JSON.stringify(rencontre))
-    var adresse = location.protocol + "//" + location.host + "/api/rencontres"
-    console.info("Requete de l'API web: " + adresse)
-    request({
-      url: adresse,
-      method: "POST",
-      json: rencontre
-    }, function (error, response, rencontres) {
-      if (!error && response.statusCode == 201) {
-        // Calcul de l'identifiant de la nouvelle rencontre
-        let [,
-          id] = /^\/api\/rencontres\/(.*)$/.exec(response.headers.location);
-        // let id = response.headers.location.replace(new
-        // RegExp("/api\/rencontre\/(.*)"), "$1")
-        console.info("id: " + id)
-        rencontre.id = id
-        console.info("Rencontre: " + JSON.stringify(rencontre))
-        action$.next({type: types.POST_RENCONTRE_SUCCESS, rencontre: rencontre})
-      }
-    })
+    // console.log("Ajout rencontre : " + JSON.stringify(rencontre))
+    this
+      .socket
+      .emit("commande", {
+        type: typesCommande.AJOUTER_RENCONTRE,
+        rencontre: rencontre,
+        idSocket: this.socket.id
+      })
   }
   render() {
     return (this.state.modeAjout
@@ -98,7 +81,9 @@ export default class RencontresConteneur extends React.Component {
           .bind(this)}/>
       : <Rencontres
         rencontres={this.state.rencontres}
-        supprimeRencontre={this.supprimeRencontre}
-        ajouterRencontre={this.ajouterRencontre}/>)
+        supprimeRencontre={this
+        .supprimeRencontre
+        .bind(this)}
+        creerRencontre={this.creerRencontre}/>)
   }
 }

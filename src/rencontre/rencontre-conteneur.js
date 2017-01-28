@@ -1,18 +1,18 @@
 import React from "react"
 import Rx from 'rxjs'
 import Immutable from "immutable"
-import request from "request"
 import io from "socket.io-client"
 import Rencontre from "./rencontre"
 import * as types from "./rencontre-actions"
-var typesCommande = require("../types-commande")
+import typesCommande from "../types-commande"
 import Repartiteur from "./rencontre-repartiteur"
 let {etat$, action$} = Repartiteur()
+
+let socket = io(location.href)
 
 export default class RencontreConteneur extends React.Component {
   constructor(props) {
     super(props);
-    this.socket = io(location.href)
     this.state = {
       modeEdition: false,
       modeVerrouille: true
@@ -20,53 +20,40 @@ export default class RencontreConteneur extends React.Component {
   }
   componentDidMount() {
     etat$.subscribe(etat => this.setState(etat))
+    console.info("componentDidMount")
     const idRencontre = this.props.params.idRencontre
-    // console.info("Adresse web socket: " + adresse)
-    this
-      .socket
-      .on("connect", () => {
-        // console.info("Connecté avec la table de marque")
-        console.info("Envoi commande lecture")
-        this
-          .socket
-          .emit("commande", {
-            type: typesCommande.LIRE_RENCONTRE,
-            idRencontre: idRencontre,
-            idSocket: this.socket.id
-          })
-        this
-          .socket
-          .on("evenement", evenement => {
-            console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
-            action$.next(evenement)
-          })
+    socket.on("connect", () => {
+      console.info("Connecté avec la table de marque")
+      socket.emit("commande", {
+        type: typesCommande.LIRE_RENCONTRE,
+        idRencontre: idRencontre,
+        idSocket: socket.id
       })
+      socket.on("evenement", evenement => {
+        // console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
+        action$.next(evenement)
+      })
+    })
   }
   componentWillUnmount() {
-    this
-      .socket
-      .disconnect()
+    socket.disconnect()
   }
   surNouvelleMarque() {
     // console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
-    this
-      .socket
-      .emit("commande", {
-        type: typesCommande.PANIER_MARQUE,
-        idRencontre: this.state.rencontre.id,
-        marqueHote: this.state.rencontre.hote.marque,
-        marqueVisiteur: this.state.rencontre.visiteur.marque
-      })
+    socket.emit("commande", {
+      type: typesCommande.PANIER_MARQUE,
+      idRencontre: this.state.rencontre.id,
+      marqueHote: this.state.rencontre.hote.marque,
+      marqueVisiteur: this.state.rencontre.visiteur.marque
+    })
   }
   surNouveauCommentaire(commentaire) {
     // console.debug(`surNouveauCommentaire: ${commentaire}`)
-    this
-      .socket
-      .emit("commande", {
-        type: typesCommande.ENREGISTRER_COMMENTAIRE,
-        idRencontre: this.state.rencontre.id,
-        "commentaire": commentaire
-      })
+    socket.emit("commande", {
+      type: typesCommande.ENREGISTRER_COMMENTAIRE,
+      idRencontre: this.state.rencontre.id,
+      "commentaire": commentaire
+    })
   }
   surChangementHote(sor, ent) {
     // console.debug(`Changement hote ${sor} par ${ent}`)
@@ -78,13 +65,11 @@ export default class RencontreConteneur extends React.Component {
         else 
           return joueuse
       })
-    this
-      .socket
-      .emit("commande", {
-        type: typesCommande.CHANGER_JOUEUR_HOTE,
-        idRencontre: this.state.rencontre.id,
-        joueuses: joueuses
-      })
+    socket.emit("commande", {
+      type: typesCommande.CHANGER_JOUEUR_HOTE,
+      idRencontre: this.state.rencontre.id,
+      joueuses: joueuses
+    })
   }
   surChangementVisiteur(sor, ent) {
     // console.debug(`Changement visiteur ${sor} par ${ent}`)
@@ -96,42 +81,26 @@ export default class RencontreConteneur extends React.Component {
         else 
           return joueuse
       })
-    this
-      .socket
-      .emit("commande", {
-        type: typesCommande.CHANGER_JOUEUR_VISITEUR,
-        idRencontre: this.state.rencontre.id,
-        joueuses: joueuses
-      })
+    socket.emit("commande", {
+      type: typesCommande.CHANGER_JOUEUR_VISITEUR,
+      idRencontre: this.state.rencontre.id,
+      joueuses: joueuses
+    })
   }
   surPeriode(periode) {
     // console.debug("Nouvelle periode: " + JSON.stringify(periode))
-    this
-      .socket
-      .emit("commande", {
-        type: typesCommande.CHANGER_PERIODE,
-        idRencontre: this.state.rencontre.id,
-        periode: periode
-      })
+    socket.emit("commande", {
+      type: typesCommande.CHANGER_PERIODE,
+      idRencontre: this.state.rencontre.id,
+      periode: periode
+    })
   }
   sauver(majRencontre) {
-    // console.debug(`sauver(${JSON.stringify(majRencontre)})`) var adresse =
-    // location.protocol + "//" + location.host + "/api/rencontres/" +
-    // majRencontre.id console.info("Requete de l'API web: " + adresse)
-
-    this
-      .socket
-      .emit("commande", {
-        type: typesCommande.MAJ_RENCONTRE,
-        idRencontre: majRencontre.id,
-        rencontre: majRencontre
-      })
-
-    // request({   url: adresse,   method: "PUT",   json: majRencontre }, function
-    // (error, response, rencontre) {   if (!error && response.statusCode == 200) {
-    //    // console.info("Rencontre modifiée :" + JSON.stringify(rencontre))
-    // action$.next({type: types.PUT_RENCONTRE_SUCCESS, rencontre: rencontre})   }
-    // })
+    socket.emit("commande", {
+      type: typesCommande.MAJ_RENCONTRE,
+      idRencontre: majRencontre.id,
+      rencontre: majRencontre
+    })
   }
   editer() {
     action$.next({type: types.EDITER_RENCONTRE})
