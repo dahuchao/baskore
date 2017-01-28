@@ -115,9 +115,9 @@ var Rencontres = {
             })
         })
         .map(rencontre => {
-          rencontre.date = evenement.dateRencontre
-          rencontre.hote.nom = evenement.hoteRencontre
-          rencontre.visiteur.nom = evenement.visiteurRencontre
+          rencontre.date = evenement.rencontre.date
+          rencontre.hote.nom = evenement.rencontre.hote.nom
+          rencontre.visiteur.nom = evenement.rencontre.visiteur.nom
           bdd
             .collection("rencontres")
             .update({

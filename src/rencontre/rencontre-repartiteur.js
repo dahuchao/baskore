@@ -14,6 +14,7 @@ export default function Repartiteur() {
     console.log("\\ ACTION: " + JSON.stringify(action.type))
     let actions = {
       "DEFAUT": function () {
+        console.log(`| Action par défaut`)
         return Immutable.fromJS(etat)
       }
     }
@@ -56,7 +57,7 @@ export default function Repartiteur() {
           'rencontre', 'visiteur', 'marque'
         ], action.marqueVisiteur)
     }
-    actions[types.PUT_RENCONTRE_SUCCESS] = function () {
+    actions[typesEvenement.MAJ_RENCONTRE] = function () {
       console.log("| Mise à jour: " + JSON.stringify(action.rencontre))
       const joueuses = Immutable
         .List

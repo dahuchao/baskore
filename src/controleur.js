@@ -3,7 +3,7 @@ var Immutable = require("immutable")
 var typesCommande = require("./types-commande")
 var typesEvenement = require("./types-evenement")
 
-var commande$ = new Rx.BehaviorSubject({ type: "DEFAUT" })
+var commande$ = new Rx.BehaviorSubject({type: "DEFAUT"})
 
 var evenement$ = commande$.map(commande => {
   console.log("##############################")
@@ -11,9 +11,7 @@ var evenement$ = commande$.map(commande => {
   console.log(`\\ ${JSON.stringify(commande)}`)
   let commandes = {
     [typesCommande.DEFAUT]: commande => {
-      return Immutable.fromJS({
-        type: typesEvenement.DEFAUT
-      })
+      return Immutable.fromJS({type: typesEvenement.DEFAUT})
     },
     [typesCommande.CREER_CONNEXION]: commande => {
       console.log(`| idSocket ${commande.idSocket}`)
@@ -29,9 +27,9 @@ var evenement$ = commande$.map(commande => {
     },
     [typesCommande.MAJ_RENCONTRE]: commande => {
       console.log(`| idRencontre ${commande.idRencontre}`)
-      console.log(`| dateRencontre ${commande.dateRencontre}`)
-      console.log(`| hoteRencontre ${commande.hoteRencontre}`)
-      console.log(`| visiteurRencontre ${commande.visiteurRencontre}`)
+      console.log(`| dateRencontre ${commande.rencontre.date}`)
+      console.log(`| hoteRencontre ${commande.rencontre.hote.nom}`)
+      console.log(`| visiteurRencontre ${commande.rencontre.visiteur.nom}`)
       console.log(`| idSocket ${commande.idSocket}`)
       return Immutable
         .fromJS(commande)

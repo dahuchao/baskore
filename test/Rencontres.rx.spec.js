@@ -27,11 +27,7 @@ describe("Gestion des rencontres", () => {
   it("on peut supprimer une rencontre", (done) => {
     controleur
       .commande$
-      .next({
-        type: typesCommande.SUPPRIMER_RENCONTRE,
-        idRencontre: 2,
-        idSocket: 1
-      });
+      .next({type: typesCommande.SUPPRIMER_RENCONTRE, idRencontre: 2, idSocket: 1});
     controleur
       .evenement$
       .flatMap(evenement => {
@@ -66,9 +62,15 @@ describe("Gestion des rencontres", () => {
       .next({
         type: typesCommande.MAJ_RENCONTRE,
         idRencontre: 2,
-        dateRencontre: new Date("2016-11-11"),
-        hoteRencontre: "NRB",
-        visiteurRencontre: "Montaigu",
+        rencontre: {
+          date: new Date("2016-11-11"),
+          hote: {
+            nom: "NRB"
+          },
+          visiteur: {
+            nom: "Montaigu"
+          }
+        },
         idSocket: 1
       });
     controleur

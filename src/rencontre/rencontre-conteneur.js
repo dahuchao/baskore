@@ -12,6 +12,7 @@ let {etat$, action$} = Repartiteur()
 export default class RencontreConteneur extends React.Component {
   constructor(props) {
     super(props);
+    this.socket = io(location.href)
     this.state = {
       modeEdition: false,
       modeVerrouille: true
@@ -21,7 +22,6 @@ export default class RencontreConteneur extends React.Component {
     etat$.subscribe(etat => this.setState(etat))
     const idRencontre = this.props.params.idRencontre
     // console.info("Adresse web socket: " + adresse)
-    this.socket = io(location.href)
     this
       .socket
       .on("connect", () => {
@@ -115,19 +115,23 @@ export default class RencontreConteneur extends React.Component {
       })
   }
   sauver(majRencontre) {
-    // console.debug(`sauver(${JSON.stringify(majRencontre)})`)
-    var adresse = location.protocol + "//" + location.host + "/api/rencontres/" + majRencontre.id
-    console.info("Requete de l'API web: " + adresse)
-    request({
-      url: adresse,
-      method: "PUT",
-      json: majRencontre
-    }, function (error, response, rencontre) {
-      if (!error && response.statusCode == 200) {
-        // console.info("Rencontre modifiée :" + JSON.stringify(rencontre))
-        action$.next({type: types.PUT_RENCONTRE_SUCCESS, rencontre: rencontre})
-      }
-    })
+    // console.debug(`sauver(${JSON.stringify(majRencontre)})`) var adresse =
+    // location.protocol + "//" + location.host + "/api/rencontres/" +
+    // majRencontre.id console.info("Requete de l'API web: " + adresse)
+
+    this
+      .socket
+      .emit("commande", {
+        type: typesCommande.MAJ_RENCONTRE,
+        idRencontre: majRencontre.id,
+        rencontre: majRencontre
+      })
+
+    // request({   url: adresse,   method: "PUT",   json: majRencontre }, function
+    // (error, response, rencontre) {   if (!error && response.statusCode == 200) {
+    //    // console.info("Rencontre modifiée :" + JSON.stringify(rencontre))
+    // action$.next({type: types.PUT_RENCONTRE_SUCCESS, rencontre: rencontre})   }
+    // })
   }
   editer() {
     action$.next({type: types.EDITER_RENCONTRE})
@@ -145,8 +149,12 @@ export default class RencontreConteneur extends React.Component {
       surPeriode={this
       .surPeriode
       .bind(this)}
-      editer={this.editer}
-      sauver={this.sauver}
+      editer={this
+      .editer
+      .bind(this)}
+      sauver={this
+      .sauver
+      .bind(this)}
       surNouveauCommentaire={this
       .surNouveauCommentaire
       .bind(this)}
@@ -158,7 +166,9 @@ export default class RencontreConteneur extends React.Component {
       .bind(this)}
       modeEdition={this.state.modeEdition}
       modeVerrouille={this.state.modeVerrouille}
-      surVerrouillage={this.surVerrouillage}/>
+      surVerrouillage={this
+      .surVerrouillage
+      .bind(this)}/>
     return this.state.rencontre
       ? rencontre
       : null
