@@ -24,51 +24,32 @@ describe("Gestion des rencontres", () => {
     Rencontres.deconnexion()
     done()
   })
-  it("on peut ajouter une rencontre", (done) => {
-    controleur
-      .commande$
-      .next({
-        type: typesCommande.AJOUTER_RENCONTRE,
+  it("on peut modifier une rencontre", (done) => {
+    Rx
+      .Observable
+      .of({
+        type: typesEvenement.MAJ_RENCONTRE,
+        idRencontre: 6,
         rencontre: {
-          date: new Date("2016-11-11"),
           hote: {
-            nom: "NRB-ajout"
+            nom: "test"
           },
           visiteur: {
-            nom: "Montaigu-ajout"
+            nom: "testiiiiiiiiiiii"
           },
-          idSocket: 1
         }
-      });
-    controleur
-      .evenement$
+      })
       .flatMap(evenement => {
-        if (!evenement.type.match(typesEvenement.AJOUT_RENCONTRE)) 
-          return Rx.Observable.of(evenement)
         return Rencontres.traiter(evenement)
       })
-      .scan((message, evenement) => {
-        console.log(` | evenement: ${JSON.stringify(evenement)}.`)
-        if (evenement.type.match(typesEvenement.LECTURE_RENCONTRE)) 
-          message.idRencontre = evenement.idRencontre
-        message.evenement = evenement
-        return message
-      }, {
-        idRencontre: 0,
-        evenement: null
-      })
-      .filter(message => message.evenement != null)
-      .filter(message => message.evenement.idRencontre == message.idRencontre)
-      .subscribe(message => {
-        console.log("\\---- Communication vers les tableaux de marque ---->")
-        console.log(` | type: ${message.evenement.type}.`)
-        console.log(`_| Envoi du message `)
-        console.log(`${JSON.stringify(message)}`)
+      .subscribe(evenement => {
+        console.log(` | type: ${evenement.type}.`)
+        console.log(`${JSON.stringify(evenement)}`)
         console.log(`/`)
         done()
       }, err => {
-        console.log(`Une erreur sur l'écriture d'une rencontre est survenue`)
+        console.log(`Une erreur est survenue`)
         console.log(`Err: ${err}`)
-      }, () => done())
+      })
   })
 })

@@ -64,12 +64,12 @@ io
     socket.on('disconnect', function () {
       console.log('déconnection:' + socket.id)
       console.log(`Nombre d'abonnés: ${-- nbSockets}`)
-      console.log(`ààààààààààààààààààààààààààààààààààà`) 
-      console.log(`ààààààààààààààààààààààààààààààààààà`) 
-      console.log(`ààààààààààààààààààààààààààààààààààà`) 
-      console.log(`ààààààààààààààààààààààààààààààààààà`) 
-      console.log(`ààààààààààààààààààààààààààààààààààà`) 
-      console.log(`ààààààààààààààààààààààààààààààààààà`) 
+      console.log(`ààààààààààààààààààààààààààààààààààà`)
+      console.log(`ààààààààààààààààààààààààààààààààààà`)
+      console.log(`ààààààààààààààààààààààààààààààààààà`)
+      console.log(`ààààààààààààààààààààààààààààààààààà`)
+      console.log(`ààààààààààààààààààààààààààààààààààà`)
+      console.log(`ààààààààààààààààààààààààààààààààààà`)
       eve.unsubscribe()
     })
     socket.on('commande', function (commande) {
@@ -80,21 +80,20 @@ io
     })
     var eve = controleur
       .evenement$
+      .filter(evenement => evenement.idSocket == socket.id)
       .flatMap(evenement => {
-        if (!evenement.type.match(typesEvenement.LECTURE_RENCONTRE)) 
-          return Rx.Observable.of(evenement)
         return Rencontres.traiter(evenement)
       })
-      .flatMap(evenement => {
-        if (!evenement.type.match(typesEvenement.LECTURE_RENCONTRES)) 
-          return Rx.Observable.of(evenement)
-        return Rencontres.traiter(evenement)
+      .subscribe(evenement => {
+        console.log("\\ >>>>>>>>>>>>>>>  Communication bureau  <<<<<<<<<<<<<<<")
+        console.log(` | type: ${evenement.type}.`)
+        console.log(`/ Envoi du message (${socket.id}):`)
+        console.log(`${JSON.stringify(evenement)}`)
+        // console.log(`/`)
+        socket.emit("evenement", evenement)
       })
-      .flatMap(evenement => {
-        if (!evenement.type.match(typesEvenement.AJOUT_RENCONTRE)) 
-          return Rx.Observable.of(evenement)
-        return Rencontres.traiter(evenement)
-      })
+    var eve = controleur
+      .evenement$
       .scan((message, evenement) => {
         // console.log(` | type: ${JSON.stringify(evenement)}.`)
         if (evenement.type.match(typesEvenement.LECTURE_RENCONTRE)) 
@@ -106,23 +105,32 @@ io
         evenement: null
       })
       .filter(message => message.evenement != null)
+      .filter(message => message.idRencontre != null)
       .filter(message => message.evenement.idRencontre == message.idRencontre)
-      .filter(message => message.evenement.idSocket == socket.id)
       .subscribe(message => {
-        console.log("\\---- Communication vers le tableau de marque ---->")
+        console.log("\\ @@@@@@@@@@@@@@@  Communication tableau de marque  @@@@@@@@@@@@")
         console.log(` | type: ${message.evenement.type}.`)
         console.log(`/ Envoi du message (${socket.id}):`)
         console.log(`${JSON.stringify(message)}`)
-        // console.log(`/`)
         socket.emit("evenement", message.evenement)
       })
   })
 // ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■
-// controleur   .evenement$   .flatMap(evenement => {     if
-// (evenement.type.match(typesEvenement.AJOUT_RENCONTRE))       return
-// Rx.Observable.of(evenement)     return Rencontres.traiter(evenement)   })
-// .subscribe(evenement => {     console.log(` | typeeeee: ${evenement.type}.`)
-// console.log(`${JSON.stringify(evenement)}`)     console.log(`/`)   }, err =>
-// {     console.log(`Une erreur est survenue`)     console.log(`Err: ${err}`)
-// })
+controleur
+  .evenement$
+  .flatMap(evenement => {
+    if (evenement.type.match(typesEvenement.AJOUT_RENCONTRE)) 
+      return Rx
+      .Observable
+      .of(evenement)
+    return Rencontres.traiter(evenement)
+  })
+  .subscribe(evenement => {
+    console.log(` | typeeeee: ${evenement.type}.`)
+    console.log(`${JSON.stringify(evenement)}`)
+    console.log(`/`)
+  }, err => {
+    console.log(`Une erreur est survenue`)
+    console.log(`Err: ${err}`)
+  })
 // ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■

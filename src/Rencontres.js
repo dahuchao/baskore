@@ -31,7 +31,7 @@ var Rencontres = {
     return bdd.close()
   },
   traiter: function (evenement) {
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     console.log(`\\ EVENEMENT: ${JSON.stringify(evenement.type)}`)
     var evenements = {
       "DEFAUT": function () {
@@ -109,17 +109,17 @@ var Rencontres = {
         .Observable
         .create(function (subscriber) {
           console.log(` Lecture rencontre.`)
-          return bdd
+          bdd
             .collection("rencontres")
             .findOne({
-              id: evenement.idRencontre
+              id: parseInt(evenement.idRencontre)
             }, function (err, rencontre) {
               if (err) {
                 console.log("Erreur: " + err)
                 subscriber.error(err);
               } else if (rencontre == null) {
                 console.log("Fin de lecture.")
-                subscriber.complete();
+                // subscriber.complete();
               } else {
                 console.log('Envoie de la rencontre: ' + JSON.stringify(rencontre))
                 subscriber.next(rencontre)
@@ -127,16 +127,33 @@ var Rencontres = {
               }
             })
         })
-        .map(rencontre => {
+        .first()
+        .flatMap(rencontre => {
+          console.log(` rencontre mise à jour: ${rencontre._id}.`)
+          console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
+          console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
           rencontre.date = evenement.rencontre.date
           rencontre.hote.nom = evenement.rencontre.hote.nom
           rencontre.visiteur.nom = evenement.rencontre.visiteur.nom
-          bdd
-            .collection("rencontres")
-            .update({
-              _id: rencontre._id
-            }, rencontre)
-          return rencontre
+          console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
+          return Rx
+            .Observable
+            .create(subscriber => {
+              bdd
+                .collection("rencontres")
+                .update({
+                  _id: rencontre._id
+                }, rencontre, function (err) {
+                  if (err) {
+                    console.log(`Mise à jour en erreur: ${err}.`)
+                    subscriber.error(err);
+                  } else {
+                    console.log(`Mise à jour enregistrée.`)
+                    subscriber.next(rencontre)
+                    subscriber.complete();
+                  }
+                })
+            })
         })
         .map(rencontre => {
           evenement.rencontre = rencontre
@@ -161,7 +178,7 @@ var Rencontres = {
                 console.log("Fin de lecture.")
                 // subscriber.complete();
               } else {
-                // console.log('Envoie de la rencontre: ' + JSON.stringify(rencontre))
+                console.log('Envoie de la rencontre: ' + JSON.stringify(rencontre))
                 subscriber.next(rencontre)
                 subscriber.complete();
               }
@@ -182,7 +199,7 @@ var Rencontres = {
           return bdd
             .collection("rencontres")
             .remove({
-              id: evenement.idRencontre
+              id: parseInt(evenement.idRencontre)
             }, function (err, result) {
               if (err) {
                 console.log("Erreur: " + err)
@@ -228,70 +245,162 @@ var Rencontres = {
     }
     evenements[typesEvenement.CHANGEMENT_MARQUE] = evenement => {
       console.log(`| Nouvelle marque ${evenement.marqueHote}:${evenement.marqueVisiteur}`)
-      if (Rencontres.connecte) {
-        var critere = {
-          id: evenement.idRencontre
-        }
-        return new RxCollection("rencontres")
-          .find(critere)
-          .first()
-          .flatMap(rencontre => {
-            rencontre.hote.marque = evenement.marqueHote
-            rencontre.visiteur.marque = evenement.marqueVisiteur
-            return new RxCollection("rencontres")
-              .updateOne(critere, rencontre)
-              .map(result => {
-                // console.info(result)
-                return result
-              })
-          })
-      }
+      return Rx
+        .Observable
+        .create(function (subscriber) {
+          console.log(` Lecture rencontre.`)
+          bdd
+            .collection("rencontres")
+            .findOne({
+              id: parseInt(evenement.idRencontre)
+            }, function (err, rencontre) {
+              if (err) {
+                console.log("Erreur: " + err)
+                subscriber.error(err);
+              } else if (rencontre == null) {
+                console.log("Fin de lecture.")
+                // subscriber.complete();
+              } else {
+                console.log('Envoie de la rencontre: ' + JSON.stringify(rencontre))
+                subscriber.next(rencontre)
+                subscriber.complete();
+              }
+            })
+        })
+        .first()
+        .flatMap(rencontre => {
+          console.log(` rencontre mise à jour: ${rencontre._id}.`)
+          console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
+          console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
+          rencontre.hote.marque = evenement.marqueHote
+          rencontre.visiteur.marque = evenement.marqueVisiteur
+          console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
+          return Rx
+            .Observable
+            .create(subscriber => {
+              bdd
+                .collection("rencontres")
+                .update({
+                  _id: rencontre._id
+                }, rencontre, function (err) {
+                  if (err) {
+                    console.log(`Mise à jour en erreur: ${err}.`)
+                    subscriber.error(err);
+                  } else {
+                    console.log(`Mise à jour enregistrée.`)
+                    subscriber.next(rencontre)
+                    subscriber.complete();
+                  }
+                })
+            })
+        })
     }
     evenements[typesEvenement.CHANGEMENT_PERIODE] = evenement => {
       console.log("| Nouvelle période: " + JSON.stringify(evenement.periode))
-      if (Rencontres.connecte) {
-        var critere = {
-          id: evenement.idRencontre
-        }
-        return new RxCollection("rencontres")
-          .find(critere)
-          .first()
-          .flatMap(rencontre => {
-            rencontre.periode = evenement.periode
-            return new RxCollection("rencontres")
-              .updateOne(critere, rencontre)
-              .map(result => {
-                // console.info(result)
-                return result
-              })
-          })
-      }
+      return Rx
+        .Observable
+        .create(function (subscriber) {
+          console.log(` Lecture rencontre.`)
+          bdd
+            .collection("rencontres")
+            .findOne({
+              id: parseInt(evenement.idRencontre)
+            }, function (err, rencontre) {
+              if (err) {
+                console.log("Erreur: " + err)
+                subscriber.error(err);
+              } else if (rencontre == null) {
+                console.log("Fin de lecture.")
+                // subscriber.complete();
+              } else {
+                console.log('Envoie de la rencontre: ' + JSON.stringify(rencontre))
+                subscriber.next(rencontre)
+                subscriber.complete();
+              }
+            })
+        })
+        .first()
+        .flatMap(rencontre => {
+          console.log(` rencontre mise à jour: ${rencontre._id}.`)
+          console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
+          console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
+          rencontre.periode = evenement.periode
+          console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
+          return Rx
+            .Observable
+            .create(subscriber => {
+              bdd
+                .collection("rencontres")
+                .update({
+                  _id: rencontre._id
+                }, rencontre, function (err) {
+                  if (err) {
+                    console.log(`Mise à jour en erreur: ${err}.`)
+                    subscriber.error(err);
+                  } else {
+                    console.log(`Mise à jour enregistrée.`)
+                    subscriber.next(rencontre)
+                    subscriber.complete();
+                  }
+                })
+            })
+        })
     }
     evenements[typesEvenement.NOUVEAU_COMMENTAIRE] = evenement => {
       console.log(`| Nouveau commentaire sur la rencontre: ${evenement.commentaire}`)
-      if (Rencontres.connecte) {
-        var critere = {
-          id: evenement.idRencontre
-        }
-        return new RxCollection("rencontres")
-          .find(critere)
-          .first()
-          .flatMap(rencontre => {
-            console.log("| Rencontre: " + JSON.stringify(rencontre))
-            let commentaires = Immutable
-              .fromJS(rencontre)
-              .get("commentaires", Immutable.List())
-              .push(evenement.commentaire)
-            console.log(`| Enregistrement du commentaire en base: ${commentaires}`)
-            rencontre.commentaires = commentaires.toJS()
-            return new RxCollection("rencontres")
-              .updateOne(critere, rencontre)
-              .map(result => {
-                // console.info(result)
-                return result
-              })
-          })
-      }
+      return Rx
+        .Observable
+        .create(function (subscriber) {
+          console.log(` Lecture rencontre.`)
+          bdd
+            .collection("rencontres")
+            .findOne({
+              id: parseInt(evenement.idRencontre)
+            }, function (err, rencontre) {
+              if (err) {
+                console.log("Erreur: " + err)
+                subscriber.error(err);
+              } else if (rencontre == null) {
+                console.log("Fin de lecture.")
+                // subscriber.complete();
+              } else {
+                console.log('Envoie de la rencontre: ' + JSON.stringify(rencontre))
+                subscriber.next(rencontre)
+                subscriber.complete();
+              }
+            })
+        })
+        .first()
+        .flatMap(rencontre => {
+          console.log(` rencontre mise à jour: ${rencontre._id}.`)
+          console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
+          console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
+          let commentaires = Immutable
+            .fromJS(rencontre)
+            .get("commentaires", Immutable.List())
+            .push(evenement.commentaire)
+          console.log(`| Enregistrement du commentaire en base: ${commentaires}`)
+          rencontre.commentaires = commentaires.toJS()
+          console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
+          return Rx
+            .Observable
+            .create(subscriber => {
+              bdd
+                .collection("rencontres")
+                .update({
+                  _id: rencontre._id
+                }, rencontre, function (err) {
+                  if (err) {
+                    console.log(`Mise à jour en erreur: ${err}.`)
+                    subscriber.error(err);
+                  } else {
+                    console.log(`Mise à jour enregistrée.`)
+                    subscriber.next(rencontre)
+                    subscriber.complete();
+                  }
+                })
+            })
+        })
     }
     return (evenements[evenement.type] || evenements['DEFAUT'])(evenement);
   }

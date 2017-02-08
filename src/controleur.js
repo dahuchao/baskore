@@ -3,7 +3,7 @@ var Immutable = require("immutable")
 var typesCommande = require("./types-commande")
 var typesEvenement = require("./types-evenement")
 
-var commande$ = new Rx.BehaviorSubject({type: "DEFAUT"})
+var commande$ = new Rx.Subject({type: "DEFAUT"})
 
 var evenement$ = commande$.map(commande => {
   console.log("##############################")

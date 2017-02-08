@@ -26,6 +26,8 @@ export default function Repartiteur() {
     }
     actions[typesEvenement.LECTURE_RENCONTRE] = function () {
       console.log("| rencontre: " + JSON.stringify(action.rencontre))
+      if (action.rencontre == null) 
+        return Immutable.fromJS(etat)
       let rencontre = Immutable.fromJS(action.rencontre)
       const joueuses = Immutable
         .List

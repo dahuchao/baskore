@@ -8,11 +8,10 @@ import typesCommande from "../types-commande"
 import Repartiteur from "./rencontre-repartiteur"
 let {etat$, action$} = Repartiteur()
 
-let socket = io(location.href)
-
 export default class RencontreConteneur extends React.Component {
   constructor(props) {
     super(props);
+    this.socket = io(location.href)
     this.state = {
       modeEdition: false,
       modeVerrouille: true
@@ -20,40 +19,51 @@ export default class RencontreConteneur extends React.Component {
   }
   componentDidMount() {
     etat$.subscribe(etat => this.setState(etat))
-    console.info("componentDidMount")
     const idRencontre = this.props.params.idRencontre
-    socket.on("connect", () => {
-      console.info("Connecté avec la table de marque")
-      socket.emit("commande", {
-        type: typesCommande.LIRE_RENCONTRE,
-        idRencontre: idRencontre,
-        idSocket: socket.id
+    this
+      .socket
+      .on("connect", () => {
+        console.info(`Connecté avec la table de marque: ${this.socket.id}`)
+        this
+          .socket
+          .emit("commande", {
+            type: typesCommande.LIRE_RENCONTRE,
+            idRencontre: idRencontre,
+            idSocket: this.socket.id
+          })
+        this
+          .socket
+          .on("evenement", evenement => {
+            // console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
+            action$.next(evenement)
+          })
       })
-      socket.on("evenement", evenement => {
-        // console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
-        action$.next(evenement)
-      })
-    })
   }
   componentWillUnmount() {
-    socket.disconnect()
+    this
+      .socket
+      .disconnect()
   }
   surNouvelleMarque() {
     // console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
-    socket.emit("commande", {
-      type: typesCommande.PANIER_MARQUE,
-      idRencontre: this.state.rencontre.id,
-      marqueHote: this.state.rencontre.hote.marque,
-      marqueVisiteur: this.state.rencontre.visiteur.marque
-    })
+    this
+      .socket
+      .emit("commande", {
+        type: typesCommande.PANIER_MARQUE,
+        idRencontre: this.state.rencontre.id,
+        marqueHote: this.state.rencontre.hote.marque,
+        marqueVisiteur: this.state.rencontre.visiteur.marque
+      })
   }
   surNouveauCommentaire(commentaire) {
     // console.debug(`surNouveauCommentaire: ${commentaire}`)
-    socket.emit("commande", {
-      type: typesCommande.ENREGISTRER_COMMENTAIRE,
-      idRencontre: this.state.rencontre.id,
-      "commentaire": commentaire
-    })
+    this
+      .socket
+      .emit("commande", {
+        type: typesCommande.ENREGISTRER_COMMENTAIRE,
+        idRencontre: this.state.rencontre.id,
+        "commentaire": commentaire
+      })
   }
   surChangementHote(sor, ent) {
     // console.debug(`Changement hote ${sor} par ${ent}`)
@@ -65,11 +75,13 @@ export default class RencontreConteneur extends React.Component {
         else 
           return joueuse
       })
-    socket.emit("commande", {
-      type: typesCommande.CHANGER_JOUEUR_HOTE,
-      idRencontre: this.state.rencontre.id,
-      joueuses: joueuses
-    })
+    this
+      .socket
+      .emit("commande", {
+        type: typesCommande.CHANGER_JOUEUR_HOTE,
+        idRencontre: this.state.rencontre.id,
+        joueuses: joueuses
+      })
   }
   surChangementVisiteur(sor, ent) {
     // console.debug(`Changement visiteur ${sor} par ${ent}`)
@@ -81,26 +93,33 @@ export default class RencontreConteneur extends React.Component {
         else 
           return joueuse
       })
-    socket.emit("commande", {
-      type: typesCommande.CHANGER_JOUEUR_VISITEUR,
-      idRencontre: this.state.rencontre.id,
-      joueuses: joueuses
-    })
+    this
+      .socket
+      .emit("commande", {
+        type: typesCommande.CHANGER_JOUEUR_VISITEUR,
+        idRencontre: this.state.rencontre.id,
+        joueuses: joueuses
+      })
   }
   surPeriode(periode) {
     // console.debug("Nouvelle periode: " + JSON.stringify(periode))
-    socket.emit("commande", {
-      type: typesCommande.CHANGER_PERIODE,
-      idRencontre: this.state.rencontre.id,
-      periode: periode
-    })
+    this
+      .socket
+      .emit("commande", {
+        type: typesCommande.CHANGER_PERIODE,
+        idRencontre: this.state.rencontre.id,
+        periode: periode
+      })
   }
   sauver(majRencontre) {
-    socket.emit("commande", {
-      type: typesCommande.MAJ_RENCONTRE,
-      idRencontre: majRencontre.id,
-      rencontre: majRencontre
-    })
+    this
+      .socket
+      .emit("commande", {
+        type: typesCommande.MAJ_RENCONTRE,
+        idRencontre: majRencontre.id,
+        idSocket: this.socket.id,
+        rencontre: majRencontre
+      })
   }
   editer() {
     action$.next({type: types.EDITER_RENCONTRE})

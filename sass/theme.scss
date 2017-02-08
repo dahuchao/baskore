@@ -80,6 +80,9 @@ header {
       max-width: 110px;
       //background-image: url(/public/img/ffbb-150-alt.png);
     }
+    .verrouille {
+      cursor: default;
+    }
   }
   #marque {
     flex-direction: column;
