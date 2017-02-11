@@ -1,6 +1,6 @@
 import React from "react"
 import Immutable from "immutable"
-import { IconMenu, SelectField, MenuItem } from "material-ui"
+import { IconButton, IconMenu, SelectField, MenuItem } from "material-ui"
 
 export default class Equipe extends React.Component {
   render() {
@@ -51,7 +51,7 @@ class Joueuse extends React.Component {
         // listStyle={{ backgroundColor: "bleu" }}
         // style={{ backgroundColor: "bleu" }}
         disabled={this.props.modeVerrouille}
-        iconButtonElement={<img style={style} src={etoile} />} >
+        iconButtonElement={<IconButton  iconStyle={style} src={etoile}></IconButton >} >
         {
           this.props.modeVerrouille ? null : Immutable
             .List
