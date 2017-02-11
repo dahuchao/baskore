@@ -20,6 +20,7 @@ export default class RencontresConteneur extends React.Component {
   }
   componentDidMount() {
     etat$.subscribe(etat => this.setState(etat))
+    console.info("rencontres componentDidMount")
     this
       .socket
       .on("connect", () => {
@@ -37,6 +38,12 @@ export default class RencontresConteneur extends React.Component {
             action$.next(evenement)
           })
       })
+  }
+  componentWillUnmount() {
+    console.info("rencontres componentWillUnmount")
+    this
+      .socket
+      .disconnect()
   }
   creerRencontre() {
     console.log("creer rencontre.")

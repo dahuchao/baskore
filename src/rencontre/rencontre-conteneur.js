@@ -19,6 +19,7 @@ export default class RencontreConteneur extends React.Component {
   }
   componentDidMount() {
     etat$.subscribe(etat => this.setState(etat))
+    console.info("rencontre componentDidMount")
     const idRencontre = this.props.params.idRencontre
     this
       .socket
@@ -40,6 +41,7 @@ export default class RencontreConteneur extends React.Component {
       })
   }
   componentWillUnmount() {
+    console.info("rencontre componentWillUnmount")
     this
       .socket
       .disconnect()

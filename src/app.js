@@ -9,7 +9,8 @@ import AccueilConteneur from "./accueil/accueil-conteneur.js"
 import RencontresConteneur from "./rencontres/rencontres-conteneur.js"
 import RencontreConteneur from "./rencontre/rencontre-conteneur.js"
 
-const appHistory = useRouterHistory(createHashHistory)({queryKey: false})
+// const appHistory = useRouterHistory(createHashHistory)({queryKey: false})
+const appHistory = useRouterHistory(createHashHistory)()
 
 
 const App = () => (
