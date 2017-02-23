@@ -48,11 +48,12 @@ const Rencontre = React.createClass({
     // console.debug("MAJ visiteur: " + JSON.stringify(this.state))
   },
   sauver() {
-    // console.debug(`Rencontre.sauver(${this.state})).`)
+    // console.debug(`Rencontre.sauver(${JSON.stringify(this.state)})).`)
     this.props.sauver(this.state)
   },
   render() {
-    // console.debug(`Nouvelle rencontre` + Immutable.fromJS(this.props.rencontre))
+    // console.debug(`Ouverture rencontre: ` + Immutable.fromJS(this.props.rencontre))
+    this.state = this.props.rencontre
     const style = {
       color: "white"
     }

@@ -19,8 +19,7 @@ export default class RencontresConteneur extends React.Component {
     }
   }
   componentDidMount() {
-    etat$.subscribe(etat => this.setState(etat))
-    console.info("rencontres componentDidMount")
+    this.sousc = etat$.subscribe(etat => this.setState(etat))
     this
       .socket
       .on("connect", () => {
@@ -40,7 +39,9 @@ export default class RencontresConteneur extends React.Component {
       })
   }
   componentWillUnmount() {
-    console.info("rencontres componentWillUnmount")
+    this
+      .sousc
+      .unsubscribe()
     this
       .socket
       .disconnect()
@@ -83,14 +84,10 @@ export default class RencontresConteneur extends React.Component {
     return (this.state.modeAjout
       ? <RencontreAjout
           rencontre={this.state.rencontre}
-          ajoutRencontre={this
-          .ajoutRencontre
-          .bind(this)}/>
+          ajoutRencontre={(infos) => this.ajoutRencontre(infos)}/>
       : <Rencontres
         rencontres={this.state.rencontres}
-        supprimeRencontre={this
-        .supprimeRencontre
-        .bind(this)}
+        supprimeRencontre={(idRencontre) => this.supprimeRencontre(idRencontre)}
         creerRencontre={this.creerRencontre}/>)
   }
 }

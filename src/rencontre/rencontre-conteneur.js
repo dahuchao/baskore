@@ -18,13 +18,15 @@ export default class RencontreConteneur extends React.Component {
     }
   }
   componentDidMount() {
-    etat$.subscribe(etat => this.setState(etat))
-    console.info("rencontre componentDidMount")
+    this.sousc = etat$.subscribe(etat => {
+      // console.info(`etat$.subscribe(etat =>: ${JSON.stringify(etat)}`)
+      this.setState(etat)
+    })
     const idRencontre = this.props.params.idRencontre
     this
       .socket
       .on("connect", () => {
-        console.info(`Connecté avec la table de marque: ${this.socket.id}`)
+        // console.info(`Connecté avec la table de marque: ${this.socket.id}`)
         this
           .socket
           .emit("commande", {
@@ -41,7 +43,9 @@ export default class RencontreConteneur extends React.Component {
       })
   }
   componentWillUnmount() {
-    console.info("rencontre componentWillUnmount")
+    this
+      .sousc
+      .unsubscribe()
     this
       .socket
       .disconnect()
@@ -130,37 +134,20 @@ export default class RencontreConteneur extends React.Component {
     action$.next({type: types.VERROUILLAGE})
   }
   render() {
-    // console.debug(`Nouvelle rencontre: ` + this.state.rencontre)
-    let rencontre = <Rencontre
-      rencontre={this.state.rencontre}
-      surNouvelleMarque={this
-      .surNouvelleMarque
-      .bind(this)}
-      surPeriode={this
-      .surPeriode
-      .bind(this)}
-      editer={this
-      .editer
-      .bind(this)}
-      sauver={this
-      .sauver
-      .bind(this)}
-      surNouveauCommentaire={this
-      .surNouveauCommentaire
-      .bind(this)}
-      surChangementHote={this
-      .surChangementHote
-      .bind(this)}
-      surChangementVisiteur={this
-      .surChangementVisiteur
-      .bind(this)}
-      modeEdition={this.state.modeEdition}
-      modeVerrouille={this.state.modeVerrouille}
-      surVerrouillage={this
-      .surVerrouillage
-      .bind(this)}/>
+    // console.debug(`Nouvelle rencontre: ` + JSON.stringify(this.state))
     return this.state.rencontre
-      ? rencontre
+      ? <Rencontre
+          rencontre={this.state.rencontre}
+          surNouvelleMarque={() => this.surNouvelleMarque()}
+          editer={() => this.editer()}
+          sauver={(majRencontre) => this.sauver(majRencontre)}
+          surNouveauCommentaire={(commentaire) => this.surNouveauCommentaire(commentaire)}
+          surChangementHote={(sor, ent) => this.surChangementHote(sor, ent)}
+          surChangementVisiteur={(sor, ent) => this.surChangementVisiteur(sor, ent)}
+          surPeriode={(periode) => this.surPeriode(periode)}
+          modeEdition={this.state.modeEdition}
+          modeVerrouille={this.state.modeVerrouille}
+          surVerrouillage={() => this.surVerrouillage()}/>
       : null
   }
 }

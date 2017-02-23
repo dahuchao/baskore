@@ -43,12 +43,16 @@ export default React.createClass({
       paddingTop: "0.3rem",
       paddingBottom: "0.3rem"
     }
+    const styleCommentaire = {
+      cursor: "default"
+    }
     let commentaires = Immutable
       .List(this.props.rencontre.commentaires)
       .reverse()
       .map(commentaire => {
         const element = (<ListItem
           key={id++}
+          style={styleCommentaire}
           primaryText={commentaire}
           innerDivStyle={styleElement}/>)
         return element

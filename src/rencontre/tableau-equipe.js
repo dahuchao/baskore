@@ -11,18 +11,21 @@ export default class Equipe extends React.Component {
       justifyContent: "center",
       borderColor: "red"
     }
+    const style = {
+      cursor: this.props.modeVerrouille ? "default" : "pointer",
+    }
     let id = 1
     return (
       <div className="equipe">
         <div className="nom">{this.props.nom}</div>
         {
           this.props.modeVerrouille
-            ? <img className="blason verrouille" src="img/ballon6.png"></img>
-            : <img className="blason" src="img/ballon6.png" onClick={this.props.surPanier} ></img>
+            ? <img style={style} className="blason verrouille" src="img/ballon6.png"></img>
+            : <img style={style} className="blason" src="img/ballon6.png" onClick={this.props.surPanier} ></img>
         }
         <div style={styleJoueuses}>{
           this.props.joueuses.map(joueuse => {
-            return <Joueuse key={id++} surChangement={this.props.surChangement} numero={joueuse} />
+            return <Joueuse key={id++} surChangement={this.props.surChangement} numero={joueuse} modeVerrouille={this.props.modeVerrouille}/>
           })
         }
         </div>
@@ -37,30 +40,30 @@ class Joueuse extends React.Component {
     this.props.surChangement(sor, ent)
   }
   render() {
+    // console.debug(`props: ${JSON.stringify(this.props)}` )
     const num = this.props.numero
     const etoile = `/joueuses/joueuse-${num}.png`
     const style = {
+      cursor: this.props.modeVerrouille ? "default" : "pointer",
       width: "2em",
       height: "2em",
       maxWidth: "40px",
       maxHeigth: "40px"
     }
+    // listStyle={{ backgroundColor: "bleu" }}
+    // style={{ backgroundColor: "bleu" }}
     let id = 1
     return (
       <IconMenu
-        // listStyle={{ backgroundColor: "bleu" }}
-        // style={{ backgroundColor: "bleu" }}
         disabled={this.props.modeVerrouille}
-        iconButtonElement={<IconButton  iconStyle={style} src={etoile}></IconButton >} >
+        iconButtonElement={<img style={style} src={etoile}></img>} >
         {
           this.props.modeVerrouille ? null : Immutable
             .List
             .of(4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)
             .map(entrant => {
               return (<MenuItem
-                onClick={this
-                  .surChangement
-                  .bind(this, num, entrant)}
+                onClick={()=>this.surChangement(num, entrant)}
                 key={id++}
                 innerDivStyle={{ color: "red", backgroundColor: "bleu", width: "2em" }}
                 nestedListStyle={{ backgroundColor: "bleu", width: "2em" }}

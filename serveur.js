@@ -64,13 +64,8 @@ io
     socket.on('disconnect', function () {
       console.log('déconnection:' + socket.id)
       console.log(`Nombre d'abonnés: ${-- nbSockets}`)
-      console.log(`ààààààààààààààààààààààààààààààààààà`)
-      console.log(`ààààààààààààààààààààààààààààààààààà`)
-      console.log(`ààààààààààààààààààààààààààààààààààà`)
-      console.log(`ààààààààààààààààààààààààààààààààààà`)
-      console.log(`ààààààààààààààààààààààààààààààààààà`)
-      console.log(`ààààààààààààààààààààààààààààààààààà`)
-      eve.unsubscribe()
+      souscBureau.unsubscribe()
+      souscTableau.unsubscribe()
     })
     socket.on('commande', function (commande) {
       console.log(`Commande: ${JSON.stringify(commande)}`)
@@ -78,7 +73,7 @@ io
         .commande$
         .next(commande)
     })
-    var eve = controleur
+    var souscBureau = controleur
       .evenement$
       .filter(evenement => evenement.idSocket == socket.id)
       .flatMap(evenement => {
@@ -89,10 +84,10 @@ io
         console.log(` | type: ${evenement.type}.`)
         console.log(`/ Envoi du message (${socket.id}):`)
         console.log(`${JSON.stringify(evenement)}`)
-        // console.log(`/`)
+        console.log(`> --------------  Communication bureau  --------------`)
         socket.emit("evenement", evenement)
       })
-    var eve = controleur
+    var souscTableau = controleur
       .evenement$
       .scan((message, evenement) => {
         // console.log(` | type: ${JSON.stringify(evenement)}.`)
@@ -108,11 +103,14 @@ io
       .filter(message => message.idRencontre != null)
       .filter(message => message.evenement.idRencontre == message.idRencontre)
       .subscribe(message => {
-        console.log("\\ @@@@@@@@@@@@@@@  Communication tableau de marque  @@@@@@@@@@@@")
-        console.log(` | type: ${message.evenement.type}.`)
-        console.log(`/ Envoi du message (${socket.id}):`)
-        console.log(`${JSON.stringify(message)}`)
-        socket.emit("evenement", message.evenement)
+        console.log(`\\ @@@@@@@@@@@@@@@  Communication tableau de marque  @@@@@@@@@@@@`)
+        if (message.evenement.idSocket == null) {
+          console.log(` | type: ${message.evenement.type}.`)
+          console.log(`/ Envoi du message (${socket.id}):`)
+          console.log(`${JSON.stringify(message)}`)
+          socket.emit("evenement", message.evenement)
+          console.log(`> --------------  Communication tableau de marque  --------------`)
+        }
       })
   })
 // ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■
@@ -120,15 +118,15 @@ controleur
   .evenement$
   .flatMap(evenement => {
     if (evenement.type.match(typesEvenement.AJOUT_RENCONTRE)) 
-      return Rx
-      .Observable
-      .of(evenement)
+      return Rx.Observable.of(evenement)
     return Rencontres.traiter(evenement)
   })
   .subscribe(evenement => {
-    console.log(` | typeeeee: ${evenement.type}.`)
+    console.log(`\\ &&&&&&&&&&&&&&&  Répercution en base  &&&&&&&&&&&&`)
+    console.log(` | type: ${evenement.type}.`)
     console.log(`${JSON.stringify(evenement)}`)
     console.log(`/`)
+    console.log(`\\ --------------  Répercution en base  -------------`)
   }, err => {
     console.log(`Une erreur est survenue`)
     console.log(`Err: ${err}`)

@@ -24,7 +24,7 @@ export default function Repartiteur() {
       console.log("| rencontres: " + JSON.stringify(action.rencontres))
       return Immutable
         .fromJS(etat)
-        .set("rencontres", action.rencontres)
+        .set("rencontres", Immutable.fromJS(action.rencontres))
     }
     actions[types.CREER_RENCONTRE] = function () {
       let rencontre = {
