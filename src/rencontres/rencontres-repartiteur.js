@@ -29,6 +29,7 @@ export default function Repartiteur() {
     actions[types.CREER_RENCONTRE] = function () {
       let rencontre = {
         id: 0,
+        termine: false,
         date: new Date(),
         hote: {
           nom: "",

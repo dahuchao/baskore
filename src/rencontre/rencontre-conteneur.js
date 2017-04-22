@@ -133,6 +133,9 @@ export default class RencontreConteneur extends React.Component {
   surVerrouillage() {
     action$.next({type: types.VERROUILLAGE})
   }
+  surTermine() {
+    action$.next({type: types.TERMINAISON})
+  }
   render() {
     // console.debug(`Nouvelle rencontre: ` + JSON.stringify(this.state))
     return this.state.rencontre
@@ -147,7 +150,9 @@ export default class RencontreConteneur extends React.Component {
           surPeriode={(periode) => this.surPeriode(periode)}
           modeEdition={this.state.modeEdition}
           modeVerrouille={this.state.modeVerrouille}
-          surVerrouillage={() => this.surVerrouillage()}/>
+          surVerrouillage={() => this.surVerrouillage()}
+          surTermine={() => this.surTermine()}
+          />
       : null
   }
 }

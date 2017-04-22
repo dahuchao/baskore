@@ -89,6 +89,10 @@ const Rencontre = React.createClass({
               defaultToggled={this.props.modeVerrouille} 
               onToggle={this.props.surVerrouillage}
               label="Verrouillé" />
+            <Toggle
+              defaultToggled={this.props.termine} 
+              onToggle={this.props.surTermine}
+              label="Terminé" />
           </CardText>
         </Card>
       </div>

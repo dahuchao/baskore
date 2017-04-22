@@ -18,6 +18,14 @@ export default function Repartiteur() {
         return Immutable.fromJS(etat)
       }
     }
+    actions[types.TERMINAISON] = function () {
+      console.log("| terminaison.")
+      return Immutable
+        .fromJS(etat)
+        .setIn([
+          'rencontre', 'termine'
+        ], !etat.termine)
+    }
     actions[types.VERROUILLAGE] = function () {
       console.log("| verrouillage.")
       return Immutable

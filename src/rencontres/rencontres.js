@@ -77,7 +77,7 @@ const Rencontres = React.createClass({
                 <ListItem
                   key={rencontre.id}
                   primaryText={rencontre.hote.nom + '-' + rencontre.visiteur.nom}
-                  secondaryText={strDate}
+                  secondaryText={rencontre.termine?rencontre.hote.marque + '-' + rencontre.visiteur.marque:strDate}
                   onTouchTap={this.zoom.bind(this, rencontre.id)}
                   rightIconButton={
                     <IconButton

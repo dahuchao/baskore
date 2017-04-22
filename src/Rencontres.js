@@ -77,7 +77,8 @@ var Rencontres = {
             id: idCalcule,
             date: evenement.rencontre.date,
             hote: evenement.rencontre.hote,
-            visiteur: evenement.rencontre.visiteur
+            visiteur: evenement.rencontre.visiteur,
+            termine: false
           }
           // Insertion de la nouvelle rencontre
           return Rx
@@ -135,6 +136,7 @@ var Rencontres = {
           rencontre.date = evenement.rencontre.date
           rencontre.hote.nom = evenement.rencontre.hote.nom
           rencontre.visiteur.nom = evenement.rencontre.visiteur.nom
+          rencontre.termine = evenement.rencontre.termine
           console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
           return Rx
             .Observable
