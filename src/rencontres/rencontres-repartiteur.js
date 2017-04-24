@@ -22,8 +22,10 @@ export default function Repartiteur() {
     }
     actions[typesEvenement.LECTURE_RENCONTRES] = function () {
       console.log("| rencontres: " + JSON.stringify(action.rencontres))
-      const rencontres = Immutable.fromJS(action.rencontres);
-      rencontres.sortBy(rencontre=>rencontre.date);
+      const rencontres = Immutable
+        .fromJS(action.rencontres)
+        .sortBy(rencontre => rencontre.date)
+        .reverse();
       return Immutable
         .fromJS(etat)
         .set("rencontres", rencontres)
