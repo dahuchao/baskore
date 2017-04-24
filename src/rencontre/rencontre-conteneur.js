@@ -118,6 +118,7 @@ export default class RencontreConteneur extends React.Component {
       })
   }
   sauver(majRencontre) {
+    // console.debug("sauver(majRencontre): " + JSON.stringify(majRencontre))
     this
       .socket
       .emit("commande", {
@@ -129,6 +130,9 @@ export default class RencontreConteneur extends React.Component {
   }
   editer() {
     action$.next({type: types.EDITER_RENCONTRE})
+  }
+  historique() {
+    action$.next({type: types.HISTORIQUE_RENCONTRE})
   }
   surVerrouillage() {
     action$.next({type: types.VERROUILLAGE})
@@ -143,12 +147,14 @@ export default class RencontreConteneur extends React.Component {
           rencontre={this.state.rencontre}
           surNouvelleMarque={() => this.surNouvelleMarque()}
           editer={() => this.editer()}
+          historique={() => this.historique()}
           sauver={(majRencontre) => this.sauver(majRencontre)}
           surNouveauCommentaire={(commentaire) => this.surNouveauCommentaire(commentaire)}
           surChangementHote={(sor, ent) => this.surChangementHote(sor, ent)}
           surChangementVisiteur={(sor, ent) => this.surChangementVisiteur(sor, ent)}
           surPeriode={(periode) => this.surPeriode(periode)}
           modeEdition={this.state.modeEdition}
+          modeHistogramme={this.state.modeHistogramme}
           modeVerrouille={this.state.modeVerrouille}
           surVerrouillage={() => this.surVerrouillage()}
           surTermine={() => this.surTermine()}

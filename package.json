@@ -37,6 +37,7 @@
     "react-dom": "^15.4.2",
     "react-router": "3.0.1",
     "react-tap-event-plugin": "^2.0.1",
+    "recharts": "^0.22.3",
     "request": "^2.79.0",
     "rxjs": "^5.0.3",
     "rxmongo": "^0.13.2",

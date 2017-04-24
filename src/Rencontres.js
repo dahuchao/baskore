@@ -276,6 +276,13 @@ var Rencontres = {
           console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
           rencontre.hote.marque = evenement.marqueHote
           rencontre.visiteur.marque = evenement.marqueVisiteur
+          if(rencontre.histoMarques==null)
+            rencontre.histoMarques = [];
+          rencontre.histoMarques.push({
+            marqueHote: evenement.marqueHote, 
+            marqueVisiteur: evenement.marqueVisiteur,
+            periode: rencontre.periode
+          });        
           console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
           return Rx
             .Observable

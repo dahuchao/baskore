@@ -6,6 +6,7 @@ import typesEvenement from "../types-evenement"
 export default function Repartiteur() {
   const action$ = new Rx.BehaviorSubject({type: "DEFAUT"})
   const init = {
+    modeHistogramme: false,
     modeEdition: false,
     modeVerrouille: true
   }
@@ -24,7 +25,7 @@ export default function Repartiteur() {
         .fromJS(etat)
         .setIn([
           'rencontre', 'termine'
-        ], !etat.termine)
+        ], !etat.rencontre.termine)
     }
     actions[types.VERROUILLAGE] = function () {
       console.log("| verrouillage.")
@@ -46,6 +47,7 @@ export default function Repartiteur() {
       rencontre = rencontre.setIn([
         'visiteur', 'joueuses'
       ], joueuses)
+      rencontre = rencontre.setIn(['histoMarques'], [])
       return Immutable
         .fromJS(etat)
         .set("rencontre", rencontre)
@@ -56,8 +58,27 @@ export default function Repartiteur() {
         .fromJS(etat)
         .set("modeEdition", !etat.modeEdition)
     }
+    actions[types.HISTORIQUE_RENCONTRE] = function () {
+      console.log("| Mode histogramme: " + JSON.stringify(etat.modeHistogramme))
+      return Immutable
+        .fromJS(etat)
+        .set("modeHistogramme", !etat.modeHistogramme)
+    }
     actions[typesEvenement.CHANGEMENT_MARQUE] = function () {
       console.log(`| Nouvelle marque ${action.marqueHote}:${action.marqueVisiteur}`)
+      const periode = Immutable
+        .fromJS(etat)
+        .get("rencontre")
+        .get("periode");
+      const histoMarques = Immutable
+        .fromJS(etat)
+        .get("rencontre")
+        .get("histoMarques")
+        .push({
+          marqueHote: action.marqueHote, 
+          marqueVisiteur: action.marqueVisiteur,
+          periode: periode
+        });
       return Immutable
         .fromJS(etat)
         .setIn([
@@ -66,6 +87,9 @@ export default function Repartiteur() {
         .setIn([
           'rencontre', 'visiteur', 'marque'
         ], action.marqueVisiteur)
+        .setIn([
+          'rencontre', 'histoMarques'
+        ], histoMarques)
     }
     actions[typesEvenement.MAJ_RENCONTRE] = function () {
       console.log("| Mise à jour: " + JSON.stringify(action.rencontre))
@@ -76,11 +100,17 @@ export default function Repartiteur() {
         .fromJS(etat)
         .set("rencontre", Immutable.fromJS(action.rencontre))
       console.log(`| netat: ${netat}`)
-      return netat.setIn([
-        "rencontre", "hote", "joueuses"
-      ], joueuses).setIn([
-        "rencontre", "visiteur", "joueuses"
-      ], joueuses).set("modeEdition", false)
+      return netat
+        .setIn([
+          "rencontre", "hote", "joueuses"
+        ], joueuses)
+        .setIn([
+          "rencontre", "visiteur", "joueuses"
+        ], joueuses)
+        .setIn([
+          "rencontre",'histoMarques'
+        ], [])
+        .set("modeEdition", false)
       // return Immutable   .fromJS(etat)   .set("rencontre", rencontre)
       // .set("modeEdition", false)
     }
