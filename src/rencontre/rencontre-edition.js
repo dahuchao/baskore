@@ -32,11 +32,9 @@ const RencontreEdition = (props) => {
   };
   let majHote = (e) => {
     rencontre.hote.nom = e.target.value
-    // console.debug("MAJ Hote: " + JSON.stringify(this.state))
   };
   let majVisiteur = (e) => {
     rencontre.visiteur.nom = e.target.value
-    // console.debug("MAJ visiteur: " + JSON.stringify(this.state))
   };
   let sauver = () => {
     // console.debug(`sauver(${JSON.stringify(rencontre)})).`)

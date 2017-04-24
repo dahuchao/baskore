@@ -15,80 +15,64 @@ import Commentaires from "./commentaires"
 import Histogramme from "./histogramme"
 import RencontreEdition from "./rencontre-edition"
 
-const Rencontre = React.createClass({
-  render() {
-    // console.debug(`Ouverture rencontre: ` + Immutable.fromJS(this.props.rencontre.histoMarques))
-    this.state = this.props.rencontre
-    const style = {
-      color: "white"
-    }
-    let labelBouton = this.props.modeEdition ? "Sauver" : "Edition"
-    let date = this.props.rencontre.date ? new Date(this.props.rencontre.date) : new Date()
-    // console.debug(`test: ${date}`)
-    return this.props.modeEdition ? (
-      <RencontreEdition
-        rencontre = {this.props.rencontre}
-        sauver={this.props.sauver}
-        modeVerrouille = {this.props.modeVerrouille}
-        surVerrouillage={this.props.surVerrouillage}
-        termine = {this.props.termine}
-        surTermine={this.props.surTermine}
+const Rencontre = props => {
+  // console.debug(`Ouverture rencontre: ` + Immutable.fromJS(this.props.rencontre.histoMarques))
+  const style = {color: "white"}
+  return props.modeEdition ?
+    <RencontreEdition
+      rencontre = {props.rencontre}
+      sauver={props.sauver}
+      modeVerrouille = {props.modeVerrouille}
+      surVerrouillage={props.surVerrouillage}
+      termine = {props.termine}
+      surTermine={props.surTermine}
+    />
+  : props.modeHistogramme ?
+      <Histogramme 
+        rencontre={props.rencontre} 
+        historique={props.historique}
       />
-    ) : (
-      this.props.modeHistogramme ? (
+    : (
       <div>
-        <AppBar
-          title="Histogramme rencontre"
+        <AppBar title="Rencontre"
           iconElementLeft={
-            <IconButton onClick={this.props.historique}>
-              <NavigationArrowBack />
-            </IconButton>
-          }
-          />
-        <Histogramme rencontre={this.props.rencontre}/>
+            <Link to="/rencontres">
+              <IconButton
+                iconStyle={style}>
+                <NavigationArrowBack />
+              </IconButton>
+            </Link>}
+          iconElementRight={
+            <IconMenu
+              iconButtonElement={
+                <IconButton><MoreVertIcon /></IconButton>
+              }
+              targetOrigin={{horizontal: 'right', vertical: 'top'}}
+              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+            >
+              <MenuItem 
+                onClick={props.editer}
+                primaryText="Edition" 
+              />
+              <MenuItem 
+                onClick={props.historique}
+                primaryText="Histogramme" />
+            </IconMenu>
+          } 
+        />
+        <Tableau
+          rencontre={props.rencontre}
+          surNouvelleMarque={props.surNouvelleMarque}
+          surPeriode={props.surPeriode}
+          surChangementHote={props.surChangementHote}
+          surChangementVisiteur={props.surChangementVisiteur}
+          modeVerrouille={props.modeVerrouille} />
+        <Commentaires
+          rencontre={props.rencontre}
+          surNouveauCommentaire={props.surNouveauCommentaire}
+          modeVerrouille={props.modeVerrouille} />
       </div>
-    ) : (
-        <div>
-          <AppBar title="Rencontre"
-            iconElementLeft={
-              <Link to="/rencontres">
-                <IconButton
-                  iconStyle={style}>
-                  <NavigationArrowBack />
-                </IconButton>
-              </Link>}
-            iconElementRight={
-              <IconMenu
-                  iconButtonElement={
-                    <IconButton><MoreVertIcon /></IconButton>
-                  }
-                  targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                  anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                >
-                  <MenuItem 
-                    onClick={this.props.editer}
-                    primaryText="Edition" 
-                  />
-                  <MenuItem 
-                    onClick={this.props.historique}
-                    primaryText="Histogramme" />
-              </IconMenu>
-            } />
-          <Tableau
-            rencontre={this.props.rencontre}
-            surNouvelleMarque={this.props.surNouvelleMarque}
-            surPeriode={this.props.surPeriode}
-            surChangementHote={this.props.surChangementHote}
-            surChangementVisiteur={this.props.surChangementVisiteur}
-            modeVerrouille={this.props.modeVerrouille} />
-          <Commentaires
-            rencontre={this.props.rencontre}
-            surNouveauCommentaire={this.props.surNouveauCommentaire}
-            modeVerrouille={this.props.modeVerrouille} />
-        </div>
-      )
-    )
-  }
-})
+  )
+}
 
 export default Rencontre
