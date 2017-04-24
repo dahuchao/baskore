@@ -47,7 +47,7 @@ export default function Repartiteur() {
       rencontre = rencontre.setIn([
         'visiteur', 'joueuses'
       ], joueuses)
-      rencontre = rencontre.setIn(['histoMarques'], [])
+      // rencontre = rencontre.setIn(['histoMarques'], [])
       return Immutable
         .fromJS(etat)
         .set("rencontre", rencontre)
@@ -73,7 +73,7 @@ export default function Repartiteur() {
       const histoMarques = Immutable
         .fromJS(etat)
         .get("rencontre")
-        .get("histoMarques")
+        .get("histoMarques",[])
         .push({
           marqueHote: action.marqueHote, 
           marqueVisiteur: action.marqueVisiteur,
