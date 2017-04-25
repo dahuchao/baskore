@@ -5,10 +5,15 @@ import {
   AppBar,
   IconButton,
   IconMenu,
+  ToolbarGroup,
+  Toolbar,
   MenuItem
 } from "material-ui"
 import NavigationArrowBack from "material-ui/svg-icons/navigation/arrow-back"
 import ModeEdit from "material-ui/svg-icons/editor/mode-edit"
+import InsertChart from "material-ui/svg-icons/editor/insert-chart"
+import LockOpen from "material-ui/svg-icons/action/lock-open"
+import LockOutline from "material-ui/svg-icons/action/lock-outline"
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Tableau from "./tableau"
 import Commentaires from "./commentaires"
@@ -41,24 +46,17 @@ const Rencontre = props => {
                 iconStyle={style}>
                 <NavigationArrowBack />
               </IconButton>
-            </Link>}
+            </Link>
+          }
           iconElementRight={
-            <IconMenu
-              iconButtonElement={
-                <IconButton><MoreVertIcon /></IconButton>
-              }
-              targetOrigin={{horizontal: 'right', vertical: 'top'}}
-              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-            >
-              <MenuItem 
-                onClick={props.editer}
-                primaryText="Edition" 
-              />
-              <MenuItem 
-                onClick={props.historique}
-                primaryText="Histogramme" />
-            </IconMenu>
-          } 
+            <div>
+              <IconButton onClick={props.surVerrouillage} iconStyle={style}>
+                {props.modeVerrouille?<LockOpen/>:<LockOutline/>}
+              </IconButton>
+              <IconButton onClick={props.editer} iconStyle={style}><ModeEdit/></IconButton>
+              <IconButton onClick={props.historique} iconStyle={style}><InsertChart/></IconButton>
+            </div>
+          }
         />
         <Tableau
           rencontre={props.rencontre}

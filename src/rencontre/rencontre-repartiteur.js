@@ -11,16 +11,16 @@ export default function Repartiteur() {
     modeVerrouille: true
   }
   const etat$ = action$.scan((etat, action) => {
-    console.log("##############################")
-    console.log("\\ ACTION: " + JSON.stringify(action.type))
+    console.debug("##############################")
+    console.debug("\\ ACTION: " + JSON.stringify(action.type))
     let actions = {
       "DEFAUT": function () {
-        console.log(`| Action par défaut`)
+        console.debug(`| Action par défaut`)
         return Immutable.fromJS(etat)
       }
     }
     actions[types.TERMINAISON] = function () {
-      console.log("| terminaison.")
+      console.debug("| terminaison.")
       return Immutable
         .fromJS(etat)
         .setIn([
@@ -28,13 +28,13 @@ export default function Repartiteur() {
         ], !etat.rencontre.termine)
     }
     actions[types.VERROUILLAGE] = function () {
-      console.log("| verrouillage.")
+      console.debug("| verrouillage.")
       return Immutable
         .fromJS(etat)
         .set("modeVerrouille", !etat.modeVerrouille)
     }
     actions[typesEvenement.LECTURE_RENCONTRE] = function () {
-      console.log("| rencontre: " + JSON.stringify(action.rencontre))
+      console.debug("| rencontre: " + JSON.stringify(action.rencontre))
       if (action.rencontre == null) 
         return Immutable.fromJS(etat)
       let rencontre = Immutable.fromJS(action.rencontre)
@@ -53,19 +53,19 @@ export default function Repartiteur() {
         .set("rencontre", rencontre)
     }
     actions[types.EDITER_RENCONTRE] = function () {
-      console.log("| Mode édition: " + JSON.stringify(etat.modeEdition))
+      console.debug("| Mode édition: " + JSON.stringify(etat.modeEdition))
       return Immutable
         .fromJS(etat)
         .set("modeEdition", !etat.modeEdition)
     }
     actions[types.HISTORIQUE_RENCONTRE] = function () {
-      console.log("| Mode histogramme: " + JSON.stringify(etat.modeHistogramme))
+      console.debug("| Mode histogramme: " + JSON.stringify(etat.modeHistogramme))
       return Immutable
         .fromJS(etat)
         .set("modeHistogramme", !etat.modeHistogramme)
     }
     actions[typesEvenement.CHANGEMENT_MARQUE] = function () {
-      console.log(`| Nouvelle marque ${action.marqueHote}:${action.marqueVisiteur}`)
+      console.debug(`| Nouvelle marque ${action.marqueHote}:${action.marqueVisiteur}`)
       const periode = Immutable
         .fromJS(etat)
         .get("rencontre")
@@ -92,14 +92,14 @@ export default function Repartiteur() {
         ], histoMarques)
     }
     actions[typesEvenement.MAJ_RENCONTRE] = function () {
-      console.log("| Mise à jour: " + JSON.stringify(action.rencontre))
+      console.debug("| Mise à jour: " + JSON.stringify(action.rencontre))
       const joueuses = Immutable
         .List
         .of(4, 5, 6, 7, 8)
       const netat = Immutable
         .fromJS(etat)
         .set("rencontre", Immutable.fromJS(action.rencontre))
-      console.log(`| netat: ${netat}`)
+      console.debug(`| netat: ${netat}`)
       return netat
         .setIn([
           "rencontre", "hote", "joueuses"
@@ -115,7 +115,7 @@ export default function Repartiteur() {
       // .set("modeEdition", false)
     }
     actions[typesEvenement.CHANGEMENT_PERIODE] = function () {
-      console.log("| Nouvelle période: " + JSON.stringify(action.periode))
+      console.debug("| Nouvelle période: " + JSON.stringify(action.periode))
       return Immutable
         .fromJS(etat)
         .setIn([
@@ -123,25 +123,25 @@ export default function Repartiteur() {
         ], action.periode)
     }
     actions[typesEvenement.NOUVEAU_COMMENTAIRE] = function () {
-      console.log(`| Nouveau commentaire sur la rencontre: ${action.commentaire}`)
+      console.debug(`| Nouveau commentaire sur la rencontre: ${action.commentaire}`)
       let nouvelEtat = Immutable.fromJS(etat)
-      console.log(`| **************** etat : ${nouvelEtat}`)
+      console.debug(`| **************** etat : ${nouvelEtat}`)
       let rencontre = nouvelEtat.get("rencontre")
       if (!rencontre) 
         return nouvelEtat
-      console.log(`| ****rencontre: ${rencontre}`)
+      console.debug(`| ****rencontre: ${rencontre}`)
       let commentaires = rencontre
         .get("commentaires", Immutable.List())
         .push(action.commentaire)
-      console.log(`| ****commentaires: ${commentaires}`)
+      console.debug(`| ****commentaires: ${commentaires}`)
       rencontre = rencontre.set("commentaires", commentaires)
-      console.log(`| ****rencontre: ${rencontre}`)
+      console.debug(`| ****rencontre: ${rencontre}`)
       return Immutable
         .fromJS(etat)
         .set("rencontre", rencontre)
     }
     actions[types.CHANGEMENT_JOUEUR_HOTE] = function () {
-      console.log(`| Nouvelles joueuses hote : ${action.joueuses}`)
+      console.debug(`| Nouvelles joueuses hote : ${action.joueuses}`)
       return Immutable
         .fromJS(etat)
         .setIn([
@@ -149,7 +149,7 @@ export default function Repartiteur() {
         ], action.joueuses)
     }
     actions[types.CHANGEMENT_JOUEUR_VISITEUR] = function () {
-      console.log(`| Nouvelles joueuses visiteur : ${action.joueuses}`)
+      console.debug(`| Nouvelles joueuses visiteur : ${action.joueuses}`)
       return Immutable
         .fromJS(etat)
         .setIn([
@@ -157,9 +157,9 @@ export default function Repartiteur() {
         ], action.joueuses)
     }
     let etatNouveau = (actions[action.type] || actions['DEFAUT'])();
-    console.log("/----- Nouvel état ----------------")
-    console.log(`${JSON.stringify(etatNouveau.toJS())}`)
-    console.log(">----------------------------------")
+    console.debug("/----- Nouvel état ----------------")
+    console.debug(`${JSON.stringify(etatNouveau.toJS())}`)
+    console.debug(">----------------------------------")
     return etatNouveau.toJS()
   }, init)
   return {etat$, action$}
