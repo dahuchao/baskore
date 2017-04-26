@@ -158,7 +158,7 @@ export default function Repartiteur() {
     }
     let etatNouveau = (actions[action.type] || actions['DEFAUT'])();
     console.debug("/----- Nouvel état ----------------")
-    console.debug(`${JSON.stringify(etatNouveau.toJS())}`)
+    console.debug(`${JSON.stringify(etatNouveau.deleteIn(['rencontre', 'histoMarques']).toJS())}`)
     console.debug(">----------------------------------")
     return etatNouveau.toJS()
   }, init)

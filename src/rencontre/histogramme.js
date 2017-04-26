@@ -38,10 +38,14 @@ const CustomTooltip = (props) => {
   if (active) {
     const { payload } = props;
     // console.debug(`props ${JSON.stringify(payload)}.`)
+    const marqueHote = payload[0].value;
+    const marqueVisiteur = payload[1].value;
+    const avance = marqueHote-marqueVisiteur;
+    const periode = payload[0].payload.periode;
     return (
       <div style={styleLabel}>
-        <p style={stylePeriode}>T{payload[0].payload.periode}</p>
-        <p style={styleMarque}>{payload[0].value}/{payload[1].value}</p>
+        <p style={stylePeriode}>T{periode}</p>
+        <p style={styleMarque}>{marqueHote}/{marqueVisiteur} ({avance>0?"+":""}{avance})</p>
       </div>
     )
   }
