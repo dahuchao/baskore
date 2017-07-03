@@ -1,22 +1,20 @@
-var path = require('path');
-var nodeExternals = require('webpack-node-externals');
+var path = require("path");
 
 module.exports = {
-  entry: './src/app.js',
+  entry: "./src/app.js",
   output: {
-    path: path.join(__dirname, 'public'),
-    filename: 'app.js'
+    path: path.join(__dirname, "public"),
+    filename: "app.js"
   },
-  devtool: 'inline-source-map',
-  target: 'node', 
-  // externals: [nodeExternals()], 
   module: {
-    loaders: [
+    rules: [
       {
-        test: path.join(__dirname, 'src'),
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015', 'react']
+        test: /\.js?$/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["react", "es2015"]
+          }
         }
       }
     ]
