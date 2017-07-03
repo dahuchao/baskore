@@ -32,8 +32,8 @@ const Rencontre = props => {
       termine = {props.termine}
       surTermine={props.surTermine}
     />
-  : props.modeHistogramme ?
-      <Histogramme 
+  : props.modeHistogramme
+    ? <Histogramme 
         rencontre={props.rencontre} 
         historique={props.historique}
       />
@@ -69,6 +69,16 @@ const Rencontre = props => {
           rencontre={props.rencontre}
           surNouveauCommentaire={props.surNouveauCommentaire}
           modeVerrouille={props.modeVerrouille} />
+          
+        <footer>
+          <div id="info">
+            <span className="audience">
+              {props.rencontre.audience}
+            </span>
+            <span className="date">
+            </span>
+          </div>
+        </footer>
       </div>
   )
 }

@@ -34,7 +34,7 @@ export default function Repartiteur() {
         .set("modeVerrouille", !etat.modeVerrouille)
     }
     actions[typesEvenement.LECTURE_RENCONTRE] = function () {
-      console.debug("| rencontre: " + JSON.stringify(action.rencontre))
+      console.debug(`| rencontre: ${JSON.stringify(action.rencontre)}`)
       if (action.rencontre == null) 
         return Immutable.fromJS(etat)
       let rencontre = Immutable.fromJS(action.rencontre)
@@ -53,13 +53,13 @@ export default function Repartiteur() {
         .set("rencontre", rencontre)
     }
     actions[types.EDITER_RENCONTRE] = function () {
-      console.debug("| Mode édition: " + JSON.stringify(etat.modeEdition))
+      console.debug(`| Mode édition: ${JSON.stringify(etat.modeEdition)}`)
       return Immutable
         .fromJS(etat)
         .set("modeEdition", !etat.modeEdition)
     }
     actions[types.HISTORIQUE_RENCONTRE] = function () {
-      console.debug("| Mode histogramme: " + JSON.stringify(etat.modeHistogramme))
+      console.debug(`| Mode histogramme: ${JSON.stringify(etat.modeHistogramme)}`)
       return Immutable
         .fromJS(etat)
         .set("modeHistogramme", !etat.modeHistogramme)
@@ -92,7 +92,7 @@ export default function Repartiteur() {
         ], histoMarques)
     }
     actions[typesEvenement.MAJ_RENCONTRE] = function () {
-      console.debug("| Mise à jour: " + JSON.stringify(action.rencontre))
+      console.debug(`| Mise à jour: ${JSON.stringify(action.rencontre)}`)
       const joueuses = Immutable
         .List
         .of(4, 5, 6, 7, 8)
@@ -111,11 +111,9 @@ export default function Repartiteur() {
           "rencontre",'histoMarques'
         ], [])
         .set("modeEdition", false)
-      // return Immutable   .fromJS(etat)   .set("rencontre", rencontre)
-      // .set("modeEdition", false)
     }
     actions[typesEvenement.CHANGEMENT_PERIODE] = function () {
-      console.debug("| Nouvelle période: " + JSON.stringify(action.periode))
+      console.debug(`| Nouvelle période: ${JSON.stringify(action.periode)}`)
       return Immutable
         .fromJS(etat)
         .setIn([

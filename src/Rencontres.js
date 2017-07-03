@@ -187,6 +187,40 @@ var Rencontres = {
             })
         })
         .first()
+        .flatMap(rencontre => {
+          console.log(` Calcul de l'audience: ${rencontre.audience}.`)
+          const nouvelleAudience = Immutable
+            .fromJS(rencontre)
+            .get("rencontre")
+            .get("audience", Set())
+            .add(evenement.idSocket)
+          const rencontreModifiee = Immutable
+            .fromJS(rencontre)
+            .set("rencontre.audience", nouvelleAudience)
+            .toJS()
+          // let audience = rencontre.audience ? rencontre.audience : 0;
+          // Augmentation de l'audience
+          // rencontre.audience = ++audience;
+          console.log(` rencontre : ${JSON.stringify(rencontre)}.`);
+          return Rx
+            .Observable
+            .create(subscriber => {
+              bdd
+                .collection("rencontres")
+                .update({
+                  _id: rencontreModifiee._id
+                }, rencontreModifiee, function (err) {
+                  if (err) {
+                    console.log(`Mise à jour en erreur: ${err}.`)
+                    subscriber.error(err);
+                  } else {
+                    console.log(`Mise à jour enregistrée.`)
+                    subscriber.next(rencontreModifiee)
+                    subscriber.complete();
+                  }
+                })
+            })
+        })
         .map(rencontre => {
           evenement.rencontre = rencontre
           return evenement

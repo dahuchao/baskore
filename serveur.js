@@ -66,6 +66,12 @@ io
       console.log(`Nombre d'abonnés: ${-- nbSockets}`)
       souscBureau.unsubscribe()
       souscTableau.unsubscribe()
+      controleur
+        .commande$
+        .next({
+          type: typesCommande.FERMER_RENCONTRE,
+          idSocket: socket.id
+        })
     })
     socket.on('commande', function (commande) {
       console.log(`Commande: ${JSON.stringify(commande)}`)

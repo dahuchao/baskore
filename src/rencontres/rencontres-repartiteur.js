@@ -21,11 +21,12 @@ export default function Repartiteur() {
       }
     }
     actions[typesEvenement.LECTURE_RENCONTRES] = function () {
-      console.debug("| rencontres: " + JSON.stringify(action.rencontres))
+      // console.debug("| rencontres: " + JSON.stringify(action.rencontres))
       const rencontres = Immutable
         .fromJS(action.rencontres)
         .sortBy(rencontre => rencontre.date)
         .reverse();
+      console.debug("| rencontres: " + JSON.stringify(action.rencontres.map(rencontre=>rencontre.date)))
       return Immutable
         .fromJS(etat)
         .set("rencontres", rencontres)
@@ -79,7 +80,12 @@ export default function Repartiteur() {
     }
     let etatNouveau = (actions[action.type] || actions['DEFAUT'])();
     console.debug("/--------Nouvel état-----------")
-    console.debug(`${etatNouveau}`)
+    const rencontres = etatNouveau
+        .get("rencontres")
+        .map(rencontre => 
+          rencontre.deleteIn(['histoMarques'])
+        )
+    console.debug(`${etatNouveau.set("rencontres", rencontres)}`)
     console.debug(">------------------------------")
     return etatNouveau.toJS()
   }, init)
