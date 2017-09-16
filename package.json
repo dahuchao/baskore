@@ -59,10 +59,7 @@
     "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0",
     "style-loader": "^0.13.1",
-    "webpack": "^1.14.0",
-    "webpack-dev-server": "^1.16.2",
-    "webpack-hot-middleware": "^2.15.0",
-    "webpack-node-externals": "^1.5.4"
+    "webpack": "^3.6.0"
   },
   "engines": {
     "node": "6.6.0"
