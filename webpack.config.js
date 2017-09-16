@@ -38,7 +38,6 @@ module.exports = {
   ],
   output: {
     path: path.join(__dirname, '/public'),
-    publicPath: '/',
     filename: 'app.js'
   },
   // resolve: {
@@ -55,19 +54,20 @@ module.exports = {
     //   }
     // ]
   },
-  devServer: {
-    contentBase: "./public",
-    // do not print bundle build stats
-    noInfo: true,
-    // enable HMR
-    hot: true,
-    // embed the webpack-dev-server runtime into the bundle
-    inline: true,
-    // serve index.html in place of 404 responses to allow HTML5 history
-    historyApiFallback: true,
-    // port: "8888",
-    // host: "127.0.0.1"
-  },
+  // devServer: {
+  //   contentBase: "./public",
+  //   publicPath: '/',
+  //   // do not print bundle build stats
+  //   noInfo: true,
+  //   // enable HMR
+  //   hot: true,
+  //   // embed the webpack-dev-server runtime into the bundle
+  //   inline: true,
+  //   // serve index.html in place of 404 responses to allow HTML5 history
+  //   historyApiFallback: true,
+  //   port: "80",
+  //   // host: "127.0.0.1"
+  // },
   plugins: [
     new webpack.NoErrorsPlugin(),
     // new webpack.HotModuleReplacementPlugin(),

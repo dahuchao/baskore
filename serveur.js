@@ -27,16 +27,19 @@ app.set('port', (process.env.PORT || 80))
 
 
 let isDeveloping = process.env.NODE_ENV !== 'production'
-isDeveloping = false
+isDeveloping = true
 if (isDeveloping) {
   const compiler = webpack(config)
   const devMiddleware = webpackDevMiddleware(compiler, {
-    publicPath: config.output.publicPath,
+    contentBase: "./public",
+    publicPath: '/',
+    filename: "app.js",
+    // publicPath: config.output.publicPath,
     // contentBase: "./public",
     // do not print bundle build stats
     noInfo: false,
     // enable HMR
-    // hot: true,
+    hot: true,
     // embed the webpack-dev-server runtime into the bundle
     inline: true,
     // serve index.html in place of 404 responses to allow HTML5 history
@@ -63,7 +66,7 @@ if (isDeveloping) {
   //   console.log(`Lecture de la page sur /`)
   //   res.sendFile(__dirname + '/public/index.html');
   // });
-  app.use('/', express.static("./public"))
+  // app.use('/', express.static("./public"))
 
   // app.use(webpackHotMiddleware(compiler))
   // app.get('*', function response(req, res) {
