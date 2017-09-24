@@ -13,6 +13,10 @@ import Close from "material-ui/svg-icons/navigation/close"
 import {etat$, action$, types} from "./repartiteur"
 
 export default class RencontreAjout extends React.Component {
+  // constructor(props) {
+  //   super(props);
+  //   action$.next({type: types.INIT, props})
+  // }
   componentDidMount() {
     this.sousc = etat$.subscribe(etat => this.setState(etat))
   }
@@ -36,16 +40,21 @@ export default class RencontreAjout extends React.Component {
       <div>
         <AppBar
           title="Ajouter rencontre"
-          iconElementLeft={< IconButton onClick = {()=>this.sauver()} > <NavigationArrowBack/> </IconButton>}
-          iconElementRight={<IconButton onClick = {()=>this.annuler()} > <Close/> </IconButton>}/>
+          iconElementLeft={< IconButton onClick = {
+          () => this.sauver()
+        } > <NavigationArrowBack/> < /IconButton>}
+          iconElementRight={< IconButton onClick = {
+          () => this.annuler()
+        } > <Close/> < /IconButton>}/>
         <Card>
           <CardText>
-            <DatePicker floatingLabelText="Date de la rencontre" 
-              onChange={(x,date)=>action$.next({type: types.NOUV_DATE, date})}/>
+            <DatePicker
+              floatingLabelText="Date de la rencontre"
+              onChange={(x, date) => action$.next({type: types.NOUV_DATE, date})}/>
             <TimePicker
               floatingLabelText="Heure de la rencontre"
               format="24hr"
-              onChange={(x,heure) => action$.next({type: types.NOUV_HEURE, heure}) }/>
+              onChange={(x, heure) => action$.next({type: types.NOUV_HEURE, heure})}/>
             <TextField
               floatingLabelText="Club hote"
               defaultValue={this.props.rencontre.hote.nom}
