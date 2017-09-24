@@ -17,7 +17,8 @@
   },
   "scripts": {
     "postinstall": "cd client && npm install",
-    "start": "node serveur"
+    "start": "node serveur",
+    "dev": "npm start && cd client && npm start"
   }
 }
 

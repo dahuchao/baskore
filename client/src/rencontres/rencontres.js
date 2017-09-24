@@ -10,6 +10,7 @@ import {
 } from "material-ui"
 import ContentAdd from "material-ui/svg-icons/content/add"
 import ActionDelete from "material-ui/svg-icons/action/delete"
+import "./rencontres.css"
 
 export default class Rencontres extends React.Component {
   // contextTypes: {
@@ -46,16 +47,13 @@ export default class Rencontres extends React.Component {
         color: "rgb(0, 188, 212)"
       }
     }
-    const style = {
-      marginRight: 20
-    }
     return (
       <div>
         <AppBar title="BASKORE"
           onClick={this.props.listerRencontres}
           iconClassNameRight="muidocs-icon-navigation-expand-more">
           <div className="flottant">
-            <FloatingActionButton style={style}
+            <FloatingActionButton id="bouton-plus"
               onMouseDown={this.props.creerRencontre}
               >
               <ContentAdd />
@@ -67,7 +65,7 @@ export default class Rencontres extends React.Component {
             {this.props.rencontres.map(rencontre => {
               let strDate = this.preparationDate(rencontre.date)
               return (
-                <Link key={rencontre.id} to={{ pathname:"/rencontres/" + rencontre.id}} >
+                <Link className="style-rencontre" key={rencontre.id} to={{ pathname:"/rencontres/" + rencontre.id}} >
                   <ListItem
                     primaryText={rencontre.hote.nom + '-' + rencontre.visiteur.nom}
                     secondaryText={rencontre.termine?rencontre.hote.marque + '-' + rencontre.visiteur.marque:strDate}
