@@ -20,9 +20,9 @@ app.use(cors({allowedOrigins: ['localhost:3000']}))
 app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
 // Définition du port d'écoute
-app.set('port', (process.env.PORT || 80))
+app.set('port', (process.env.PORT || 3001))
 // Répertoire des pages du site web
-var repertoireSite = "./public"
+var repertoireSite = "./client/build"
 console.log('Ouverture du répertoire des pages du site web : %s', repertoireSite)
 // Répertoire racine
 app.use('/', express.static(repertoireSite))
@@ -47,7 +47,7 @@ Rencontres
 // ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■
 // *** Démarrage du serveur
 var serveur = app.listen(app.get('port'), function () {
-  console.log("Ecoute sur le port %d, à l'adresse http://localhost:80", serveur.address().port)
+  console.log("Ecoute sur le port %d, à l'adresse http://localhost", serveur.address().port)
 })
 
 // ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■
