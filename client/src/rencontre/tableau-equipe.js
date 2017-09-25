@@ -1,7 +1,7 @@
 import React from "react"
 import Immutable from "immutable"
 import { IconMenu, SelectField, MenuItem } from "material-ui"
-import ballon from "./ballon6.png"
+import ballon from "./ballon.png"
 
 export default class Equipe extends React.Component {
   render() {

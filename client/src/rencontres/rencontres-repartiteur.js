@@ -1,10 +1,8 @@
-import Rx from 'rxjs'
 import Immutable from "immutable"
-import * as types from "./rencontres-actions"
+import {types, action$} from "./rencontres-actions"
 import typesEvenement from "../types-evenement"
 
 export default function Repartiteur() {
-  const action$ = new Rx.BehaviorSubject({type: "DEFAUT"})
 
   const init = {
     rencontres: [],
@@ -90,5 +88,5 @@ export default function Repartiteur() {
     return etatNouveau.toJS()
   }, init)
 
-  return {etat$, action$}
+  return {etat$}
 }

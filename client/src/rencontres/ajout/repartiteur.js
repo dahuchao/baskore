@@ -1,13 +1,5 @@
-import Rx from 'rxjs'
 import Immutable from "immutable"
-const types = {
-  NOUV_DATE: "NOUV_DATE",
-  NOUV_HEURE: "NOUV_HEURE",
-  NOUV_HOTE: "NOUV_HOTE",
-  NOUV_VISITEUR: "NOUV_VISITEUR"
-}
-
-const action$ = new Rx.BehaviorSubject({type: "DEFAUT"})
+import {types, action$} from "../rencontres-actions"
 
 const etat$ = action$.scan((etat, action) => {
   console.log("##############################")
@@ -17,6 +9,10 @@ const etat$ = action$.scan((etat, action) => {
       console.log(`| Action par défaut`)
       return Immutable.fromJS(etat)
     }
+  }
+  actions[types.INIT] = function () {
+    console.log("| initialisation: " + JSON.stringify(action.props))
+    return Immutable.fromJS(etat)
   }
   actions[types.NOUV_DATE] = function () {
     console.log("| nouvelle date: " + JSON.stringify(action.date.getDate()))
@@ -56,4 +52,5 @@ const etat$ = action$.scan((etat, action) => {
   let etatNouveau = (actions[action.type] || actions['DEFAUT'])();
   return etatNouveau.toJS()
 }, {date: new Date()})
-export {etat$, action$, types}
+
+export {etat$}

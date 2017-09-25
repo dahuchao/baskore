@@ -1,11 +1,11 @@
 import React from "react"
 import io from "socket.io-client"
-import * as types from "./rencontres-actions"
+import {action$} from "./rencontres-actions"
 import typesCommande from "../types-commande"
 import Rencontres from "./rencontres"
 import RencontreAjout from "./ajout/ajout"
 import Repartiteur from "./rencontres-repartiteur"
-let {etat$, action$} = Repartiteur()
+let {etat$} = Repartiteur()
 
 export default class RencontresConteneur extends React.Component {
   constructor(props) {
@@ -20,6 +20,44 @@ export default class RencontresConteneur extends React.Component {
   }
   componentDidMount() {
     this.sousc = etat$.subscribe(etat => this.setState(etat))
+    this.souscAction = action$.subscribe(action => {
+      console.debug("##############################")
+      console.debug("\\ ACTION: " + JSON.stringify(action.type))
+      let actions = {
+        "DEFAUT": function () {
+          console.debug(`| Action par défaut`)
+        }
+      }
+      actions[typesCommande.AJOUTER_RENCONTRE] = () => {
+        const infos = action.state
+        let rencontre = this.state.rencontre
+        // console.info("Info: " + JSON.stringify(infos))
+        rencontre.date = infos.date
+        rencontre.periode = infos.periode
+        rencontre.hote.nom = infos.hote
+        rencontre.visiteur.nom = infos.visiteur
+        console.debug("Ajouter rencontre : " + JSON.stringify(rencontre))
+        this
+          .socket
+          .emit("commande", {
+            type: typesCommande.AJOUTER_RENCONTRE,
+            rencontre: rencontre,
+            idSocket: this.socket.id
+          })
+      }
+      actions[typesCommande.SUPPRIMER_RENCONTRE] = () => {
+        console.debug("Supprimer rencontre: " + action.idRencontre)
+        this
+          .socket
+          .emit("commande", {
+            type: typesCommande.SUPPRIMER_RENCONTRE,
+            idRencontre: action.idRencontre,
+            idSocket: this.socket.id
+          })
+      }
+      (actions[action.type] || actions['DEFAUT'])();
+    })
+
     this
       .socket
       .on("connect", () => {
@@ -43,51 +81,18 @@ export default class RencontresConteneur extends React.Component {
       .sousc
       .unsubscribe()
     this
+      .souscAction
+      .unsubscribe()
+    this
       .socket
       .disconnect()
   }
-  creerRencontre() {
-    console.debug("creer rencontre.")
-    action$.next({type: types.CREER_RENCONTRE})
-  }
-  supprimeRencontre(idRencontre) {
-    console.debug("Suppression: " + idRencontre)
-    this
-      .socket
-      .emit("commande", {
-        type: typesCommande.SUPPRIMER_RENCONTRE,
-        idRencontre: idRencontre,
-        idSocket: this.socket.id
-      })
-  }
-  ajoutRencontre(infos) {
-    let rencontre = this.state.rencontre
-    if (infos == null) {
-      action$.next({type: types.ANNULER_RENCONTRE, rencontre: rencontre})
-      return
-    }
-    // console.info("Info: " + JSON.stringify(infos))
-    rencontre.date = infos.date
-    rencontre.periode = infos.periode
-    rencontre.hote.nom = infos.hote
-    rencontre.visiteur.nom = infos.visiteur
-    console.debug("Ajout rencontre : " + JSON.stringify(rencontre))
-    this
-      .socket
-      .emit("commande", {
-        type: typesCommande.AJOUTER_RENCONTRE,
-        rencontre: rencontre,
-        idSocket: this.socket.id
-      })
-  }
+  // ajoutRencontre(infos) {}
   render() {
     return (this.state.modeAjout
-      ? <RencontreAjout
-          rencontre={this.state.rencontre}
-          ajoutRencontre={(infos) => this.ajoutRencontre(infos)}/>
+      ? <RencontreAjout rencontre={this.state.rencontre}/>
       : <Rencontres
-          rencontres={this.state.rencontres}
-          supprimeRencontre={(idRencontre) => this.supprimeRencontre(idRencontre)}
-          creerRencontre={this.creerRencontre}/>)
+        rencontres={this.state.rencontres}
+        supprimeRencontre={(idRencontre) => this.supprimeRencontre(idRencontre)}/>)
   }
 }

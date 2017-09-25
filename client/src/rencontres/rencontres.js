@@ -1,4 +1,5 @@
 import React from "react"
+import "./rencontres.css"
 import { Link} from 'react-router-dom'
 import {
   AppBar,
@@ -10,7 +11,8 @@ import {
 } from "material-ui"
 import ContentAdd from "material-ui/svg-icons/content/add"
 import ActionDelete from "material-ui/svg-icons/action/delete"
-import "./rencontres.css"
+import {types, action$} from "./rencontres-actions"
+import typesCommande from "../types-commande"
 
 export default class Rencontres extends React.Component {
   // contextTypes: {
@@ -54,7 +56,7 @@ export default class Rencontres extends React.Component {
           iconClassNameRight="muidocs-icon-navigation-expand-more">
           <div className="flottant">
             <FloatingActionButton id="bouton-plus"
-              onMouseDown={this.props.creerRencontre}
+              onMouseDown={()=>action$.next({type: types.CREER_RENCONTRE})}
               >
               <ContentAdd />
             </FloatingActionButton>
@@ -68,12 +70,12 @@ export default class Rencontres extends React.Component {
                 <Link className="style-rencontre" key={rencontre.id} to={{ pathname:"/rencontres/" + rencontre.id}} >
                   <ListItem
                     primaryText={rencontre.hote.nom + '-' + rencontre.visiteur.nom}
-                    secondaryText={rencontre.termine?rencontre.hote.marque + '-' + rencontre.visiteur.marque:strDate}
+                    secondaryText={rencontre.termine ? rencontre.hote.marque + '-' + rencontre.visiteur.marque : strDate}
                     rightIconButton={
                       <IconButton
                         style={poubelle.style}
                         iconStyle={poubelle.icon}
-                        onClick={()=>this.props.supprimeRencontre(rencontre.id)}
+                        onClick={() => action$.next({type: typesCommande.SUPPRIMER_RENCONTRE, idRencontre: rencontre.id})}
                         >
                         <ActionDelete />
                       </IconButton>}

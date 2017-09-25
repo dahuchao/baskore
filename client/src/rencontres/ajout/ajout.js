@@ -10,13 +10,15 @@ import {
 } from "material-ui"
 import NavigationArrowBack from "material-ui/svg-icons/navigation/arrow-back"
 import Close from "material-ui/svg-icons/navigation/close"
-import {etat$, action$, types} from "./repartiteur"
+import {types, action$} from "../rencontres-actions"
+import {etat$} from "./repartiteur"
+import typesCommande from "../../types-commande"
 
 export default class RencontreAjout extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  //   action$.next({type: types.INIT, props})
-  // }
+  constructor(props) {
+    super(props);
+    action$.next({type: types.INIT, props})
+  }
   componentDidMount() {
     this.sousc = etat$.subscribe(etat => this.setState(etat))
   }
@@ -25,27 +27,13 @@ export default class RencontreAjout extends React.Component {
       .sousc
       .unsubscribe()
   }
-  sauver() {
-    this
-      .props
-      .ajoutRencontre(this.state)
-  }
-  annuler() {
-    this
-      .props
-      .ajoutRencontre(null)
-  }
   render() {
     return (
       <div>
         <AppBar
           title="Ajouter rencontre"
-          iconElementLeft={< IconButton onClick = {
-          () => this.sauver()
-        } > <NavigationArrowBack/> < /IconButton>}
-          iconElementRight={< IconButton onClick = {
-          () => this.annuler()
-        } > <Close/> < /IconButton>}/>
+          iconElementLeft={<IconButton onClick = {() => action$.next({type: typesCommande.AJOUTER_RENCONTRE, state: this.state})}> <NavigationArrowBack/> </IconButton>}
+          iconElementRight={<IconButton onClick = {() => action$.next({type: types.ANNULER_RENCONTRE})} > <Close/> </IconButton>}/>
         <Card>
           <CardText>
             <DatePicker
