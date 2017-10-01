@@ -1,7 +1,7 @@
 var Rx = require("rxjs")
 var {MongoClient} = require('mongodb')
 var Immutable = require("immutable")
-var typesEvenement = require("./types-evenement")
+var typesEvenement = require("../client/src/types-evenement")
 
 var bdd;
 var Rencontres = {
@@ -11,8 +11,10 @@ var Rencontres = {
     return Rx
       .Observable
       .create(function (subscriber) {
+        console.log(`test.`)
         MongoClient
           .connect(url, function (err, db) {
+            console.log(` test2.`)            
             if (err) {
               console.log(`Connexion en erreur: ${err}`)
               Rx
@@ -25,7 +27,8 @@ var Rencontres = {
               subscriber.complete();
             }
           })
-      })
+        }
+      )
   },
   deconnexion: function () {
     return bdd.close()

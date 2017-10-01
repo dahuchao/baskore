@@ -2,10 +2,10 @@ import React from "react"
 import Immutable from "immutable"
 import io from "socket.io-client"
 import Rencontre from "./rencontre"
-import * as types from "./rencontre-actions"
+import {action$} from "./rencontre-actions"
 import typesCommande from "../types-commande"
 import Repartiteur from "./rencontre-repartiteur"
-let {etat$, action$} = Repartiteur()
+let {etat$} = Repartiteur()
 
 export default class RencontreConteneur extends React.Component {
   constructor(props) {
@@ -23,6 +23,54 @@ export default class RencontreConteneur extends React.Component {
       // console.debug(`etat$.subscribe(etat =>: ${JSON.stringify(etat)}`)
       this.setState(etat)
     })
+    this.souscAction = action$.subscribe(action => {
+      console.debug("##############################")
+      console.debug("\\ ACTION: " + JSON.stringify(action.type))
+      let actions = {
+        "DEFAUT": function () {
+          console.debug(`| Action par défaut`)
+          return null
+        }
+      }
+      actions[typesCommande.PANIER_MARQUE] = () => {
+        // console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
+        return {
+          type: typesCommande.PANIER_MARQUE,
+          idRencontre: this.state.rencontre.id,
+          marqueHote: this.state.rencontre.hote.marque,
+          marqueVisiteur: this.state.rencontre.visiteur.marque
+        }
+      }
+      actions[typesCommande.CHANGER_PERIODE] = () => {
+        // console.debug("Nouvelle periode: " + JSON.stringify(periode))
+        return {
+          type: typesCommande.CHANGER_PERIODE,
+          idRencontre: this.state.rencontre.id,
+          periode: action.periode
+        }
+      }
+      actions[typesCommande.ENREGISTRER_COMMENTAIRE] = () => {
+        // console.debug(`surNouveauCommentaire: ${commentaire}`)
+        return {
+          type: typesCommande.ENREGISTRER_COMMENTAIRE,
+          idRencontre: this.state.rencontre.id,
+          "commentaire": action.commentaire
+        }
+      }
+      actions[typesCommande.MAJ_RENCONTRE] = () => {
+        // console.debug("sauver(majRencontre): " + JSON.stringify(majRencontre))
+        return {
+          type: typesCommande.MAJ_RENCONTRE,
+          idRencontre: action.rencontre.id,
+          idSocket: this.socket.id,
+          rencontre: action.rencontre
+        }
+      }
+      let commande = (actions[action.type] || actions['DEFAUT'])();
+      if (commande != null) 
+        this.socket.emit("commande", commande)
+    })
+
     console.debug(`this.props: ${JSON.stringify(this.props)}`)
     const idRencontre = this.props.match.params.idRencontre
     this
@@ -49,30 +97,23 @@ export default class RencontreConteneur extends React.Component {
       .sousc
       .unsubscribe()
     this
+      .souscAction
+      .unsubscribe()
+    this
       .socket
       .disconnect()
   }
-  surNouvelleMarque() {
-    // console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
-    this
-      .socket
-      .emit("commande", {
-        type: typesCommande.PANIER_MARQUE,
-        idRencontre: this.state.rencontre.id,
-        marqueHote: this.state.rencontre.hote.marque,
-        marqueVisiteur: this.state.rencontre.visiteur.marque
-      })
-  }
-  surNouveauCommentaire(commentaire) {
-    // console.debug(`surNouveauCommentaire: ${commentaire}`)
-    this
-      .socket
-      .emit("commande", {
-        type: typesCommande.ENREGISTRER_COMMENTAIRE,
-        idRencontre: this.state.rencontre.id,
-        "commentaire": commentaire
-      })
-  }
+  // surNouvelleMarque() {   // console.info("Panier marque: " +
+  // JSON.stringify(this.state.rencontre))   this     .socket
+  // .emit("commande", {       type: typesCommande.PANIER_MARQUE,
+  // idRencontre: this.state.rencontre.id,       marqueHote:
+  // this.state.rencontre.hote.marque,       marqueVisiteur:
+  // this.state.rencontre.visiteur.marque     }) }
+  // surNouveauCommentaire(commentaire) {   //
+  // console.debug(`surNouveauCommentaire: ${commentaire}`)   this     .socket
+  // .emit("commande", {       type: typesCommande.ENREGISTRER_COMMENTAIRE,
+  // idRencontre: this.state.rencontre.id,       "commentaire": commentaire     })
+  // }
   surChangementHote(sor, ent) {
     // console.debug(`Changement hote ${sor} par ${ent}`)
     let joueuses = Immutable
@@ -109,58 +150,27 @@ export default class RencontreConteneur extends React.Component {
         joueuses: joueuses
       })
   }
-  surPeriode(periode) {
-    // console.debug("Nouvelle periode: " + JSON.stringify(periode))
-    this
-      .socket
-      .emit("commande", {
-        type: typesCommande.CHANGER_PERIODE,
-        idRencontre: this.state.rencontre.id,
-        periode: periode
-      })
-  }
-  sauver(majRencontre) {
-    // console.debug("sauver(majRencontre): " + JSON.stringify(majRencontre))
-    this
-      .socket
-      .emit("commande", {
-        type: typesCommande.MAJ_RENCONTRE,
-        idRencontre: majRencontre.id,
-        idSocket: this.socket.id,
-        rencontre: majRencontre
-      })
-  }
-  editer() {
-    action$.next({type: types.EDITER_RENCONTRE})
-  }
-  historique() {
-    action$.next({type: types.HISTORIQUE_RENCONTRE})
-  }
-  surVerrouillage() {
-    action$.next({type: types.VERROUILLAGE})
-  }
-  surTermine() {
-    action$.next({type: types.TERMINAISON})
-  }
+  // surPeriode(periode) {   // console.debug("Nouvelle periode: " +
+  // JSON.stringify(periode))   this     .socket     .emit("commande", {
+  // type: typesCommande.CHANGER_PERIODE,       idRencontre:
+  // this.state.rencontre.id,       periode: periode     }) } sauver(majRencontre)
+  // {   // console.debug("sauver(majRencontre): " + JSON.stringify(majRencontre))
+  //   this     .socket     .emit("commande", {       type:
+  // typesCommande.MAJ_RENCONTRE,       idRencontre: majRencontre.id,
+  // idSocket: this.socket.id,       rencontre: majRencontre     }) } editer() {
+  // action$.next({type: types.EDITER_RENCONTRE}) } historique() {
+  // action$.next({type: types.HISTORIQUE_RENCONTRE}) } surVerrouillage() {
+  // action$.next({type: types.VERROUILLAGE}) } surTermine() {
+  // action$.next({type: types.TERMINAISON}) }
   render() {
     // console.debug(`Nouvelle rencontre: ` + JSON.stringify(this.state))
     return this.state.rencontre
       ? <Rencontre
           rencontre={this.state.rencontre}
-          surNouvelleMarque={() => this.surNouvelleMarque()}
-          editer={() => this.editer()}
-          historique={() => this.historique()}
-          sauver={(majRencontre) => this.sauver(majRencontre)}
-          surNouveauCommentaire={(commentaire) => this.surNouveauCommentaire(commentaire)}
-          surChangementHote={(sor, ent) => this.surChangementHote(sor, ent)}
-          surChangementVisiteur={(sor, ent) => this.surChangementVisiteur(sor, ent)}
-          surPeriode={(periode) => this.surPeriode(periode)}
           modeEdition={this.state.modeEdition}
           modeHistogramme={this.state.modeHistogramme}
           modeVerrouille={this.state.modeVerrouille}
-          surVerrouillage={() => this.surVerrouillage()}
-          surTermine={() => this.surTermine()}
-          />
+        />
       : null
   }
 }

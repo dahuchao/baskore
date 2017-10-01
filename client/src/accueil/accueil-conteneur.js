@@ -10,9 +10,9 @@ function preparationDate() {
 }
 
 const AccueilConteneur = ({match}) => {
-  let date = new Date()
-  let strDate = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
-  let strHeure = date.getHours() + ":" + date.getMinutes()
+  // let date = new Date()
+  // let strDate = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
+  // let strHeure = date.getHours() + ":" + date.getMinutes()
   return (
     <div>
       <Route exact path={match.url + "rencontres"} component={RencontresConteneur}/>

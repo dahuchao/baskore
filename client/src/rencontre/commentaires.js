@@ -2,6 +2,8 @@ import React from "react"
 import Immutable from "immutable"
 import {Card, TextField, List, ListItem, FlatButton} from "material-ui"
 import Done from "material-ui/svg-icons/action/done"
+import {action$} from "./rencontre-actions"
+import typesCommande from "../types-commande"
 
 export default class Commentaires extends React.Component {
   componentWillMount() {
@@ -14,10 +16,11 @@ export default class Commentaires extends React.Component {
   }
   surNouveauCommentaire() {
     // console.debug("Commentaire: " + this.state.commentaire)
-    this
-      .props
-      .surNouveauCommentaire(this.state.commentaire)
+    // this
+    //   .props
+    //   .surNouveauCommentaire(this.state.commentaire)
     this.setState({commentaire: ""})
+    action$.next({type: typesCommande.PANIER_MARQUE, commentaire:this.state.commentaire})
     // console.debug(`surNouveauCommentaire: ` +this.state.commentaire)
   }
   render() {
@@ -55,7 +58,7 @@ export default class Commentaires extends React.Component {
         fullWidth={true}
         maxLength="140"
         value={this.state.commentaire}
-        onChange={() => this.saisieCommentaire()}/>
+        onChange={(e) => this.saisieCommentaire(e)}/>
       <FlatButton onClick={() => this.surNouveauCommentaire()} icon={< Done />}/>
     </div>
     return (

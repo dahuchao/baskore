@@ -1,7 +1,7 @@
 var Rx = require("rxjs")
 var Immutable = require("immutable")
-var typesCommande = require("./types-commande")
-var typesEvenement = require("./types-evenement")
+var typesCommande = require("../client/src/types-commande")
+var typesEvenement = require("../client/src/types-evenement")
 
 var commande$ = new Rx.Subject({type: "DEFAUT"})
 

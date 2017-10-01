@@ -10,6 +10,8 @@ import {
   DatePicker
 } from "material-ui"
 import NavigationArrowBack from "material-ui/svg-icons/navigation/arrow-back"
+import {types, action$} from "./rencontre-actions"
+import typesCommande from "../types-commande"
 
 const RencontreEdition = (props) => {
   let rencontre = props.rencontre
@@ -34,16 +36,16 @@ const RencontreEdition = (props) => {
   let majVisiteur = (e) => {
     rencontre.visiteur.nom = e.target.value
   };
-  let sauver = () => {
-    // console.debug(`sauver(${JSON.stringify(rencontre)})).`)
-    props.sauver(rencontre) 
-  };
+  // let sauver = () => {
+  //   // console.debug(`sauver(${JSON.stringify(rencontre)})).`)
+  //   props.sauver(rencontre) 
+  // };
   return (
     <div>
       <AppBar
         title="Edition rencontre"
         iconElementLeft={
-          <IconButton onClick={sauver}>
+          <IconButton onClick={() => action$.next({type: typesCommande.MAJ_RENCONTRE, rencontre})}>
             <NavigationArrowBack />
           </IconButton>
         }
@@ -69,7 +71,7 @@ const RencontreEdition = (props) => {
             label="Verrouillé" />
           <Toggle
             defaultToggled={props.termine} 
-            onToggle={props.surTermine}
+            onToggle={() => action$.next({type: types.TERMINAISON})}
             label="Terminé" />
         </CardText>
       </Card>

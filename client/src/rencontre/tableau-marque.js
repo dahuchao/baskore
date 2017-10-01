@@ -1,5 +1,7 @@
 import React from "react"
 import {FlatButton} from "material-ui"
+import { action$} from "./rencontre-actions"
+import typesCommande from "../types-commande"
 
 export default props => {
     const style = {
@@ -46,7 +48,7 @@ export default props => {
                   labelStyle={styleLabelPeriode}
                   key={periode}
                   label={"P" + periode}
-                  onClick={() => props.surPeriode(periode)}
+                  onClick={() => action$.next({type: typesCommande.CHANGER_PERIODE, periode})}
                 />
           })
         }

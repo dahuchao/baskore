@@ -14,6 +14,7 @@ import {
   Tooltip, 
   Legend 
 } from "recharts";
+import {types, action$} from "./rencontre-actions"
 
 const CustomTooltip = (props) => {
   const { active } = props;
@@ -59,7 +60,7 @@ const Histogramme = (props) => {
         <AppBar
           title="Histogramme rencontre"
           iconElementLeft={
-            <IconButton onClick={props.historique}>
+            <IconButton onClick={() => action$.next({type: types.HISTORIQUE_RENCONTRE})}>
               <NavigationArrowBack />
             </IconButton>
           }

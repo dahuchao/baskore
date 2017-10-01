@@ -89,10 +89,8 @@ export default class RencontresConteneur extends React.Component {
   }
   // ajoutRencontre(infos) {}
   render() {
-    return (this.state.modeAjout
+    return this.state.modeAjout
       ? <RencontreAjout rencontre={this.state.rencontre}/>
-      : <Rencontres
-        rencontres={this.state.rencontres}
-        supprimeRencontre={(idRencontre) => this.supprimeRencontre(idRencontre)}/>)
+      : <Rencontres rencontres={this.state.rencontres}/>
   }
 }

@@ -1,10 +1,9 @@
-import Rx from 'rxjs'
 import Immutable from "immutable"
-import * as types from "./rencontre-actions"
+import {types, action$} from "./rencontre-actions"
 import typesEvenement from "../types-evenement"
 
 export default function Repartiteur() {
-  const action$ = new Rx.BehaviorSubject({type: "DEFAUT"})
+  // const action$ = new Rx.BehaviorSubject({type: "DEFAUT"})
   const init = {
     modeHistogramme: false,
     modeEdition: false,
@@ -138,7 +137,7 @@ export default function Repartiteur() {
         .fromJS(etat)
         .set("rencontre", rencontre)
     }
-    actions[types.CHANGEMENT_JOUEUR_HOTE] = function () {
+    actions[typesEvenement.CHANGEMENT_JOUEUR_HOTE] = function () {
       console.debug(`| Nouvelles joueuses hote : ${action.joueuses}`)
       return Immutable
         .fromJS(etat)
@@ -146,7 +145,7 @@ export default function Repartiteur() {
           'rencontre', 'hote', 'joueuses'
         ], action.joueuses)
     }
-    actions[types.CHANGEMENT_JOUEUR_VISITEUR] = function () {
+    actions[typesEvenement.CHANGEMENT_JOUEUR_VISITEUR] = function () {
       console.debug(`| Nouvelles joueuses visiteur : ${action.joueuses}`)
       return Immutable
         .fromJS(etat)
@@ -160,5 +159,5 @@ export default function Repartiteur() {
     console.debug(">----------------------------------")
     return etatNouveau.toJS()
   }, init)
-  return {etat$, action$}
+  return {etat$}
 }
