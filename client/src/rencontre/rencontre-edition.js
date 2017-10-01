@@ -36,10 +36,6 @@ const RencontreEdition = (props) => {
   let majVisiteur = (e) => {
     rencontre.visiteur.nom = e.target.value
   };
-  // let sauver = () => {
-  //   // console.debug(`sauver(${JSON.stringify(rencontre)})).`)
-  //   props.sauver(rencontre) 
-  // };
   return (
     <div>
       <AppBar

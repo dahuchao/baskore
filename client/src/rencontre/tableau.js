@@ -10,9 +10,6 @@ export default class Tableau extends React.Component {
     // JSON.stringify(this.props.rencontre.hote.marque))
     let marque = this.props.rencontre.hote.marque
     this.props.rencontre.hote.marque = marque + 1
-    // this
-    //   .props
-    //   .surNouvelleMarque()
     action$.next({type: typesCommande.PANIER_MARQUE})
   }
   surPanierVisiteur() {
@@ -20,27 +17,18 @@ export default class Tableau extends React.Component {
     // JSON.stringify(this.props.rencontre.visiteur.marque))
     let marque = this.props.rencontre.visiteur.marque
     this.props.rencontre.visiteur.marque = marque + 1
-    // this
-    //   .props
-    //   .surNouvelleMarque()
     action$.next({type: typesCommande.PANIER_MARQUE})
   }
   surCorrectionHote() {
     // console.info("Correction de la marque");
     let marque = this.props.rencontre.hote.marque
     this.props.rencontre.hote.marque = marque - 1
-    // this
-    //   .props
-    //   .surNouvelleMarque()
     action$.next({type: typesCommande.PANIER_MARQUE})
   }
   surCorrectionVisiteur() {
     // console.info("Correction de la marque")
     let marque = this.props.rencontre.visiteur.marque
     this.props.rencontre.visiteur.marque = marque - 1
-    // this
-    //   .props
-    //   .surNouvelleMarque()
     action$.next({type: typesCommande.PANIER_MARQUE})
   }
   render() {

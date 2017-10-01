@@ -12,16 +12,11 @@ export default class Commentaires extends React.Component {
   saisieCommentaire(e) {
     // console.debug("saisieCommentaire: " + e.target.value)
     this.setState({commentaire: e.target.value})
-    // console.debug(`saisieCommentaire: ` + this.state.commentaire)
   }
   surNouveauCommentaire() {
     // console.debug("Commentaire: " + this.state.commentaire)
-    // this
-    //   .props
-    //   .surNouveauCommentaire(this.state.commentaire)
     this.setState({commentaire: ""})
     action$.next({type: typesCommande.PANIER_MARQUE, commentaire:this.state.commentaire})
-    // console.debug(`surNouveauCommentaire: ` +this.state.commentaire)
   }
   render() {
     // console.debug(`Render: ` +this.state.commentaire)

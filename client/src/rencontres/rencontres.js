@@ -90,4 +90,3 @@ export default class Rencontres extends React.Component {
     )
   }
 }
-// export default Rencontres;

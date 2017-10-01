@@ -103,17 +103,6 @@ export default class RencontreConteneur extends React.Component {
       .socket
       .disconnect()
   }
-  // surNouvelleMarque() {   // console.info("Panier marque: " +
-  // JSON.stringify(this.state.rencontre))   this     .socket
-  // .emit("commande", {       type: typesCommande.PANIER_MARQUE,
-  // idRencontre: this.state.rencontre.id,       marqueHote:
-  // this.state.rencontre.hote.marque,       marqueVisiteur:
-  // this.state.rencontre.visiteur.marque     }) }
-  // surNouveauCommentaire(commentaire) {   //
-  // console.debug(`surNouveauCommentaire: ${commentaire}`)   this     .socket
-  // .emit("commande", {       type: typesCommande.ENREGISTRER_COMMENTAIRE,
-  // idRencontre: this.state.rencontre.id,       "commentaire": commentaire     })
-  // }
   surChangementHote(sor, ent) {
     // console.debug(`Changement hote ${sor} par ${ent}`)
     let joueuses = Immutable
@@ -150,18 +139,6 @@ export default class RencontreConteneur extends React.Component {
         joueuses: joueuses
       })
   }
-  // surPeriode(periode) {   // console.debug("Nouvelle periode: " +
-  // JSON.stringify(periode))   this     .socket     .emit("commande", {
-  // type: typesCommande.CHANGER_PERIODE,       idRencontre:
-  // this.state.rencontre.id,       periode: periode     }) } sauver(majRencontre)
-  // {   // console.debug("sauver(majRencontre): " + JSON.stringify(majRencontre))
-  //   this     .socket     .emit("commande", {       type:
-  // typesCommande.MAJ_RENCONTRE,       idRencontre: majRencontre.id,
-  // idSocket: this.socket.id,       rencontre: majRencontre     }) } editer() {
-  // action$.next({type: types.EDITER_RENCONTRE}) } historique() {
-  // action$.next({type: types.HISTORIQUE_RENCONTRE}) } surVerrouillage() {
-  // action$.next({type: types.VERROUILLAGE}) } surTermine() {
-  // action$.next({type: types.TERMINAISON}) }
   render() {
     // console.debug(`Nouvelle rencontre: ` + JSON.stringify(this.state))
     return this.state.rencontre
