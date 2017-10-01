@@ -14,6 +14,11 @@ import Commentaires from "./commentaires"
 import Histogramme from "./histogramme"
 import RencontreEdition from "./rencontre-edition"
 import {types, action$} from "./rencontre-actions"
+ 
+function preparationDate() {
+  const jour = new Date()
+  return `${jour.toLocaleDateString()} ${jour.getHours()}:${jour.getMinutes()}`
+}
 
 const Rencontre = props => {
   // console.debug(`Ouverture rencontre: ` + Immutable.fromJS(this.props.rencontre.histoMarques))
@@ -70,6 +75,7 @@ const Rencontre = props => {
                 {props.rencontre.audience}
               </span>
               <span className="date">
+                {preparationDate()}
               </span>
             </div>
           </footer>

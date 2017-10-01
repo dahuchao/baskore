@@ -87,10 +87,26 @@ export default class RencontresConteneur extends React.Component {
       .socket
       .disconnect()
   }
-  // ajoutRencontre(infos) {}
-  render() {
-    return this.state.modeAjout
-      ? <RencontreAjout rencontre={this.state.rencontre}/>
-      : <Rencontres rencontres={this.state.rencontres}/>
+  preparationDate() {
+    const jour = new Date()
+    return `${jour.toLocaleDateString()} ${jour.getHours()}:${jour.getMinutes()}`
+  }
+   render() {
+    return (
+      <div>
+        {
+          this.state.modeAjout
+            ? <RencontreAjout rencontre={this.state.rencontre}/>
+            : <Rencontres rencontres={this.state.rencontres}/>
+        }
+        <footer>
+          <div id="info">
+            <span className="date">
+              {this.preparationDate()}
+            </span>
+          </div>
+        </footer>
+      </div>
+    )
   }
 }
