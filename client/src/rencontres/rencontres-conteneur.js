@@ -7,6 +7,43 @@ import RencontreAjout from "./ajout/ajout"
 import Repartiteur from "./rencontres-repartiteur"
 let {etat$} = Repartiteur()
 
+const commande$ = action$.map(action => {
+  console.debug("##############################")
+  console.debug("\\ ACTION: " + JSON.stringify(action.type))
+  let actions = {
+    "DEFAUT": function () {
+      console.debug(`| Action par défaut`)
+    }
+  }
+  actions[typesCommande.LIRE_RENCONTRES] = () => {
+    return {
+      type: typesCommande.LIRE_RENCONTRES
+    }
+  }
+  actions[typesCommande.AJOUTER_RENCONTRE] = () => {
+    const infos = action.state
+    let rencontre = this.state.rencontre
+    // console.info("Info: " + JSON.stringify(infos))
+    rencontre.date = infos.date
+    rencontre.periode = infos.periode
+    rencontre.hote.nom = infos.hote
+    rencontre.visiteur.nom = infos.visiteur
+    console.debug("Ajouter rencontre : " + JSON.stringify(rencontre))
+    return {
+      type: typesCommande.AJOUTER_RENCONTRE,
+      rencontre: rencontre
+    }
+  }
+  actions[typesCommande.SUPPRIMER_RENCONTRE] = () => {
+    console.debug("Supprimer rencontre: " + action.idRencontre)
+    return {
+      type: typesCommande.SUPPRIMER_RENCONTRE,
+      idRencontre: action.idRencontre
+    }
+  }
+  return (actions[action.type] || actions['DEFAUT'])();
+}).filter(commande => commande!=null)
+
 export default class RencontresConteneur extends React.Component {
   constructor(props) {
     super(props);
@@ -20,69 +57,32 @@ export default class RencontresConteneur extends React.Component {
   }
   componentDidMount() {
     this.sousc = etat$.subscribe(etat => this.setState(etat))
-    this.souscAction = action$.subscribe(action => {
-      console.debug("##############################")
-      console.debug("\\ ACTION: " + JSON.stringify(action.type))
-      let actions = {
-        "DEFAUT": function () {
-          console.debug(`| Action par défaut`)
-        }
-      }
-      actions[typesCommande.AJOUTER_RENCONTRE] = () => {
-        const infos = action.state
-        let rencontre = this.state.rencontre
-        // console.info("Info: " + JSON.stringify(infos))
-        rencontre.date = infos.date
-        rencontre.periode = infos.periode
-        rencontre.hote.nom = infos.hote
-        rencontre.visiteur.nom = infos.visiteur
-        console.debug("Ajouter rencontre : " + JSON.stringify(rencontre))
-        this
-          .socket
-          .emit("commande", {
-            type: typesCommande.AJOUTER_RENCONTRE,
-            rencontre: rencontre,
-            idSocket: this.socket.id
-          })
-      }
-      actions[typesCommande.SUPPRIMER_RENCONTRE] = () => {
-        console.debug("Supprimer rencontre: " + action.idRencontre)
-        this
-          .socket
-          .emit("commande", {
-            type: typesCommande.SUPPRIMER_RENCONTRE,
-            idRencontre: action.idRencontre,
-            idSocket: this.socket.id
-          })
-      }
-      (actions[action.type] || actions['DEFAUT'])();
-    })
-
     this
-      .socket
-      .on("connect", () => {
-        // console.info("Connecté avec la table de marque")
-        this
-          .socket
-          .emit("commande", {
-            type: typesCommande.LIRE_RENCONTRES,
-            idSocket: this.socket.id
-          })
-        this
-          .socket
-          .on("evenement", evenement => {
-            // console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
-            action$.next(evenement)
-          })
+    .socket
+    .on("connect", () => {
+      // console.info(`Connecté avec la table de marque: ${this.socket.id}`)
+      commande$.subscribe(commande => {
+        commande.idSocket = this.socket.id
+        this.socket.emit("commande", commande)
       })
+      this
+        .socket
+        .on("evenement", evenement => {
+          // console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
+          action$.next(evenement)
+        })
+    })
+    action$.next({
+      type: typesCommande.LIRE_RENCONTRES
+    })
   }
   componentWillUnmount() {
     this
       .sousc
       .unsubscribe()
-    this
-      .souscAction
-      .unsubscribe()
+    // this
+    //   .souscAction
+    //   .unsubscribe()
     this
       .socket
       .disconnect()

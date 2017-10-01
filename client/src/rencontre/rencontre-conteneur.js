@@ -7,6 +7,58 @@ import typesCommande from "../types-commande"
 import Repartiteur from "./rencontre-repartiteur"
 let {etat$} = Repartiteur()
 
+const commande$ = action$.map(action => {
+  console.debug("##############################")
+  console.debug("\\ ACTION: " + JSON.stringify(action.type))
+  let actions = {
+    "DEFAUT": function () {
+      console.debug(`| Action par défaut`)
+      return null
+    }
+  }
+  actions[typesCommande.LIRE_RENCONTRE] = () => {
+    // console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
+    return {
+      type: typesCommande.LIRE_RENCONTRE,
+      idRencontre: action.idRencontre
+    }
+  }
+  actions[typesCommande.PANIER_MARQUE] = () => {
+    // console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
+    return {
+      type: typesCommande.PANIER_MARQUE,
+      idRencontre: this.state.rencontre.id,
+      marqueHote: this.state.rencontre.hote.marque,
+      marqueVisiteur: this.state.rencontre.visiteur.marque
+    }
+  }
+  actions[typesCommande.CHANGER_PERIODE] = () => {
+    // console.debug("Nouvelle periode: " + JSON.stringify(periode))
+    return {
+      type: typesCommande.CHANGER_PERIODE,
+      idRencontre: this.state.rencontre.id,
+      periode: action.periode
+    }
+  }
+  actions[typesCommande.ENREGISTRER_COMMENTAIRE] = () => {
+    // console.debug(`surNouveauCommentaire: ${commentaire}`)
+    return {
+      type: typesCommande.ENREGISTRER_COMMENTAIRE,
+      idRencontre: this.state.rencontre.id,
+      "commentaire": action.commentaire
+    }
+  }
+  actions[typesCommande.MAJ_RENCONTRE] = () => {
+    // console.debug("sauver(majRencontre): " + JSON.stringify(majRencontre))
+    return {
+      type: typesCommande.MAJ_RENCONTRE,
+      idRencontre: action.rencontre.id,
+      rencontre: action.rencontre
+    }
+  }
+  return (actions[action.type] || actions['DEFAUT'])();
+}).filter(commande => commande!=null)
+
 export default class RencontreConteneur extends React.Component {
   constructor(props) {
     super(props);
@@ -23,67 +75,14 @@ export default class RencontreConteneur extends React.Component {
       // console.debug(`etat$.subscribe(etat =>: ${JSON.stringify(etat)}`)
       this.setState(etat)
     })
-    this.souscAction = action$.subscribe(action => {
-      console.debug("##############################")
-      console.debug("\\ ACTION: " + JSON.stringify(action.type))
-      let actions = {
-        "DEFAUT": function () {
-          console.debug(`| Action par défaut`)
-          return null
-        }
-      }
-      actions[typesCommande.PANIER_MARQUE] = () => {
-        // console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
-        return {
-          type: typesCommande.PANIER_MARQUE,
-          idRencontre: this.state.rencontre.id,
-          marqueHote: this.state.rencontre.hote.marque,
-          marqueVisiteur: this.state.rencontre.visiteur.marque
-        }
-      }
-      actions[typesCommande.CHANGER_PERIODE] = () => {
-        // console.debug("Nouvelle periode: " + JSON.stringify(periode))
-        return {
-          type: typesCommande.CHANGER_PERIODE,
-          idRencontre: this.state.rencontre.id,
-          periode: action.periode
-        }
-      }
-      actions[typesCommande.ENREGISTRER_COMMENTAIRE] = () => {
-        // console.debug(`surNouveauCommentaire: ${commentaire}`)
-        return {
-          type: typesCommande.ENREGISTRER_COMMENTAIRE,
-          idRencontre: this.state.rencontre.id,
-          "commentaire": action.commentaire
-        }
-      }
-      actions[typesCommande.MAJ_RENCONTRE] = () => {
-        // console.debug("sauver(majRencontre): " + JSON.stringify(majRencontre))
-        return {
-          type: typesCommande.MAJ_RENCONTRE,
-          idRencontre: action.rencontre.id,
-          idSocket: this.socket.id,
-          rencontre: action.rencontre
-        }
-      }
-      let commande = (actions[action.type] || actions['DEFAUT'])();
-      if (commande != null) 
-        this.socket.emit("commande", commande)
-    })
-
-    console.debug(`this.props: ${JSON.stringify(this.props)}`)
-    const idRencontre = this.props.match.params.idRencontre
     this
       .socket
       .on("connect", () => {
         // console.info(`Connecté avec la table de marque: ${this.socket.id}`)
-        this
-          .socket
-          .emit("commande", {
-            type: typesCommande.LIRE_RENCONTRE,
-            idRencontre: idRencontre,
-            idSocket: this.socket.id
-          })
+        commande$.subscribe(commande => {
+          commande.idSocket = this.socket.id
+          this.socket.emit("commande", commande)
+        })
         this
           .socket
           .on("evenement", evenement => {
@@ -91,14 +90,20 @@ export default class RencontreConteneur extends React.Component {
             action$.next(evenement)
           })
       })
+    console.debug(`this.props: ${JSON.stringify(this.props)}`)
+    const idRencontre = this.props.match.params.idRencontre
+    action$.next({
+      type: typesCommande.LIRE_RENCONTRE,
+      idRencontre
+    })
   }
   componentWillUnmount() {
     this
       .sousc
       .unsubscribe()
-    this
-      .souscAction
-      .unsubscribe()
+    // this
+    //   .souscCommandes
+    //   .unsubscribe()
     this
       .socket
       .disconnect()

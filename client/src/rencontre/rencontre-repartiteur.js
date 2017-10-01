@@ -33,7 +33,7 @@ export default function Repartiteur() {
         .set("modeVerrouille", !etat.modeVerrouille)
     }
     actions[typesEvenement.LECTURE_RENCONTRE] = function () {
-      console.debug(`| rencontre: ${JSON.stringify(action.rencontre)}`)
+      // console.debug(`| rencontre: ${JSON.stringify(action.rencontre)}`)
       if (action.rencontre == null) 
         return Immutable.fromJS(etat)
       let rencontre = Immutable.fromJS(action.rencontre)
