@@ -96,7 +96,8 @@ io
     var souscTableau = controleur
       .evenement$
       .scan((message, evenement) => {
-        // console.log(` | type: ${JSON.stringify(evenement)}.`)
+        console.log(` ==============scan message: ${JSON.stringify(message)}.`)
+        console.log(` ==============scan evenement: ${JSON.stringify(evenement)}.`)
         if (evenement.type.match(typesEvenement.LECTURE_RENCONTRE)) 
           message.idRencontre = evenement.idRencontre
         message.evenement = evenement
@@ -115,8 +116,8 @@ io
           console.log(`/ Envoi du message (${socket.id}):`)
           console.log(`${JSON.stringify(message)}`)
           socket.emit("evenement", message.evenement)
-          console.log(`> --------------  Communication tableau de marque  --------------`)
         }
+        console.log(`> --------------  Communication tableau de marque  --------------`)
       })
   })
 // ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■

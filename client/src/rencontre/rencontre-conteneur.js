@@ -27,9 +27,9 @@ const commande$ = action$.map(action => {
     // console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
     return {
       type: typesCommande.PANIER_MARQUE,
-      idRencontre: this.state.rencontre.id,
-      marqueHote: this.state.rencontre.hote.marque,
-      marqueVisiteur: this.state.rencontre.visiteur.marque
+      idRencontre: action.rencontre.idRencontre,
+      marqueHote: action.rencontre.marqueHote,
+      marqueVisiteur: action.rencontre.marqueVisiteur
     }
   }
   actions[typesCommande.CHANGER_PERIODE] = () => {
@@ -75,14 +75,17 @@ export default class RencontreConteneur extends React.Component {
       // console.debug(`etat$.subscribe(etat =>: ${JSON.stringify(etat)}`)
       this.setState(etat)
     })
+    let souscCommandes
     this
       .socket
       .on("connect", () => {
+        let socket = this.socket
         // console.info(`Connecté avec la table de marque: ${this.socket.id}`)
-        commande$.subscribe(commande => {
-          commande.idSocket = this.socket.id
+        let souscCommandes = commande$.subscribe(commande => {
+          commande.idSocket = socket.id
           this.socket.emit("commande", commande)
         })
+        socket.souscCommandes = souscCommandes
         this
           .socket
           .on("evenement", evenement => {
@@ -101,9 +104,11 @@ export default class RencontreConteneur extends React.Component {
     this
       .sousc
       .unsubscribe()
-    // this
-    //   .souscCommandes
-    //   .unsubscribe()
+    if (this.socket.souscCommandes != null)
+      this
+        .socket
+        .souscCommandes
+        .unsubscribe()
     this
       .socket
       .disconnect()

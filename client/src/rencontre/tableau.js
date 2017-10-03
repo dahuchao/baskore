@@ -8,28 +8,47 @@ export default class Tableau extends React.Component {
   surPanierHote() {
     // console.info("Panier marque: " +
     // JSON.stringify(this.props.rencontre.hote.marque))
-    let marque = this.props.rencontre.hote.marque
-    this.props.rencontre.hote.marque = marque + 1
-    action$.next({type: typesCommande.PANIER_MARQUE})
+    let marque = this.props.rencontre.hote.marque + 1
+    const rencontre ={
+      idRencontre: this.props.rencontre.id,
+      marqueHote: marque,
+      marqueVisiteur: this.props.rencontre.visiteur.marque
+    }
+    action$.next({type: typesCommande.PANIER_MARQUE, rencontre})
   }
   surPanierVisiteur() {
     // console.info("Panier marque: " +
     // JSON.stringify(this.props.rencontre.visiteur.marque))
-    let marque = this.props.rencontre.visiteur.marque
-    this.props.rencontre.visiteur.marque = marque + 1
-    action$.next({type: typesCommande.PANIER_MARQUE})
+    let marque = this.props.rencontre.visiteur.marque + 1
+    // this.props.rencontre.visiteur.marque = marque + 1
+    const rencontre ={
+      idRencontre: this.props.rencontre.id,
+      marqueHote: this.props.rencontre.hote.marque,
+      marqueVisiteur: ++marque
+    }
+    action$.next({type: typesCommande.PANIER_MARQUE, rencontre})
   }
   surCorrectionHote() {
     // console.info("Correction de la marque");
-    let marque = this.props.rencontre.hote.marque
-    this.props.rencontre.hote.marque = marque - 1
-    action$.next({type: typesCommande.PANIER_MARQUE})
+    let marque = this.props.rencontre.hote.marque - 1
+    // this.props.rencontre.hote.marque = marque - 1
+    const rencontre ={
+      idRencontre: this.props.rencontre.id,
+      marqueHote: --marque,
+      marqueVisiteur: this.props.rencontre.visiteur.marque
+    }
+    action$.next({type: typesCommande.PANIER_MARQUE, rencontre})
   }
   surCorrectionVisiteur() {
     // console.info("Correction de la marque")
-    let marque = this.props.rencontre.visiteur.marque
-    this.props.rencontre.visiteur.marque = marque - 1
-    action$.next({type: typesCommande.PANIER_MARQUE})
+    let marque = this.props.rencontre.visiteur.marque - 1
+    // this.props.rencontre.visiteur.marque = marque - 1
+    const rencontre ={
+      idRencontre: this.props.rencontre.id,
+      marqueHote: this.props.rencontre.hote.marque,
+      marqueVisiteur: --marque
+    }
+    action$.next({type: typesCommande.PANIER_MARQUE, rencontre})
   }
   render() {
     // this.ouvertureRencontre(this.props.rencontre.id)
