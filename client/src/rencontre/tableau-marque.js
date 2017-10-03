@@ -21,6 +21,7 @@ export default props => {
       lineHeight: "1.3em",
       height: "1.3em"
     }
+    const idRencontre = props.rencontre.id
     // console.debug(`Rencontre: ${JSON.stringify(props.rencontre)}`)
     return (
       <div id="marque">
@@ -48,7 +49,7 @@ export default props => {
                   labelStyle={styleLabelPeriode}
                   key={periode}
                   label={"P" + periode}
-                  onClick={() => action$.next({type: typesCommande.CHANGER_PERIODE, periode})}
+                  onClick={() => action$.next({type: typesCommande.CHANGER_PERIODE, idRencontre, periode})}
                 />
           })
         }

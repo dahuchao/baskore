@@ -17,14 +17,14 @@ const commande$ = action$.map(action => {
     }
   }
   actions[typesCommande.LIRE_RENCONTRE] = () => {
-    // console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
+    // console.info("Panier marque: " + JSON.stringify(action))
     return {
       type: typesCommande.LIRE_RENCONTRE,
       idRencontre: action.idRencontre
     }
   }
   actions[typesCommande.PANIER_MARQUE] = () => {
-    // console.info("Panier marque: " + JSON.stringify(this.state.rencontre))
+    // console.info("Panier marque: " + JSON.stringify(action.rencontre))
     return {
       type: typesCommande.PANIER_MARQUE,
       idRencontre: action.rencontre.idRencontre,
@@ -36,7 +36,7 @@ const commande$ = action$.map(action => {
     // console.debug("Nouvelle periode: " + JSON.stringify(periode))
     return {
       type: typesCommande.CHANGER_PERIODE,
-      idRencontre: this.state.rencontre.id,
+      idRencontre: action.idRencontre,
       periode: action.periode
     }
   }
@@ -44,7 +44,7 @@ const commande$ = action$.map(action => {
     // console.debug(`surNouveauCommentaire: ${commentaire}`)
     return {
       type: typesCommande.ENREGISTRER_COMMENTAIRE,
-      idRencontre: this.state.rencontre.id,
+      idRencontre: action.idRencontre,
       "commentaire": action.commentaire
     }
   }
@@ -112,42 +112,6 @@ export default class RencontreConteneur extends React.Component {
     this
       .socket
       .disconnect()
-  }
-  surChangementHote(sor, ent) {
-    // console.debug(`Changement hote ${sor} par ${ent}`)
-    let joueuses = Immutable
-      .List(this.state.rencontre.hote.joueuses)
-      .map(joueuse => {
-        if (joueuse === sor) 
-          return ent
-        else 
-          return joueuse
-      })
-    this
-      .socket
-      .emit("commande", {
-        type: typesCommande.CHANGER_JOUEUR_HOTE,
-        idRencontre: this.state.rencontre.id,
-        joueuses: joueuses
-      })
-  }
-  surChangementVisiteur(sor, ent) {
-    // console.debug(`Changement visiteur ${sor} par ${ent}`)
-    let joueuses = Immutable
-      .List(this.state.rencontre.hote.joueuses)
-      .map(joueuse => {
-        if (joueuse === sor) 
-          return ent
-        else 
-          return joueuse
-      })
-    this
-      .socket
-      .emit("commande", {
-        type: typesCommande.CHANGER_JOUEUR_VISITEUR,
-        idRencontre: this.state.rencontre.id,
-        joueuses: joueuses
-      })
   }
   render() {
     // console.debug(`Nouvelle rencontre: ` + JSON.stringify(this.state))

@@ -24,7 +24,7 @@ export default class Tableau extends React.Component {
     const rencontre ={
       idRencontre: this.props.rencontre.id,
       marqueHote: this.props.rencontre.hote.marque,
-      marqueVisiteur: ++marque
+      marqueVisiteur: marque
     }
     action$.next({type: typesCommande.PANIER_MARQUE, rencontre})
   }
@@ -34,7 +34,7 @@ export default class Tableau extends React.Component {
     // this.props.rencontre.hote.marque = marque - 1
     const rencontre ={
       idRencontre: this.props.rencontre.id,
-      marqueHote: --marque,
+      marqueHote: marque,
       marqueVisiteur: this.props.rencontre.visiteur.marque
     }
     action$.next({type: typesCommande.PANIER_MARQUE, rencontre})
@@ -46,7 +46,7 @@ export default class Tableau extends React.Component {
     const rencontre ={
       idRencontre: this.props.rencontre.id,
       marqueHote: this.props.rencontre.hote.marque,
-      marqueVisiteur: --marque
+      marqueVisiteur: marque
     }
     action$.next({type: typesCommande.PANIER_MARQUE, rencontre})
   }

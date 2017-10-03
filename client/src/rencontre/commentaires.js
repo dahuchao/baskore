@@ -16,7 +16,9 @@ export default class Commentaires extends React.Component {
   surNouveauCommentaire() {
     // console.debug("Commentaire: " + this.state.commentaire)
     this.setState({commentaire: ""})
-    action$.next({type: typesCommande.PANIER_MARQUE, commentaire:this.state.commentaire})
+    const commentaire = this.state.commentaire
+    const idRencontre = this.props.rencontre.id
+    action$.next({type: typesCommande.ENREGISTRER_COMMENTAIRE, idRencontre, commentaire})
   }
   render() {
     // console.debug(`Render: ` +this.state.commentaire)
