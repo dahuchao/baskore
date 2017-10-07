@@ -44,45 +44,54 @@ const commande$ = action$.map(action => {
   return (actions[action.type] || actions['DEFAUT'])();
 }).filter(commande => commande!=null)
 
+let scCmdes
+let scEtats
+
+class RencontresSocket{
+  constructor(prot, host){
+    this.socket = io(`${prot}//${host}`)
+  }
+  emit(commande){
+    this.socket.emit("commande", commande)
+  }
+  on(callback){
+    this
+    .socket
+    .on("evenement", evenement => callback(evenement))
+  }
+}
+
 export default class RencontresConteneur extends React.Component {
   constructor(props) {
     super(props);
     const prot = window.location.protocol
     const host = window.location.host
     this.socket = io(`${prot}//${host}`)
+    this
+      .socket
+      .on("connect", () => {
+        scCmdes = commande$.map(commande => {
+            commande.idSocket = this.socket.id
+            return commande
+          }).subscribe(commande => this.socket.emit("commande", commande))
+        this
+          .socket
+          .on("evenement", evenement => action$.next(evenement))
+      })
     this.state = {
       rencontres: [],
       modeAjout: false
     }
   }
   componentDidMount() {
-    this.sousc = etat$.subscribe(etat => this.setState(etat))
-    this
-    .socket
-    .on("connect", () => {
-      // console.info(`Connecté avec la table de marque: ${this.socket.id}`)
-      commande$.subscribe(commande => {
-        commande.idSocket = this.socket.id
-        this.socket.emit("commande", commande)
-      })
-      this
-        .socket
-        .on("evenement", evenement => {
-          // console.debug("Reception d'un évenement: " + JSON.stringify(evenement))
-          action$.next(evenement)
-        })
-    })
+    scEtats = etat$.subscribe(etat => this.setState(etat))
     action$.next({
       type: typesCommande.LIRE_RENCONTRES
     })
   }
   componentWillUnmount() {
-    this
-      .sousc
-      .unsubscribe()
-    // this
-    //   .souscAction
-    //   .unsubscribe()
+    scEtats.unsubscribe()
+    scCmdes.unsubscribe()
     this
       .socket
       .disconnect()

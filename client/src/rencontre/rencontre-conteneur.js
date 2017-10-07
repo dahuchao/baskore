@@ -1,5 +1,4 @@
 import React from "react"
-import Immutable from "immutable"
 import io from "socket.io-client"
 import Rencontre from "./rencontre"
 import {action$} from "./rencontre-actions"
@@ -71,11 +70,7 @@ export default class RencontreConteneur extends React.Component {
     }
   }
   componentDidMount() {
-    this.sousc = etat$.subscribe(etat => {
-      // console.debug(`etat$.subscribe(etat =>: ${JSON.stringify(etat)}`)
-      this.setState(etat)
-    })
-    let souscCommandes
+    this.sousc = etat$.subscribe(etat =>this.setState(etat))
     this
       .socket
       .on("connect", () => {
