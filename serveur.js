@@ -98,8 +98,8 @@ io
       .scan((message, evenement) => {
         // console.log(` ==============scan message: ${JSON.stringify(message)}.`)
         // console.log(` ==============scan evenement: ${JSON.stringify(evenement)}.`)
-        if (evenement.idSocket == socket.id)
-          if (evenement.type.match(typesEvenement.LECTURE_RENCONTRE)) 
+        if (evenement.type.match(typesEvenement.LECTURE_RENCONTRE)) 
+          if (evenement.idSocket == socket.id)
             message.idRencontre = evenement.idRencontre
         message.evenement = evenement
         return message

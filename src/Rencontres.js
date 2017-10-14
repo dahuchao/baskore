@@ -196,10 +196,16 @@ var Rencontres = {
           .first()
           .flatMap(evenement => {
             let rencontre = evenement.rencontre
+            // Calcul de l'audience
             let audience = rencontre.audience ? rencontre.audience : 0;
             // Augmentation de l'audience
             rencontre.audience = ++audience;
+            // Calcul des tables de marque
+            let tables = rencontre.tables ? rencontre.tables : [];
+            // Enregistrement d'une nouvelle table de marque
+            tables.push(evenement.idSocket);
             // const rencontreModifiee = rencontre
+            rencontre.tables = tables;
             return Rx
               .Observable
               .create(subscriber => {
@@ -222,14 +228,72 @@ var Rencontres = {
                   }
                 })
               })
-              // .flatMap(rencontre => {
-              //   evenement.rencontre = rencontre
-              //   // console.log(`hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh rencontre : ${JSON.stringify(evenement)}.`);
-              //   return evenement
-              // })
             })
           }
-
+      evenements[typesEvenement.FERMETURE_RENCONTRE] = evenement => {
+        console.log(`| idRencontre: ${evenement.idRencontre}`)
+        return Rx
+          .Observable
+          .create(function (subscriber) {
+            console.log(` Lecture rencontre.`)
+            bdd
+              .collection("rencontres")
+              .findOne({
+                tables: evenement.idSocket
+              }, function (err, rencontre) {
+                if (err) {
+                  console.log("Erreur: " + err)
+                  // subscriber.error(err);
+                } else if (rencontre == null) {
+                  console.log("Fin de lecture.")
+                  // subscriber.complete();
+                } else {
+                  // console.log('Sélection de la rencontre: ' + JSON.stringify(rencontre))
+                  var nevenement = Immutable
+                    .fromJS(evenement)
+                    .set("rencontre", rencontre)
+                    .toJS()
+                  subscriber.next(nevenement)
+                  subscriber.complete();
+                }
+              })
+            })
+            .first()
+            .flatMap(evenement => {
+              let rencontre = evenement.rencontre
+              // Calcul de l'audience
+              let audience = rencontre.audience ? rencontre.audience : 0;
+              // Diminution de l'audience
+              if (audience > 0) --audience
+              rencontre.audience = audience;
+              // Calcul des tables de marque
+              let tables = rencontre.tables ? rencontre.tables : [];
+              // Enregistrement d'une nouvelle table de marque
+              rencontre.tables = rencontre.tables.filter((t)=> t != evenement.idSocket)
+              return Rx
+                .Observable
+                .create(subscriber => {
+                  bdd
+                  .collection("rencontres")
+                  .update({
+                    _id: rencontre._id
+                  }, rencontre, function (err) {
+                    if (err) {
+                      console.log(`Mise à jour en erreur: ${err}.`)
+                      subscriber.error(err);
+                    } else {
+                      console.log(`Mise à jour enregistrée.`)
+                      var nevenement = Immutable
+                        .fromJS(evenement)
+                        .set("rencontre", rencontre)
+                        .toJS()
+                      subscriber.next(nevenement)
+                      subscriber.complete();
+                    }
+                  })
+                })
+              })
+            }
       evenements[typesEvenement.SUPPRESSION_RENCONTRE] = evenement => {
       console.log(`| idRencontre: ${evenement.idRencontre}`)
       return Rx

@@ -117,6 +117,6 @@ export default class RencontreConteneur extends React.Component {
           modeHistogramme={this.state.modeHistogramme}
           modeVerrouille={this.state.modeVerrouille}
         />
-      : <p>"null"</p>
+      : <p>Chargement de la rencontre...</p>
   }
 }
