@@ -1,6 +1,6 @@
 {
   "name": "my-app",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "body-parser": "^1.18.1",
@@ -19,5 +19,8 @@
     "postinstall": "cd client && npm install",
     "start": "node serveur",
     "dev": "npm start && cd client && npm start"
+  },
+  "engines": {
+    "node": "8.6.0"
   }
 }
