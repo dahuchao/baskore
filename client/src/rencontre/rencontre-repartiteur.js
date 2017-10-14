@@ -65,59 +65,30 @@ export default function Repartiteur() {
     }
     actions[typesEvenement.CHANGEMENT_MARQUE] = function () {
       console.debug(`| Nouvelle marque ${action.marqueHote}:${action.marqueVisiteur}`)
-      const periode = Immutable
-        .fromJS(etat)
-        .get("rencontre")
-        .get("periode");
-      const histoMarques = Immutable
-        .fromJS(etat)
-        .get("rencontre")
-        .get("histoMarques",[])
-        .push({
-          marqueHote: action.marqueHote, 
-          marqueVisiteur: action.marqueVisiteur,
-          periode: periode
-        });
-      return Immutable
-        .fromJS(etat)
-        .setIn([
-          'rencontre', 'hote', 'marque'
-        ], action.marqueHote)
-        .setIn([
-          'rencontre', 'visiteur', 'marque'
-        ], action.marqueVisiteur)
-        .setIn([
-          'rencontre', 'histoMarques'
-        ], histoMarques)
+      const periode = {...etat.rencontre.periode}
+      const histoMarques = [...etat.rencontre.histoMarques].push({
+        marqueHote: action.marqueHote, 
+        marqueVisiteur: action.marqueVisiteur,
+        periode: periode
+      })
+      const netat = {...etat}
+      netat.rencontre.hote.marque = action.marqueHote
+      netat.rencontre.visiteur.marque = action.marqueVisiteur
+      netat.rencontre.histoMarques = histoMarques
+      return Immutable.fromJS(netat)
     }
     actions[typesEvenement.MAJ_RENCONTRE] = function () {
       console.debug(`| Mise à jour: ${JSON.stringify(action.rencontre)}`)
-      const joueuses = Immutable
-        .List
-        .of(4, 5, 6, 7, 8)
-      const netat = Immutable
-        .fromJS(etat)
-        .set("rencontre", Immutable.fromJS(action.rencontre))
-      console.debug(`| netat: ${netat}`)
-      return netat
-        .setIn([
-          "rencontre", "hote", "joueuses"
-        ], joueuses)
-        .setIn([
-          "rencontre", "visiteur", "joueuses"
-        ], joueuses)
-        .setIn([
-          "rencontre",'histoMarques'
-        ], [])
-        .set("modeEdition", false)
+      const netat = {...etat}
+      netat.rencontre = action.rencontre      
+      netat.modeEdition = false
+      return Immutable.fromJS(netat)
     }
     actions[typesEvenement.CHANGEMENT_PERIODE] = function () {
       console.debug(`| Nouvelle période: ${JSON.stringify(action.periode)}`)
-      return Immutable
-        .fromJS(etat)
-        .setIn([
-          'rencontre', 'periode'
-        ], action.periode)
+      const netat = {...etat}
+      netat.rencontre.periode = action.periode
+      return Immutable.fromJS(netat)
     }
     actions[typesEvenement.NOUVEAU_COMMENTAIRE] = function () {
       console.debug(`| Nouveau commentaire sur la rencontre: ${action.commentaire}`)
