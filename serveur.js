@@ -39,7 +39,7 @@ Rencontres
   .connexion(url)
   .subscribe(db => {
     Rencontres.connecte = true
-    // console.info(`Connecté? ${Rencontres.connecte}`)
+    console.info(`Connecté? ${Rencontres.connecte}`)
   }, err => {
     console.log(`Err: ${err}`)
   });

@@ -21,17 +21,10 @@ const commande$ = action$.map(action => {
     }
   }
   actions[typesCommande.AJOUTER_RENCONTRE] = () => {
-    const infos = action.state
-    let rencontre = this.state.rencontre
-    // console.info("Info: " + JSON.stringify(infos))
-    rencontre.date = infos.date
-    rencontre.periode = infos.periode
-    rencontre.hote.nom = infos.hote
-    rencontre.visiteur.nom = infos.visiteur
-    console.debug("Ajouter rencontre : " + JSON.stringify(rencontre))
+    console.info("Info: " + JSON.stringify(action.state))
     return {
       type: typesCommande.AJOUTER_RENCONTRE,
-      rencontre: rencontre
+      rencontre:  {...action.state}
     }
   }
   actions[typesCommande.SUPPRIMER_RENCONTRE] = () => {

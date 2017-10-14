@@ -47,13 +47,13 @@ export default function Repartiteur() {
       return Immutable
         .fromJS(etat)
         .set("rencontre", rencontre)
-        .set("modeAjout", !etat.modeAjout)
+        .set("modeAjout", true)
     }
     actions[types.ANNULER_RENCONTRE] = function () {
       console.debug("| Annulation de l'ajout d'une rencontre.")
       return Immutable
         .fromJS(etat)
-        .set("modeAjout", !etat.modeAjout)
+        .set("modeAjout", false)
     }
     actions[typesEvenement.AJOUT_RENCONTRE] = function () {
       console.debug("| rencontre (nouvelle): " + JSON.stringify(action.rencontre))
