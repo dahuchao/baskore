@@ -64,7 +64,7 @@ io
     socket.on('disconnect', function () {
       console.log('déconnection:' + socket.id)
       console.log(`Nombre d'abonnés: ${-- nbSockets}`)
-      souscBureau.unsubscribe()
+      // souscBureau.unsubscribe()
       souscTableau.unsubscribe()
       controleur
         .commande$
@@ -89,7 +89,7 @@ io
         console.log("\\ >>>>>>>>>>>>>>>  Communication bureau  <<<<<<<<<<<<<<<")
         console.log(` | type: ${evenement.type}.`)
         console.log(`/ Envoi du message (${socket.id}):`)
-        console.log(`${JSON.stringify(evenement)}`)
+        // console.log(`${JSON.stringify(evenement)}`)
         console.log(`> --------------  Communication bureau  --------------`)
         socket.emit("evenement", evenement)
       })
@@ -98,8 +98,9 @@ io
       .scan((message, evenement) => {
         // console.log(` ==============scan message: ${JSON.stringify(message)}.`)
         // console.log(` ==============scan evenement: ${JSON.stringify(evenement)}.`)
-        if (evenement.type.match(typesEvenement.LECTURE_RENCONTRE)) 
-          message.idRencontre = evenement.idRencontre
+        if (evenement.idSocket == socket.id)
+          if (evenement.type.match(typesEvenement.LECTURE_RENCONTRE)) 
+            message.idRencontre = evenement.idRencontre
         message.evenement = evenement
         return message
       }, {
@@ -110,14 +111,15 @@ io
       .filter(message => message.idRencontre != null)
       .filter(message => message.evenement.idRencontre == message.idRencontre)
       .subscribe(message => {
-        console.log(`\\ @@@@@@@@@@@@@@@  Communication tableau de marque  @@@@@@@@@@@@`)
+        console.log(`\\ @@@@@@@@@@@@@@@  Communication tableaux de marque  @@@@@@@@@@@@`)
         // if (message.evenement.idSocket == null) {
           console.log(` | type: ${message.evenement.type}.`)
           console.log(`/ Envoi du message (${socket.id}):`)
-          console.log(`${JSON.stringify(message)}`)
+          console.log(`idRencontre: ${JSON.stringify(message)}`)
+          console.log(`message: ${JSON.stringify(message)}`)
           socket.emit("evenement", message.evenement)
         // }
-        console.log(`> --------------  Communication tableau de marque  --------------`)
+        console.log(`> --------------  Communication tableaux de marque  --------------`)
       })
   })
 // ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■
@@ -131,7 +133,7 @@ controleur
   .subscribe(evenement => {
     console.log(`\\ &&&&&&&&&&&&&&&  Répercution en base  &&&&&&&&&&&&`)
     console.log(` | type: ${evenement.type}.`)
-    console.log(`${JSON.stringify(evenement)}`)
+    // console.log(`${JSON.stringify(evenement)}`)
     console.log(`/`)
     console.log(`\\ --------------  Répercution en base  -------------`)
   }, err => {

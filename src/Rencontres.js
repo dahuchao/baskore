@@ -45,7 +45,7 @@ var Rencontres = {
       }
     }
     evenements[typesEvenement.AJOUT_RENCONTRE] = evenement => {
-      console.log(`| rencontre: ${JSON.stringify(evenement.rencontre)}`)
+      // console.log(`| rencontre: ${JSON.stringify(evenement.rencontre)}`)
       return Rx
         .Observable
         .create(function (subscriber) {
@@ -125,7 +125,7 @@ var Rencontres = {
                 console.log("Fin de lecture.")
                 // subscriber.complete();
               } else {
-                console.log('Envoie de la rencontre: ' + JSON.stringify(rencontre))
+                // console.log('Sélection de la rencontre: ' + JSON.stringify(rencontre))
                 subscriber.next(rencontre)
                 subscriber.complete();
               }
@@ -134,13 +134,13 @@ var Rencontres = {
         .first()
         .flatMap(rencontre => {
           console.log(` rencontre mise à jour: ${rencontre._id}.`)
-          console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
-          console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
+          // console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
+          // console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
           rencontre.date = evenement.rencontre.date
           rencontre.hote.nom = evenement.rencontre.hote.nom
           rencontre.visiteur.nom = evenement.rencontre.visiteur.nom
           rencontre.termine = evenement.rencontre.termine
-          console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
+          // console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
           return Rx
             .Observable
             .create(subscriber => {
@@ -183,7 +183,7 @@ var Rencontres = {
                 console.log("Fin de lecture.")
                 // subscriber.complete();
               } else {
-                console.log('Envoie de la rencontre: ' + JSON.stringify(rencontre))
+                // console.log('Sélection de la rencontre: ' + JSON.stringify(rencontre))
                 var nevenement = Immutable
                   .fromJS(evenement)
                   .set("rencontre", rencontre)
@@ -224,7 +224,7 @@ var Rencontres = {
               })
               // .flatMap(rencontre => {
               //   evenement.rencontre = rencontre
-              //   console.log(`hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh rencontre : ${JSON.stringify(evenement)}.`);
+              //   // console.log(`hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh rencontre : ${JSON.stringify(evenement)}.`);
               //   return evenement
               // })
             })
@@ -269,7 +269,7 @@ var Rencontres = {
                 console.log("Fin de lecture.")
                 subscriber.complete();
               } else {
-                console.log(`Envoie rencontre: ${JSON.stringify(rencontre.id)}`)
+                console.log(`Sélection rencontre: ${JSON.stringify(rencontre.id)}`)
                 subscriber.next(rencontre)
               }
             })
@@ -301,7 +301,7 @@ var Rencontres = {
                 console.log("Fin de lecture.")
                 // subscriber.complete();
               } else {
-                console.log('Envoie de la rencontre: ' + JSON.stringify(rencontre))
+                // console.log('Sélection de la rencontre: ' + JSON.stringify(rencontre))
                 subscriber.next(rencontre)
                 subscriber.complete();
               }
@@ -310,8 +310,8 @@ var Rencontres = {
         .first()
         .flatMap(rencontre => {
           console.log(` rencontre mise à jour: ${rencontre._id}.`)
-          console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
-          console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
+          // console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
+          // console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
           rencontre.hote.marque = evenement.marqueHote
           rencontre.visiteur.marque = evenement.marqueVisiteur
           if(rencontre.histoMarques==null)
@@ -321,7 +321,7 @@ var Rencontres = {
             marqueVisiteur: evenement.marqueVisiteur,
             periode: rencontre.periode
           });        
-          console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
+          // console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
           return Rx
             .Observable
             .create(subscriber => {
@@ -340,6 +340,10 @@ var Rencontres = {
                   }
                 })
             })
+        })
+        .map(rencontre => {
+          evenement.rencontre = rencontre
+          return evenement
         })
     }
     evenements[typesEvenement.CHANGEMENT_PERIODE] = evenement => {
@@ -360,7 +364,7 @@ var Rencontres = {
                 console.log("Fin de lecture.")
                 // subscriber.complete();
               } else {
-                console.log('Envoie de la rencontre: ' + JSON.stringify(rencontre))
+                // console.log('Sélection de la rencontre: ' + JSON.stringify(rencontre))
                 subscriber.next(rencontre)
                 subscriber.complete();
               }
@@ -369,10 +373,10 @@ var Rencontres = {
         .first()
         .flatMap(rencontre => {
           console.log(` rencontre mise à jour: ${rencontre._id}.`)
-          console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
-          console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
+          // console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
+          // console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
           rencontre.periode = evenement.periode
-          console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
+          // console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
           return Rx
             .Observable
             .create(subscriber => {
@@ -391,6 +395,10 @@ var Rencontres = {
                   }
                 })
             })
+        })
+        .map(rencontre => {
+          evenement.rencontre = rencontre
+          return evenement
         })
     }
     evenements[typesEvenement.NOUVEAU_COMMENTAIRE] = evenement => {
@@ -411,7 +419,7 @@ var Rencontres = {
                 console.log("Fin de lecture.")
                 // subscriber.complete();
               } else {
-                console.log('Envoie de la rencontre: ' + JSON.stringify(rencontre))
+                // console.log('Sélection de la rencontre: ' + JSON.stringify(rencontre))
                 subscriber.next(rencontre)
                 subscriber.complete();
               }
@@ -420,15 +428,15 @@ var Rencontres = {
         .first()
         .flatMap(rencontre => {
           console.log(` rencontre mise à jour: ${rencontre._id}.`)
-          console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
-          console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
+          // console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
+          // console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
           let commentaires = Immutable
             .fromJS(rencontre)
             .get("commentaires", Immutable.List())
             .push(evenement.commentaire)
           console.log(`| Enregistrement du commentaire en base: ${commentaires}`)
           rencontre.commentaires = commentaires.toJS()
-          console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
+          // console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
           return Rx
             .Observable
             .create(subscriber => {
@@ -447,6 +455,10 @@ var Rencontres = {
                   }
                 })
             })
+        })
+        .map(rencontre => {
+          evenement.rencontre = rencontre
+          return evenement
         })
     }
     return (evenements[evenement.type] || evenements['DEFAUT'])(evenement);

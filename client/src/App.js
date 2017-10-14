@@ -9,7 +9,7 @@ const App = () => (
     <Router>
       <div>
         <Route path="/" component={AccueilConteneur}></Route>
-        <Redirect from="/" exact to="/rencontres"/>
+        {/* <Redirect from="/" exact to="/rencontres"/> */}
       </div>
     </Router>
   </MuiThemeProvider>
