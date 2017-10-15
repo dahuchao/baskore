@@ -67,21 +67,23 @@ export default class Rencontres extends React.Component {
             {this.props.rencontres.map(rencontre => {
               let strDate = this.preparationDate(rencontre.date)
               return (
-                <Link className="style-rencontre" key={rencontre.id} to={{ pathname:"/rencontres/" + rencontre.id}} >
+                <div className="rencontre" >
                   <ListItem 
+                    className="it-rencontre"
+                    key={rencontre.id}
                     primaryText={rencontre.hote.nom + '-' + rencontre.visiteur.nom}
                     secondaryText={rencontre.termine ? rencontre.hote.marque + '-' + rencontre.visiteur.marque : strDate}
-                    rightIconButton={
-                      <IconButton
-                        style={poubelle.style}
-                        iconStyle={poubelle.icon}
-                        onClick={() => action$.next({type: typesCommande.SUPPRIMER_RENCONTRE, idRencontre: rencontre.id})}
-                        >
-                        <ActionDelete />
-                      </IconButton>}
+                    containerElement={<Link to={{ pathname:"/rencontres/" + rencontre.id}} />}
                     >
                   </ListItem>
-                </Link>
+                  <IconButton
+                    style={poubelle.style}
+                    iconStyle={poubelle.icon}
+                    onClick={() => action$.next({type: typesCommande.SUPPRIMER_RENCONTRE, idRencontre: rencontre.id})}
+                    >
+                    <ActionDelete />
+                  </IconButton>
+                </div>
                 )
             })}
           </List>

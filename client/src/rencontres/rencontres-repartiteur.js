@@ -23,7 +23,7 @@ export default function Repartiteur() {
       const rencontres = Immutable
         .fromJS(action.rencontres)
         .sortBy(rencontre => rencontre.date)
-        .reverse();
+        // .reverse();
       console.debug("| rencontres: " + JSON.stringify(action.rencontres.map(rencontre => rencontre.date)))
       return Immutable
         .fromJS(etat)
