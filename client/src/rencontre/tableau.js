@@ -64,6 +64,7 @@ export default class Tableau extends React.Component {
           <Marque
             rencontre={this.props.rencontre}
             modeVerrouille={this.props.modeVerrouille}
+            synchronise={this.props.synchronise}
             surPeriode={this.props.surPeriode}
             surCorrectionHote={() => this.surCorrectionHote()}
             surCorrectionVisiteur={() => this.surCorrectionVisiteur()}

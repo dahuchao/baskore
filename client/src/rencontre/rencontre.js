@@ -14,7 +14,7 @@ import Commentaires from "./commentaires"
 import Histogramme from "./histogramme"
 import RencontreEdition from "./rencontre-edition"
 import {types, action$} from "./rencontre-actions"
- 
+
 function preparationDate() {
   const jour = new Date()
   return `${jour.toLocaleDateString()} ${jour.getHours()}:${jour.getMinutes()}`
@@ -64,7 +64,9 @@ const Rencontre = props => {
             surPeriode={props.surPeriode}
             surChangementHote={props.surChangementHote}
             surChangementVisiteur={props.surChangementVisiteur}
-            modeVerrouille={props.modeVerrouille} />
+            modeVerrouille={props.modeVerrouille} 
+            synchronise={props.synchronise}
+            />
           <Commentaires
             rencontre={props.rencontre}
             surNouveauCommentaire={props.surNouveauCommentaire}

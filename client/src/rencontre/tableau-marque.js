@@ -4,7 +4,9 @@ import { action$} from "./rencontre-actions"
 import typesCommande from "../types-commande"
 
 export default props => {
+    const color = props.synchronise ? "black" : "red"
     const style = {
+      color: color,
       minWidth: "2em",
       height: "1.5em"
     }

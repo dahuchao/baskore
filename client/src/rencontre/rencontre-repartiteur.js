@@ -1,13 +1,15 @@
 import Immutable from "immutable"
 import {types, action$} from "./rencontre-actions"
 import typesEvenement from "../types-evenement"
+import typesCommande from "../types-commande"
 
 export default function Repartiteur() {
   // const action$ = new Rx.BehaviorSubject({type: "DEFAUT"})
   const init = {
     modeHistogramme: false,
     modeEdition: false,
-    modeVerrouille: true
+    modeVerrouille: true,
+    synchronise: true
   }
   const etat$ = action$.scan((etat, action) => {
     console.debug("##############################")
@@ -66,15 +68,39 @@ export default function Repartiteur() {
     actions[typesEvenement.CHANGEMENT_MARQUE] = function () {
       console.debug(`| Nouvelle marque ${action.marqueHote}:${action.marqueVisiteur}`)
       const periode = {...etat.rencontre.periode}
-      const histoMarques = [...etat.rencontre.histoMarques].push({
+      const histoMarques = etat.rencontre.histoMarques ? [...etat.rencontre.histoMarques] : []
+      histoMarques.push({
         marqueHote: action.marqueHote, 
         marqueVisiteur: action.marqueVisiteur,
         periode: periode
       })
       const netat = {...etat}
-      netat.rencontre.hote.marque = action.marqueHote
-      netat.rencontre.visiteur.marque = action.marqueVisiteur
+      if (!etat.modeEdition) {
+        netat.rencontre.hote.marque = action.marqueHote
+        netat.rencontre.visiteur.marque = action.marqueVisiteur
+        netat.rencontre.histoMarques = histoMarques
+        netat.synchronise = false
+      }
+      let synchronise = true
+      if (action.marqueHote != etat.rencontre.hote.marque) synchronise=false
+      if (action.marqueVisiteur != etat.rencontre.visiteur.marque) synchronise=false
+      netat.synchronise = synchronise
+      return Immutable.fromJS(netat)
+    }
+    actions[typesCommande.PANIER_MARQUE] = function () {
+      console.debug(`| Nouvelle marque ${action.marqueHote}:${action.marqueVisiteur}`)
+      const periode = {...etat.rencontre.periode}
+      const histoMarques = etat.rencontre.histoMarques ? [...etat.rencontre.histoMarques] : []
+      histoMarques.push({
+        marqueHote: action.rencontre.marqueHote, 
+        marqueVisiteur: action.rencontre.marqueVisiteur,
+        periode: periode
+      })
+      const netat = {...etat}
+      netat.rencontre.hote.marque = action.rencontre.marqueHote
+      netat.rencontre.visiteur.marque = action.rencontre.marqueVisiteur
       netat.rencontre.histoMarques = histoMarques
+      netat.synchronise = false
       return Immutable.fromJS(netat)
     }
     actions[typesEvenement.MAJ_RENCONTRE] = function () {

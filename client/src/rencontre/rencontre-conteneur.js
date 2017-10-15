@@ -116,6 +116,7 @@ export default class RencontreConteneur extends React.Component {
           modeEdition={this.state.modeEdition}
           modeHistogramme={this.state.modeHistogramme}
           modeVerrouille={this.state.modeVerrouille}
+          synchronise={this.state.synchronise}
         />
       : <p>Chargement de la rencontre...</p>
   }
