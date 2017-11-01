@@ -10,7 +10,7 @@ import {
   DatePicker
 } from "material-ui"
 import NavigationArrowBack from "material-ui/svg-icons/navigation/arrow-back"
-import {types, action$} from "./rencontre-actions"
+import {types, action$} from "./rencontre-flux"
 import typesCommande from "../types-commande"
 
 const RencontreEdition = (props) => {

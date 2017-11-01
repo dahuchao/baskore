@@ -2,7 +2,7 @@ import React from "react"
 import Immutable from "immutable"
 import {Card, TextField, List, ListItem, FlatButton} from "material-ui"
 import Done from "material-ui/svg-icons/action/done"
-import {action$} from "./rencontre-actions"
+import {action$} from "./rencontre-flux"
 import typesCommande from "../types-commande"
 
 export default class Commentaires extends React.Component {

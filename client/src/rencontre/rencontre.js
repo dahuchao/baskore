@@ -13,7 +13,7 @@ import Tableau from "./tableau"
 import Commentaires from "./commentaires"
 import Histogramme from "./histogramme"
 import RencontreEdition from "./rencontre-edition"
-import {types, action$} from "./rencontre-actions"
+import {types, action$} from "./rencontre-flux"
 
 function preparationDate() {
   const jour = new Date()

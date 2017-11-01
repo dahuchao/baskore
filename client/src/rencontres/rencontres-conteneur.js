@@ -40,20 +40,6 @@ const commande$ = action$.map(action => {
 let scCmdes
 let scEtats
 
-class RencontresSocket{
-  constructor(prot, host){
-    this.socket = io(`${prot}//${host}`)
-  }
-  emit(commande){
-    this.socket.emit("commande", commande)
-  }
-  on(callback){
-    this
-    .socket
-    .on("evenement", evenement => callback(evenement))
-  }
-}
-
 export default class RencontresConteneur extends React.Component {
   constructor(props) {
     super(props);

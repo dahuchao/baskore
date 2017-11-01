@@ -1,6 +1,6 @@
 import React from "react"
 import {FlatButton} from "material-ui"
-import { action$} from "./rencontre-actions"
+import { action$} from "./rencontre-flux"
 import typesCommande from "../types-commande"
 
 export default props => {

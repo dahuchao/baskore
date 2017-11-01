@@ -14,7 +14,7 @@ import {
   Tooltip, 
   Legend 
 } from "recharts";
-import {types, action$} from "./rencontre-actions"
+import {types, action$} from "./rencontre-flux"
 
 const CustomTooltip = (props) => {
   const { active } = props;

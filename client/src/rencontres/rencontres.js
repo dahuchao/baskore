@@ -32,7 +32,7 @@ export default class Rencontres extends React.Component {
   }
   zoom(idRencontre) {
     console.debug(`Ouverture de la rencontre : ${idRencontre}`)
-    this.context.router.push(`/rencontres/${idRencontre}`)
+    this.context.router.push(`/#rencontres/${idRencontre}`)
   }
   render() {
     const poubelle = {
@@ -67,10 +67,11 @@ export default class Rencontres extends React.Component {
             {this.props.rencontres.map(rencontre => {
               let strDate = this.preparationDate(rencontre.date)
               return (
-                <div className="rencontre" >
+                <div 
+                  key={rencontre.id}
+                  className="rencontre" >
                   <ListItem 
                     className="it-rencontre"
-                    key={rencontre.id}
                     primaryText={rencontre.hote.nom + '-' + rencontre.visiteur.nom}
                     secondaryText={rencontre.termine ? rencontre.hote.marque + '-' + rencontre.visiteur.marque : strDate}
                     containerElement={<Link to={{ pathname:"/rencontres/" + rencontre.id}} />}

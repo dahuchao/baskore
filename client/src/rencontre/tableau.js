@@ -1,7 +1,7 @@
 import React from "react"
 import Marque from "./tableau-marque.js"
 import Equipe from "./tableau-equipe.js"
-import {action$} from "./rencontre-actions"
+import {action$} from "./rencontre-flux"
 import typesCommande from "../types-commande"
 
 export default class Tableau extends React.Component {
