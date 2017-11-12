@@ -38,6 +38,12 @@ Cette application est un pretexte (POC) pour la mise en oeuvre des technologies 
 
 Pour lancer l'application en mode développement avec la recompilation et le rechargement de l'application à la volée :
 
+Démarrer le serveur back
 ```
-npm run-script dev
+npm start
+```
+
+et l'outil de développement front dans une autre console
+```
+npm run dev
 ```

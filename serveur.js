@@ -66,6 +66,7 @@ io
       console.log(`Nombre d'abonnés: ${-- nbSockets}`)
       // souscBureau.unsubscribe()
       souscTableau.unsubscribe()
+      souscBureau.unsubscribe()
       controleur
         .commande$
         .next({
