@@ -42,8 +42,10 @@ Démarrer le serveur back
 ```
 npm start
 ```
+ou lancer le debuger sur le back
 
 et l'outil de développement front dans une autre console
 ```
 npm run dev
 ```
+et lancer le debuger sur le front 

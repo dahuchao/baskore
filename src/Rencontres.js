@@ -1,5 +1,5 @@
-var Rx = require("rxjs")
-var {MongoClient} = require('mongodb')
+var { Observable } = require("rxjs")
+var { MongoClient } = require('mongodb')
 var Immutable = require("immutable")
 var typesEvenement = require("../client/src/types-evenement")
 
@@ -8,27 +8,22 @@ var Rencontres = {
   connecte: false,
   connexion: function (url) {
     console.log(`Connexion: ${url}`)
-    return Rx
-      .Observable
+    return Observable
       .create(function (subscriber) {
-        console.log(`test.`)
         MongoClient
           .connect(url, function (err, db) {
-            console.log(` test2.`)            
             if (err) {
-              console.log(`Connexion en erreur: ${err}`)
-              Rx
-                .Observable
-                .throw(err)
+              Observable.throw(err)
             } else {
               bdd = db
-              console.log(` Connexion réussie.`)
               // subscriber.next(Math.random());
               subscriber.complete();
             }
           })
         }
       )
+      .do(null, err => console.log(`Connexion en erreur: ${err}.`))
+      .do(null, null, () => console.log(`Connexion réussie.`))
   },
   deconnexion: function () {
     return bdd.close()
@@ -39,15 +34,12 @@ var Rencontres = {
     var evenements = {
       "DEFAUT": function () {
         console.log(`| defaut`)
-        return Rx
-          .Observable
-          .of(evenement)
+        return Observable.of(evenement)
       }
     }
     evenements[typesEvenement.AJOUT_RENCONTRE] = evenement => {
       // console.log(`| rencontre: ${JSON.stringify(evenement.rencontre)}`)
-      return Rx
-        .Observable
+      return Observable
         .create(function (subscriber) {
           bdd
             .collection("rencontres")
@@ -75,251 +67,76 @@ var Rencontres = {
               }
             })
         })
-        .flatMap(idCalcule => {
-          var rencontre = {
+        .flatMap(idCalcule => inserer({
             id: idCalcule,
             date: evenement.rencontre.date,
             hote: evenement.rencontre.hote,
             visiteur: evenement.rencontre.visiteur,
             termine: false
-          }
-          // Insertion de la nouvelle rencontre
-          return Rx
-            .Observable
-            .create(function (subscriber) {
-              bdd
-                .collection("rencontres")
-                .insert(rencontre, function (err, result) {
-                  if (err) {
-                    console.log(`Enregistrement en erreur: ${err}.`)
-                    subscriber.error(err);
-                  } else {
-                    console.log(`Rencontre enregistrée: ${JSON.stringify(result)}.`)
-                    var nevenement = Immutable
-                      .fromJS(evenement)
-                      .set("rencontre", rencontre)
-                      .toJS()
-                    console.log(`Rencontre enregistrée: ${JSON.stringify(nevenement)}.`)
-                    subscriber.next(nevenement)
-                    subscriber.complete();
-                  }
-                })
-            })
-        })
+          })
+        )
+        .map(rencontre => Immutable.fromJS(evenement).set("rencontre", rencontre).toJS())
     }
     evenements[typesEvenement.MAJ_RENCONTRE] = evenement => {
       console.log(`| idRencontre: ${evenement.idRencontre}`)
-      return Rx
-        .Observable
-        .create(function (subscriber) {
-          console.log(` Lecture rencontre.`)
-          bdd
-            .collection("rencontres")
-            .findOne({
-              id: parseInt(evenement.idRencontre)
-            }, function (err, rencontre) {
-              if (err) {
-                console.log("Erreur: " + err)
-                subscriber.error(err);
-              } else if (rencontre == null) {
-                console.log("Fin de lecture.")
-                // subscriber.complete();
-              } else {
-                // console.log('Sélection de la rencontre: ' + JSON.stringify(rencontre))
-                subscriber.next(rencontre)
-                subscriber.complete();
-              }
-            })
-        })
+      return rechercher(evenement.idRencontre)
         .first()
         .flatMap(rencontre => {
-          console.log(` rencontre mise à jour: ${rencontre._id}.`)
-          // console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
-          // console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
           rencontre.date = evenement.rencontre.date
           rencontre.hote.nom = evenement.rencontre.hote.nom
           rencontre.visiteur.nom = evenement.rencontre.visiteur.nom
           rencontre.termine = evenement.rencontre.termine
-          // console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
-          return Rx
-            .Observable
-            .create(subscriber => {
-              bdd
-                .collection("rencontres")
-                .update({
-                  _id: rencontre._id
-                }, rencontre, function (err) {
-                  if (err) {
-                    console.log(`Mise à jour en erreur: ${err}.`)
-                    subscriber.error(err);
-                  } else {
-                    console.log(`Mise à jour enregistrée.`)
-                    subscriber.next(rencontre)
-                    subscriber.complete();
-                  }
-                })
-            })
+          return mettreAJour(rencontre)
         })
-        .map(rencontre => {
-          evenement.rencontre = rencontre
-          return evenement
-        })
+        .map(rencontre => Immutable.fromJS(evenement).set("rencontre", rencontre).toJS())
     }
     evenements[typesEvenement.LECTURE_RENCONTRE] = evenement => {
-      console.log(`| idRencontre: ${evenement.idRencontre}`)
-      return Rx
-        .Observable
-        .create(function (subscriber) {
-          console.log(` Lecture rencontre.`)
-          bdd
-            .collection("rencontres")
-            .findOne({
-              id: parseInt(evenement.idRencontre)
-            }, function (err, rencontre) {
-              if (err) {
-                console.log("Erreur: " + err)
-                // subscriber.error(err);
-              } else if (rencontre == null) {
-                console.log("Fin de lecture.")
-                // subscriber.complete();
-              } else {
-                // console.log('Sélection de la rencontre: ' + JSON.stringify(rencontre))
-                var nevenement = Immutable
-                  .fromJS(evenement)
-                  .set("rencontre", rencontre)
-                  .toJS()
-                subscriber.next(nevenement)
-                subscriber.complete();
-              }
-            })
-          })
-          .first()
-          .flatMap(evenement => {
-            let rencontre = evenement.rencontre
-            // Calcul de l'audience
-            let audience = rencontre.audience ? rencontre.audience : 0;
-            // Augmentation de l'audience
-            rencontre.audience = ++audience;
-            // Calcul des tables de marque
-            let tables = rencontre.tables ? rencontre.tables : [];
-            // Enregistrement d'une nouvelle table de marque
-            tables.push(evenement.idSocket);
-            // const rencontreModifiee = rencontre
-            rencontre.tables = tables;
-            return Rx
-              .Observable
-              .create(subscriber => {
-                bdd
-                .collection("rencontres")
-                .update({
-                  _id: rencontre._id
-                }, rencontre, function (err) {
-                  if (err) {
-                    console.log(`Mise à jour en erreur: ${err}.`)
-                    subscriber.error(err);
-                  } else {
-                    console.log(`Mise à jour enregistrée.`)
-                    var nevenement = Immutable
-                      .fromJS(evenement)
-                      .set("rencontre", rencontre)
-                      .toJS()
-                    subscriber.next(nevenement)
-                    subscriber.complete();
-                  }
-                })
-              })
-            })
-          }
-      evenements[typesEvenement.FERMETURE_RENCONTRE] = evenement => {
-        console.log(`| idRencontre: ${evenement.idRencontre}`)
-        return Rx
-          .Observable
-          .create(function (subscriber) {
-            console.log(` Lecture rencontre.`)
-            bdd
-              .collection("rencontres")
-              .findOne({
-                tables: evenement.idSocket
-              }, function (err, rencontre) {
-                if (err) {
-                  console.log("Erreur: " + err)
-                  // subscriber.error(err);
-                } else if (rencontre == null) {
-                  console.log("Fin de lecture.")
-                  // subscriber.complete();
-                } else {
-                  // console.log('Sélection de la rencontre: ' + JSON.stringify(rencontre))
-                  var nevenement = Immutable
-                    .fromJS(evenement)
-                    .set("rencontre", rencontre)
-                    .toJS()
-                  subscriber.next(nevenement)
-                  subscriber.complete();
-                }
-              })
-            })
-            .first()
-            .flatMap(evenement => {
-              let rencontre = evenement.rencontre
-              // Calcul de l'audience
-              let audience = rencontre.audience ? rencontre.audience : 0;
-              // Diminution de l'audience
-              if (audience > 0) --audience
-              rencontre.audience = audience;
-              // Calcul des tables de marque
-              let tables = rencontre.tables ? rencontre.tables : [];
-              // Enregistrement d'une nouvelle table de marque
-              rencontre.tables = rencontre.tables.filter((t)=> t != evenement.idSocket)
-              return Rx
-                .Observable
-                .create(subscriber => {
-                  bdd
-                  .collection("rencontres")
-                  .update({
-                    _id: rencontre._id
-                  }, rencontre, function (err) {
-                    if (err) {
-                      console.log(`Mise à jour en erreur: ${err}.`)
-                      subscriber.error(err);
-                    } else {
-                      console.log(`Mise à jour enregistrée.`)
-                      var nevenement = Immutable
-                        .fromJS(evenement)
-                        .set("rencontre", rencontre)
-                        .toJS()
-                      subscriber.next(nevenement)
-                      subscriber.complete();
-                    }
-                  })
-                })
-              })
-            }
-      evenements[typesEvenement.SUPPRESSION_RENCONTRE] = evenement => {
-      console.log(`| idRencontre: ${evenement.idRencontre}`)
-      return Rx
-        .Observable
-        .create(function (subscriber) {
-          console.log(` Suppression rencontre.`)
-          return bdd
-            .collection("rencontres")
-            .remove({
-              id: parseInt(evenement.idRencontre)
-            }, function (err, result) {
-              if (err) {
-                console.log("Erreur: " + err)
-                subscriber.error(err);
-              } else {
-                console.log(`Résultat suppression: ${JSON.stringify(result)}`)
-                subscriber.next(evenement)
-                subscriber.complete();
-              }
-            })
+      console.log(`| LECTURE_RENCONTRE idRencontre: ${evenement.idRencontre}`);
+      return rechercher(evenement.idRencontre)
+        .do(rencontre => console.log(`Chargement rencontre: ${JSON.stringify(rencontre)}`))
+        .flatMap(rencontre => {
+          // Calcul de l'audience
+          let audience = rencontre.audience ? rencontre.audience : 0;
+          // Augmentation de l'audience
+          rencontre.audience = ++audience;
+          // Calcul des tables de marque
+          let tables = rencontre.tables ? rencontre.tables : [];
+          // Enregistrement d'une nouvelle table de marque
+          tables.push(evenement.idSocket);
+          // const rencontreModifiee = rencontre
+          rencontre.tables = tables;
+          return mettreAJour(rencontre)
         })
+        .map(rencontre => Immutable.fromJS(evenement).set("rencontre", rencontre).toJS())
+        .do((evenement) => console.log(`Mise à jour enregistrée: ${JSON.stringify(evenement)}.`))
+        .do(null, err => console.log(`Mise à jour en erreur: ${err}.`))
+    }
+    evenements[typesEvenement.FERMETURE_RENCONTRE] = evenement => {
+      console.log(`| idRencontre: ${evenement.idRencontre}`)
+      return rechercher(evenement.idRencontre)
+        .first()
+        .flatMap(rencontre => {
+          // let rencontre = evenement.rencontre
+          // Calcul de l'audience
+          let audience = rencontre.audience ? rencontre.audience : 0;
+          // Diminution de l'audience
+          if (audience > 0) --audience
+          rencontre.audience = audience;
+          // Calcul des tables de marque
+          let tables = rencontre.tables ? rencontre.tables : [];
+          // Enregistrement d'une nouvelle table de marque
+          rencontre.tables = rencontre.tables.filter((t)=> t != evenement.idSocket)
+          return mettreAJour(rencontre)
+        })
+        .map(rencontre => Immutable.fromJS(evenement).set("rencontre", rencontre).toJS())
+      }
+    evenements[typesEvenement.SUPPRESSION_RENCONTRE] = evenement => {
+      console.log(`| idRencontre: ${evenement.idRencontre}`)
+      return suppression(evenement)
     }
     evenements[typesEvenement.LECTURE_RENCONTRES] = evenement => {
       console.log(`| Traitement type: ${evenement.type}`)
-      return Rx
-        .Observable
+      return Observable
         .create(function (subscriber) {
           console.log(` Lecture.`)
           bdd
@@ -336,46 +153,21 @@ var Rencontres = {
                 console.log(`Sélection rencontre: ${JSON.stringify(rencontre.id)}`)
                 subscriber.next(rencontre)
               }
-            })
-        })
-        .reduce((liste, rencontre) => {
-          liste.push(rencontre)
-          return liste
-        }, [])
-        .map(rencontres => {
-          evenement.rencontres = rencontres
-          return evenement
-        })
+            }
+          )
+        }
+      )
+      .reduce((liste, rencontre) => {
+        liste.push(rencontre)
+        return liste
+      }, [])
+      .map(rencontres => Immutable.fromJS(evenement).set("rencontres", rencontres).toJS())
     }
     evenements[typesEvenement.CHANGEMENT_MARQUE] = evenement => {
       console.log(`| Nouvelle marque ${evenement.marqueHote}:${evenement.marqueVisiteur}`)
-      return Rx
-        .Observable
-        .create(function (subscriber) {
-          console.log(` Lecture rencontre.`)
-          bdd
-            .collection("rencontres")
-            .findOne({
-              id: parseInt(evenement.idRencontre)
-            }, function (err, rencontre) {
-              if (err) {
-                console.log("Erreur: " + err)
-                subscriber.error(err);
-              } else if (rencontre == null) {
-                console.log("Fin de lecture.")
-                // subscriber.complete();
-              } else {
-                // console.log('Sélection de la rencontre: ' + JSON.stringify(rencontre))
-                subscriber.next(rencontre)
-                subscriber.complete();
-              }
-            })
-        })
+      return rechercher(evenement.idRencontre)
         .first()
         .flatMap(rencontre => {
-          console.log(` rencontre mise à jour: ${rencontre._id}.`)
-          // console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
-          // console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
           rencontre.hote.marque = evenement.marqueHote
           rencontre.visiteur.marque = evenement.marqueVisiteur
           if(rencontre.histoMarques==null)
@@ -385,148 +177,111 @@ var Rencontres = {
             marqueVisiteur: evenement.marqueVisiteur,
             periode: rencontre.periode
           });        
-          // console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
-          return Rx
-            .Observable
-            .create(subscriber => {
-              bdd
-                .collection("rencontres")
-                .update({
-                  _id: rencontre._id
-                }, rencontre, function (err) {
-                  if (err) {
-                    console.log(`Mise à jour en erreur: ${err}.`)
-                    subscriber.error(err);
-                  } else {
-                    console.log(`Mise à jour enregistrée.`)
-                    subscriber.next(rencontre)
-                    subscriber.complete();
-                  }
-                })
-            })
+          return mettreAJour(rencontre)
         })
-        .map(rencontre => {
-          evenement.rencontre = rencontre
-          return evenement
-        })
+        .map(rencontre => Immutable.fromJS(evenement).set("rencontre", rencontre).toJS())
     }
     evenements[typesEvenement.CHANGEMENT_PERIODE] = evenement => {
       console.log("| Nouvelle période: " + JSON.stringify(evenement.periode))
-      return Rx
-        .Observable
-        .create(function (subscriber) {
-          console.log(` Lecture rencontre.`)
-          bdd
-            .collection("rencontres")
-            .findOne({
-              id: parseInt(evenement.idRencontre)
-            }, function (err, rencontre) {
-              if (err) {
-                console.log("Erreur: " + err)
-                subscriber.error(err);
-              } else if (rencontre == null) {
-                console.log("Fin de lecture.")
-                // subscriber.complete();
-              } else {
-                // console.log('Sélection de la rencontre: ' + JSON.stringify(rencontre))
-                subscriber.next(rencontre)
-                subscriber.complete();
-              }
-            })
-        })
+      return rechercher(evenement.idRencontre)
         .first()
         .flatMap(rencontre => {
-          console.log(` rencontre mise à jour: ${rencontre._id}.`)
-          // console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
-          // console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
           rencontre.periode = evenement.periode
-          // console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
-          return Rx
-            .Observable
-            .create(subscriber => {
-              bdd
-                .collection("rencontres")
-                .update({
-                  _id: rencontre._id
-                }, rencontre, function (err) {
-                  if (err) {
-                    console.log(`Mise à jour en erreur: ${err}.`)
-                    subscriber.error(err);
-                  } else {
-                    console.log(`Mise à jour enregistrée.`)
-                    subscriber.next(rencontre)
-                    subscriber.complete();
-                  }
-                })
-            })
+          return mettreAJour(rencontre)
         })
-        .map(rencontre => {
-          evenement.rencontre = rencontre
-          return evenement
-        })
+        .map(rencontre => Immutable.fromJS(evenement).set("rencontre", rencontre).toJS())
     }
     evenements[typesEvenement.NOUVEAU_COMMENTAIRE] = evenement => {
       console.log(`| Nouveau commentaire sur la rencontre: ${evenement.commentaire}`)
-      return Rx
-        .Observable
-        .create(function (subscriber) {
-          console.log(` Lecture rencontre.`)
-          bdd
-            .collection("rencontres")
-            .findOne({
-              id: parseInt(evenement.idRencontre)
-            }, function (err, rencontre) {
-              if (err) {
-                console.log("Erreur: " + err)
-                subscriber.error(err);
-              } else if (rencontre == null) {
-                console.log("Fin de lecture.")
-                // subscriber.complete();
-              } else {
-                // console.log('Sélection de la rencontre: ' + JSON.stringify(rencontre))
-                subscriber.next(rencontre)
-                subscriber.complete();
-              }
-            })
-        })
+      return rechercher(evenement.idRencontre)
         .first()
         .flatMap(rencontre => {
-          console.log(` rencontre mise à jour: ${rencontre._id}.`)
-          // console.log(` rencontre à modifier : ${JSON.stringify(rencontre)}.`)
-          // console.log(` rencontre nouvelle : ${JSON.stringify(evenement.rencontre)}.`)
           let commentaires = Immutable
             .fromJS(rencontre)
             .get("commentaires", Immutable.List())
             .push(evenement.commentaire)
           console.log(`| Enregistrement du commentaire en base: ${commentaires}`)
           rencontre.commentaires = commentaires.toJS()
-          // console.log(` rencontre : ${JSON.stringify(rencontre)}.`)
-          return Rx
-            .Observable
-            .create(subscriber => {
-              bdd
-                .collection("rencontres")
-                .update({
-                  _id: rencontre._id
-                }, rencontre, function (err) {
-                  if (err) {
-                    console.log(`Mise à jour en erreur: ${err}.`)
-                    subscriber.error(err);
-                  } else {
-                    console.log(`Mise à jour enregistrée.`)
-                    subscriber.next(rencontre)
-                    subscriber.complete();
-                  }
-                })
-            })
+          return mettreAJour(rencontre)
         })
-        .map(rencontre => {
-          evenement.rencontre = rencontre
-          return evenement
-        })
+        .map(rencontre => Immutable.fromJS(evenement).set("rencontre", rencontre).toJS())
     }
     return (evenements[evenement.type] || evenements['DEFAUT'])(evenement);
   }
 }
+
+const mettreAJour = rencontre => Observable
+  .create(subscriber => {
+    bdd
+    .collection("rencontres")
+    .update({
+      _id: rencontre._id
+    }, rencontre, function (err) {
+      if (err) {
+        subscriber.error(err);
+      } else {
+        subscriber.next(rencontre)
+        subscriber.complete();
+      }
+    })
+  })   
+  .do((rencontre) => console.log(`Mise à jour enregistrée: ${JSON.stringify(rencontre)}.`))
+  .do(null, err => console.log(`Mise à jour en erreur: ${err}.`))
+
+const rechercher = id => Observable
+  .create(function (subscriber) {
+    bdd
+      .collection("rencontres")
+      .findOne({
+        id: parseInt(id)
+      }, function (err, rencontre) {
+        if (rencontre) {
+          subscriber.next(rencontre);
+          subscriber.complete();
+        }
+      })
+    }
+  )
+  .do((rencontre) => console.log(`Lecture rencontre: ${JSON.stringify(rencontre)}.`))
+  .do(null, err => console.log(`Lecture en erreur: ${err}.`))
+
+const inserer = rencontre => Observable
+  .create(function (subscriber) {
+    bdd.collection("rencontres")
+      .insert(rencontre, function (err, result) {
+        if (err) {
+            subscriber.error(err);
+        }
+        else {
+          subscriber.next(rencontre)
+          subscriber.complete();
+        }
+        }
+      )
+    }
+  )
+  .do((rencontre) => console.log(`Insertion rencontre: ${JSON.stringify(rencontre)}.`))
+  .do(null, err => console.log(`Insertion en erreur: ${err}.`))
+
+const suppression = evenement => Observable
+  .create(function (subscriber) {
+    return bdd
+      .collection("rencontres")
+      .remove({
+        id: parseInt(evenement.idRencontre)
+      }, function (err, result) {
+        if (err) {
+          subscriber.error(err);
+        } else {
+          console.log(`Résultat suppression: ${JSON.stringify(result)}`)
+          subscriber.next(evenement)
+          subscriber.complete();
+        }
+      }
+    )
+  }
+)
+.do((evenement) => console.log(`Suppression rencontre.`))
+.do(null, err => console.log(`Suppression en erreur: ${err}.`))
 
 module.exports = Rencontres

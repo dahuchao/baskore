@@ -33,6 +33,10 @@ const action2commande = action => {
     // console.debug("sauver(majRencontre): " + JSON.stringify(majRencontre))
     return {type: typesCommande.MAJ_RENCONTRE, idRencontre: action.rencontre.id, rencontre: action.rencontre}
   }
+  actions[typesCommande.FERMER_RENCONTRE] = () => {
+    // console.info("Panier marque: " + JSON.stringify(action))
+    return {type: typesCommande.FERMER_RENCONTRE, idRencontre: action.idRencontre}
+  }
   return (actions[action.type] || actions['DEFAUT'])();
 }
 

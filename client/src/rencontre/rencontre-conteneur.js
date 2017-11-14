@@ -20,6 +20,8 @@ export default class RencontreConteneur extends React.Component {
   }
   componentWillUnmount() {
     scEtats.unsubscribe()
+    const idRencontre = this.props.match.params.idRencontre
+    action$.next({type: typesCommande.FERMER_RENCONTRE, idRencontre})
   }
   render() {
     // console.debug(`Nouvelle rencontre: ` + JSON.stringify(this.state))
