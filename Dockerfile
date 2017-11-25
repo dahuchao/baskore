@@ -10,7 +10,7 @@ WORKDIR /app
 RUN npm install
 
 # Open Port 80
-EXPOSE 80
+EXPOSE 3001
 
 # Run Node.js
 CMD ["npm", "start"]

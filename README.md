@@ -60,7 +60,7 @@ sudo docker build -t dahu.chao/baskore .
 
 Démarrage d'un conteneur
 
-sudo docker run --restart always -d -p 80:81 dahu.chao/baskore
+sudo docker run --restart always -d -p 80:3001 dahu.chao/baskore
 
 Voir la liste des conteneurs
 
@@ -69,3 +69,18 @@ sudo docker ps
 Voir les logs d'un conteneur
 
 sudo docker logs <PID>
+
+## Base de données
+
+Installation de mongodb
+
+sudo apt-get install mongodb-server
+
+Création répertoire d'accueil des fichiers de la base de données
+
+mkdir mongo-base
+cd mongo-base
+mkdir bd
+echo "mongod --dbpath /home/pi/baskore/mongo-base/bd" > mongo-start.sh
+
+sudo service mongodb start
