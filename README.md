@@ -47,3 +47,25 @@ et l'outil de développement front dans une autre console
 ```
 npm run dev
 ```
+
+## Lancement par docker
+
+Installer les sources de l'application
+
+git clone https://github.com/dahuchao/baskore.git
+
+Fabrication de l'image applicative
+
+docker build -t dahu.chao/baskore .
+
+Démarrage d'un conteneur
+
+docker run --restart always -d -p 88:81 dahu.chao/baskore
+
+Voir la liste des conteneurs
+
+docker ps
+
+Voir les logs d'un conteneur
+
+docker logs <PID>
