@@ -60,7 +60,7 @@ sudo docker build -t dahu.chao/baskore .
 
 Démarrage d'un conteneur
 
-sudo docker run --restart always -d -p 88:81 dahu.chao/baskore
+sudo docker run --restart always -d -p 80:81 dahu.chao/baskore
 
 Voir la liste des conteneurs
 
