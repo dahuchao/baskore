@@ -56,16 +56,16 @@ git clone https://github.com/dahuchao/baskore.git
 
 Fabrication de l'image applicative
 
-docker build -t dahu.chao/baskore .
+sudo docker build -t dahu.chao/baskore .
 
 Démarrage d'un conteneur
 
-docker run --restart always -d -p 88:81 dahu.chao/baskore
+sudo docker run --restart always -d -p 88:81 dahu.chao/baskore
 
 Voir la liste des conteneurs
 
-docker ps
+sudo docker ps
 
 Voir les logs d'un conteneur
 
-docker logs <PID>
+sudo docker logs <PID>
