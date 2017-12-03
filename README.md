@@ -75,6 +75,7 @@ sudo docker logs <PID>
 Installation de mongodb
 
 sudo apt-get install mongodb-server
+docker pull mongo:latest
 
 Création répertoire d'accueil des fichiers de la base de données
 
