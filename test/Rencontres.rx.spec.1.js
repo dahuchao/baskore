@@ -2,8 +2,8 @@ var chai = require("chai")
 var Rx = require("rxjs")
 var Rencontres = require('../src/Rencontres')
 var controleur = require("../src/controleur")
-var typesEvenement = require("../src/types-evenement")
-var typesCommande = require("../src/types-commande")
+var typesEvenement = require("../client/src/types-evenement")
+var typesCommande = require("../client/src/types-commande")
 
 var expect = chai.expect
 var should = chai.should()

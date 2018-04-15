@@ -77,7 +77,7 @@ const reducteur = (etat, action) => {
     return Immutable.fromJS(netat)
   }
   actions[typesCommande.PANIER_MARQUE] = function () {
-    console.debug(`| Nouvelle marque ${action.marqueHote}:${action.marqueVisiteur}`)
+    console.debug(`| Nouvelle marque ${action.rencontre.marqueHote}:${action.rencontre.marqueVisiteur}`)
     const periode = {...etat.rencontre.periode}
     const histoMarques = etat.rencontre.histoMarques ? [...etat.rencontre.histoMarques] : []
     histoMarques.push({

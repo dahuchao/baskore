@@ -86,12 +86,13 @@ io
       .flatMap(evenement => {
         return Rencontres.traiter(evenement)
       })
+      .filter(evenement => evenement.type.match(typesEvenement.LECTURE_RENCONTRES)||evenement.type.match(typesEvenement.LECTURE_RENCONTRE))
       .subscribe(evenement => {
-        console.log("\\ >>>>>>>>>>>>>>>  Communication bureau  <<<<<<<<<<<<<<<")
-        console.log(` | type: ${evenement.type}.`)
-        console.log(`/ Envoi du message (${socket.id}):`)
+        console.log("/ >>>>>>>>>>>>>>>  Communication bureau  ")
+        console.log(`type: ${evenement.type}.`)
+        console.log(`Envoi du message (${socket.id}):`)
         // console.log(`${JSON.stringify(evenement)}`)
-        console.log(`> --------------  Communication bureau  --------------`)
+        console.log(`\ >>>>>>>>>>>>>>>  Communication bureau  `)
         socket.emit("evenement", evenement)
       })
     var souscTableau = controleur
@@ -112,15 +113,15 @@ io
       .filter(message => message.idRencontre != null)
       .filter(message => message.evenement.idRencontre == message.idRencontre)
       .subscribe(message => {
-        console.log(`\\ @@@@@@@@@@@@@@@  Communication tableaux de marque  @@@@@@@@@@@@`)
+        console.log(`/ @@@@@@@@@@@@@@@  Communication tableaux de marque  `)
         // if (message.evenement.idSocket == null) {
-          console.log(` | type: ${message.evenement.type}.`)
-          console.log(`/ Envoi du message (${socket.id}):`)
-          console.log(`idRencontre: ${JSON.stringify(message)}`)
+          console.log(`type: ${message.evenement.type}.`)
+          console.log(`Envoi du message (${socket.id}):`)
+          console.log(`idRencontre: ${message.idRencontre}`)
           console.log(`message: ${JSON.stringify(message)}`)
           socket.emit("evenement", message.evenement)
         // }
-        console.log(`> --------------  Communication tableaux de marque  --------------`)
+        console.log(`\ @@@@@@@@@@@@@@@  Communication tableaux de marque  `)
       })
   })
 // ■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■▀■
@@ -132,11 +133,10 @@ controleur
     return Rencontres.traiter(evenement)
   })
   .subscribe(evenement => {
-    console.log(`\\ &&&&&&&&&&&&&&&  Répercution en base  &&&&&&&&&&&&`)
-    console.log(` | type: ${evenement.type}.`)
+    console.log(`/ &&&&&&&&&&&&&&&  Répercution en base  `)
+    console.log(`type: ${evenement.type}.`)
     // console.log(`${JSON.stringify(evenement)}`)
-    console.log(`/`)
-    console.log(`\\ --------------  Répercution en base  -------------`)
+    console.log(`\ &&&&&&&&&&&&&&&  Répercution en base  `)
   }, err => {
     console.log(`Une erreur est survenue`)
     console.log(`Err: ${err}`)

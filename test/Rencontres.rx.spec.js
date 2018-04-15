@@ -1,8 +1,11 @@
+// var {TestScheduler} from "rxjs/Rx";
 var chai = require("chai")
 var Rx = require("rxjs")
+// import {chai} from "chai"
+// import {Rx} from "rxjs"
 
 var expect = chai.expect
-var should = chai.should()
+const op = (somme, arg) => somme + arg;
 
 describe("Gestion des rencontres", () => {
   let nb$
@@ -15,15 +18,20 @@ describe("Gestion des rencontres", () => {
     done()
   })
   it("on peut noter 1", (done) => {
-    s$.subscribe(s => {
-      console.log(`s: ${s}.`)
-      done()
-    })
+    s$.do(s=>console.log(`s: ${s}.`)).subscribe(s=>expect(s).to.equal(15),null,done());
   })
   it("on peut noter 2", (done) => {
     s$.subscribe(s => {
+      expect(s).to.equal(15);
       console.log(`s: ${s}.`)
-      done()
-    })
+    }, null, done())
+  })
+  it("on peut noter 3", () => {
+    let scheduler = new Rx.TestScheduler();
+    const marbleDonnee   = "-1-1-";
+    const donnee$ = scheduler.createHotObservable(marbleDonnee);
+    const somme$ = donnee$.reduce(op, 0);
+    // scheduler.expectObservable(somme$).toBe("-a-b-", {a:1,b:2});
+    scheduler.flush();
   })
 })

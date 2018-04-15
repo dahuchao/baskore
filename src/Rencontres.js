@@ -93,7 +93,7 @@ var Rencontres = {
     evenements[typesEvenement.LECTURE_RENCONTRE] = evenement => {
       console.log(`| LECTURE_RENCONTRE idRencontre: ${evenement.idRencontre}`);
       return rechercher(evenement.idRencontre)
-        .do(rencontre => console.log(`Chargement rencontre: ${JSON.stringify(rencontre)}`))
+        // .do(rencontre => console.log(`Chargement rencontre: ${JSON.stringify(rencontre)}`))
         .flatMap(rencontre => {
           // Calcul de l'audience
           let audience = rencontre.audience ? rencontre.audience : 0;
@@ -108,8 +108,8 @@ var Rencontres = {
           return mettreAJour(rencontre)
         })
         .map(rencontre => Immutable.fromJS(evenement).set("rencontre", rencontre).toJS())
-        .do((evenement) => console.log(`Mise à jour enregistrée: ${JSON.stringify(evenement)}.`))
-        .do(null, err => console.log(`Mise à jour en erreur: ${err}.`))
+        // .do((evenement) => console.log(`Mise à jour enregistrée: ${JSON.stringify(evenement)}.`))
+        // .do(null, err => console.log(`Mise à jour en erreur: ${err}.`))
     }
     evenements[typesEvenement.FERMETURE_RENCONTRE] = evenement => {
       console.log(`| idRencontre: ${evenement.idRencontre}`)
@@ -129,7 +129,7 @@ var Rencontres = {
           return mettreAJour(rencontre)
         })
         .map(rencontre => Immutable.fromJS(evenement).set("rencontre", rencontre).toJS())
-      }
+    }
     evenements[typesEvenement.SUPPRESSION_RENCONTRE] = evenement => {
       console.log(`| idRencontre: ${evenement.idRencontre}`)
       return suppression(evenement)
@@ -200,7 +200,6 @@ var Rencontres = {
             .fromJS(rencontre)
             .get("commentaires", Immutable.List())
             .push(evenement.commentaire)
-          console.log(`| Enregistrement du commentaire en base: ${commentaires}`)
           rencontre.commentaires = commentaires.toJS()
           return mettreAJour(rencontre)
         })
@@ -225,8 +224,8 @@ const mettreAJour = rencontre => Observable
       }
     })
   })   
-  .do((rencontre) => console.log(`Mise à jour enregistrée: ${JSON.stringify(rencontre)}.`))
-  .do(null, err => console.log(`Mise à jour en erreur: ${err}.`))
+  // .do((rencontre) => console.log(`Mise à jour enregistrée: ${JSON.stringify(rencontre)}.`))
+  // .do(null, err => console.log(`Mise à jour en erreur: ${err}.`))
 
 const rechercher = id => Observable
   .create(function (subscriber) {
@@ -242,8 +241,8 @@ const rechercher = id => Observable
       })
     }
   )
-  .do((rencontre) => console.log(`Lecture rencontre: ${JSON.stringify(rencontre)}.`))
-  .do(null, err => console.log(`Lecture en erreur: ${err}.`))
+  // .do((rencontre) => console.log(`Lecture rencontre: ${JSON.stringify(rencontre)}.`))
+  // .do(null, err => console.log(`Lecture en erreur: ${err}.`))
 
 const inserer = rencontre => Observable
   .create(function (subscriber) {
@@ -260,8 +259,8 @@ const inserer = rencontre => Observable
       )
     }
   )
-  .do((rencontre) => console.log(`Insertion rencontre: ${JSON.stringify(rencontre)}.`))
-  .do(null, err => console.log(`Insertion en erreur: ${err}.`))
+  // .do((rencontre) => console.log(`Insertion rencontre: ${JSON.stringify(rencontre)}.`))
+  // .do(null, err => console.log(`Insertion en erreur: ${err}.`))
 
 const suppression = evenement => Observable
   .create(function (subscriber) {
@@ -281,7 +280,7 @@ const suppression = evenement => Observable
     )
   }
 )
-.do((evenement) => console.log(`Suppression rencontre.`))
-.do(null, err => console.log(`Suppression en erreur: ${err}.`))
+// .do((evenement) => console.log(`Suppression rencontre.`))
+// .do(null, err => console.log(`Suppression en erreur: ${err}.`))
 
 module.exports = Rencontres

@@ -6,8 +6,8 @@ import typesCommande from "../types-commande"
 
 export default class Tableau extends React.Component {
   surPanierHote() {
-    // console.info("Panier marque: " +
-    // JSON.stringify(this.props.rencontre.hote.marque))
+    console.info("Panier marque: " +
+    JSON.stringify(this.props.rencontre.hote.marque))
     let marque = this.props.rencontre.hote.marque + 1
     const rencontre ={
       idRencontre: this.props.rencontre.id,

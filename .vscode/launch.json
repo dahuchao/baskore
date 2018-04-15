@@ -22,7 +22,7 @@
                 "--timeout",
                 "999999",
                 "--colors",
-                "${workspaceFolder}/test/Rencontres.spec.js"
+                "${workspaceFolder}/test/Rencontres.rx.spec.1.js"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         },
